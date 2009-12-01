@@ -19,7 +19,8 @@ foreach $file (@ARGV) {
         if(/^$/)   {next;}
 
         ($opcode, $opname, $count) = split ' ', $_;
-        print FH_STATIC "($opcode, \"$opname\", $count)\n";
+        print FH_STATIC "($opcode, $opname, $count)\n" 
+            if $opcode < 3000;
     }
     $outf = $dir.$base.".".$mode.$ext;
     open FH_DYNAMIC, '>', $outf
@@ -29,7 +30,8 @@ foreach $file (@ARGV) {
         if(/^$/)   {next;}
 
         ($opcode, $opname, $count) = split ' ', $_;
-        print FH_DYNAMIC "($opcode, \"$opname\", $count)\n";
+        print FH_DYNAMIC "($opcode, $opname, $count)\n"
+            if $opcode < 3000;
     }
     
     close FH; 
