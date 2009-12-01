@@ -1,3 +1,4 @@
+0 INVALID
 1 AAA
 2 AAD
 3 AAM
