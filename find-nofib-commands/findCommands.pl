@@ -1,12 +1,13 @@
 #!/usr/bin/perl
+use File::Basename;
 
 ($Pgm = $0) =~ s|.*/||;
 %Progs = ();
 @CmdLines = ();
-#%CmdLines = ();
 @Dirs = ();
 $Verbose = 0;
 $Status = 0;
+$NoFibHome = "/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib";
 if ( $ENV{'TMPDIR'} ) { # where to make tmp file names
     $TmpPrefix = $ENV{'TMPDIR'};
 } else {
@@ -20,7 +21,6 @@ while (<>) {
     if(/^PWD = (.*)$/) {$pwd = $1;}
     if(/==nofib== (.*)?: time to run \1 follows/) {
         unless ($Progs{$1}) {
-            print "c: $1 \n";
             $hit = 1;
             $Progs{$1} = $1;
         }
@@ -31,10 +31,7 @@ while (<>) {
         ($cmd) = split(/;/);
         $cmd =~ s#/usr/bin/time|(\.\./)*/?runstdtest/runstdtest##g;
         $cmd =~ s#^\s+##;
-        #print "$first\n";
-        #$CmdLines{$pwd} = $cmd;
         push @CmdLines, $cmd
-        #push @Dirs, $pwd
     }
 }
 
@@ -47,10 +44,14 @@ foreach $cmd (@CmdLines) {
     @argv  = split /\s+/, $cmd;
     $ToRun = $argv[0]; shift(@argv);
     ParseArgs(@argv);
+
     #print "$ToRun $PgmStdinFile @PgmArgs\n";
-    print "$pwd\n";
+    $find_name = $ToRun;
+    $find_name =~ s#\./##;
+    $dir = dirname(`find $NoFibHome -name $find_name -type f | grep -v '_darcs'`);
+
+    print "$dir|";
     print "$ToRun @PgmArgs < $PgmStdinFile \n"
-    #1> $TmpPrefix/runtest$$.1.raw 2> $TmpPrefix/runtest$$.2.raw 3> $TmpPrefix/runtest$$.3.raw\n";
 }
 
 sub ParseArgs {
@@ -73,16 +74,19 @@ sub ParseArgs {
         /^-O(.*)/	&& do { push(@PgmArgs, &grab_arg_arg('-O',$1)); next arg; };
         /^-i(.*)/	&& do { $PgmStdinFile = &grab_arg_arg('-i',$1); next arg; };
         /^-fail/    && do { next arg; };
-        /^-x(.*)/	&& do { $PgmExitStatus = &grab_arg_arg('-x',$1); next arg; };
+        /^-x(.*)/	&& do { $PgmExitStatus = &grab_arg_arg('-x',$1); 
+                            print STDERR "$Pgm: CAN NOT HANDLE -x\n";
+                            exit 1;
+                            next arg; };
         /^-o1(.*)/	&& do { &grab_arg_arg('-o1',$1); next arg; };
         /^-o2(.*)/	&& do { &grab_arg_arg('-o2',$1); next arg; };
         /^-prescript(.*)/  && do { $PreScript = &grab_arg_arg('-prescript',$1);
                                 print STDERR "$Pgm: CAN NOT HANDLE prescript\n";
-                                $Status++;
+                                exit 1;
                                 next arg; };
         /^-postscript(.*)/ && do { $PostScript = &grab_arg_arg('-postscript',$1);
                                 print STDERR "$Pgm: CAN NOT HANDLE postscript\n";
-                                $Status++;
+                                exit 1;
                                 next arg; };
         /^-script/ && do { print STDERR "$Pgm: -script argument is obsolete;\nUse -prescript and -postscript instead.\n";
                 $Status++;
