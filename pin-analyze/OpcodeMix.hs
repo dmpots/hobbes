@@ -12,16 +12,16 @@ type OpCounts  = (Opcode, OpCount)
 
 data GenPinOpCodeData a = OpData { bmName :: String, opCounts :: a}
 type PinOpCodeData = GenPinOpCodeData [OpCounts]
-type OpcodeMap = Map Opcodes.Opcode OpCount
+type OpcodeMap = Map Opcode OpCount
 type PinOpCodeMapData = GenPinOpCodeData OpcodeMap
 
 
 fillMissingData :: [PinOpCodeData] -> [PinOpCodeData]
 fillMissingData pinData = map fill mapData
     where
-    opcodes = Set.toList (collectAllOpCodes pinData)
+    opcodes = collectAllOpCodes pinData
     mapData = opCountsToMap pinData
-    fill d@(OpData n opMap)  = d{opCounts = map (countOrZero opMap) opcodes}
+    fill d@(OpData n opMap)  = d {opCounts = map (countOrZero opMap) opcodes}
     countOrZero opMap opcode = 
         case Map.lookup opcode opMap of
             Just count -> (opcode, count)
@@ -32,9 +32,10 @@ opCountsToMap pinData = map transform pinData
     where
     transform  d = d { opCounts = Map.fromList (opCounts d)}
 
-collectAllOpCodes :: [PinOpCodeData] -> Set Opcodes.Opcode
-collectAllOpCodes pinData = Set.fromList allOpCodes
+collectAllOpCodes :: [PinOpCodeData] -> [Opcode]
+collectAllOpCodes pinData = Set.toList . Set.fromList $ allOpCodes
     where 
     allOpCodes = map fst (concatMap opCounts pinData)
+
 
 
