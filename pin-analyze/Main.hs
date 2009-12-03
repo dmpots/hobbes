@@ -13,11 +13,13 @@ import System.FilePath.Posix
 data Options = Options {
     optTitle      :: String
   , optOutPrefix  :: String
+  , optNormalize  :: Bool
 }
 
 defaultOptions = Options {
     optTitle     = "PinAlyze"
   , optOutPrefix = "__PinAlyze__"
+  , optNormalize = True
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -29,8 +31,11 @@ cmdLineOptions = [
     , Option ['o'] ["output"]
       (ReqArg (\t opts -> opts { optOutPrefix = t }) "OUTPUT_PREFIX")
       "Output prefix for .dat and .gnuplot files"
-  ] 
 
+    , Option ['n'] ["normalize counts"]
+      (NoArg (\opts -> opts { optNormalize = not (optNormalize opts)}))
+      "Normalize counts as a percentage of total for each benchmark"
+  ] 
 
 main :: IO ()
 main = do
@@ -53,6 +58,7 @@ createGraph options results = do
           title          = optTitle options
         , scriptFileName = outPrefix ++ ".gnuplot"
         , dataFileName   = outPrefix ++ ".dat"
+        , normalizeGraph = optNormalize options
     }
         filledResults = fillMissingData results
     putStrLn ("Writing Graph and Data to '" ++ outPrefix ++ "'")
