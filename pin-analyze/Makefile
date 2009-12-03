@@ -11,4 +11,4 @@ pinalyze: $(SOURCES)
 	ghc --make -o $(EXE) $(SOURCES) 
 
 clean:
-	rm -f *.o *.hi $(EXE)
+	rm -f *.o *.hi $(EXE) *.gnuplot *.dat *.eps
