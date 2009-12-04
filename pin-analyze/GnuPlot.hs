@@ -10,6 +10,7 @@ data PlotInfo = PlotInfo {
     , dataFileName   :: FilePath
     , scriptFileName :: FilePath
     , normalizeGraph :: Bool
+    , stackGraph     :: Bool
 }
 
 data DataColumn = I Integer | S String | F Double
@@ -38,18 +39,32 @@ header info counts = [
     , terminal
     , "set output OUT_FILENAME"
     , "set title'"++(title info) ++"'"
-    , "set xtic rotate by -90"
+    , xtic
     , "set key autotitle columnheader"
     , "set key invert reverse Left outside"
+    , "set boxwidth 0.9 relative"
+    , "set style fill solid border lt -1"
     , "set style data histogram"
+    , histoStyle
     , "set style fill solid"
-    , "plot for [COL="++s++":"++e++":2] DAT_FILENAME using COL:xtic(1) title column"
+    , "plot for [COL="++s++":"++e++":2] DAT_FILENAME using COL:"++(keyOrXtic)
+      ++ " title column"
     ] 
     where
-    s = show (if normalizeGraph info then 2 else 3)
+    -- select actual counts or normalized data based on user preference
+    s = show (if normalizeGraph info then 3 else 2)
     e = show ((read s) + 2 * ((length counts) - 1))
-    --o = "set terminal postscript eps"
-    terminal = "set terminal x11"
+
+    -- select terminal based on user preference
+    terminal   = "set terminal x11" -- or postscript eps
+
+    -- different settings for stacked or plain histograms
+    xtic       = if stacked then "set xtic rotate by   0"
+                            else "set xtic rotate by -90"
+    histoStyle = if stacked then "set style histogram columnstacked"
+                            else "set style histogram clustered gap 2"
+    keyOrXtic  = if stacked then "key(1)" else "xtic(1)"
+    stacked    = (stackGraph info)
 
 {-
 #set style histogram columnstacked
@@ -77,10 +92,10 @@ mkGraphData info counts =
 generateColumnLabels :: [PinOpCodeData] -> [DataColumn]
 generateColumnLabels counts = opcodeLabel ++ columnLabels
     where
-    opcodeLabel = [S "opcode"]
-    bmLabels    = map (S . bmName) counts
-    percentLabels = map (S . (++"-Percent") . bmName) counts
-    columnLabels = weave bmLabels percentLabels
+    opcodeLabel   = [S "opcode"]
+    bmLabels      = map (S . bmName) counts
+    percentLabels = map (S . (++" - % of Total") . bmName) counts
+    columnLabels  = weave bmLabels percentLabels
 
 
 percentsOfTotal :: [Integer] -> [DataColumn]

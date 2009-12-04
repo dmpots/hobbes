@@ -14,12 +14,14 @@ data Options = Options {
     optTitle      :: String
   , optOutPrefix  :: String
   , optNormalize  :: Bool
+  , optStacked    :: Bool
 }
 
 defaultOptions = Options {
     optTitle     = "PinAlyze"
   , optOutPrefix = "__PinAlyze__"
   , optNormalize = True
+  , optStacked   = True
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -29,12 +31,16 @@ cmdLineOptions = [
       "Graph Title"
 
     , Option ['o'] ["output"]
-      (ReqArg (\t opts -> opts { optOutPrefix = t }) "OUTPUT_PREFIX")
+      (ReqArg (\t opts -> opts { optOutPrefix = t }) "PREFIX")
       "Output prefix for .dat and .gnuplot files"
 
     , Option ['n'] ["normalize counts"]
       (NoArg (\opts -> opts { optNormalize = not (optNormalize opts)}))
       "Normalize counts as a percentage of total for each benchmark"
+
+    , Option ['s'] ["stacked"]
+      (NoArg (\opts -> opts { optStacked = not (optStacked opts)}))
+      "Generate a stacked histogram"
   ] 
 
 main :: IO ()
@@ -59,6 +65,7 @@ createGraph options results = do
         , scriptFileName = outPrefix ++ ".gnuplot"
         , dataFileName   = outPrefix ++ ".dat"
         , normalizeGraph = optNormalize options
+        , stackGraph     = optStacked options
     }
         filledResults = fillMissingData results
     putStrLn ("Writing Graph and Data to '" ++ outPrefix ++ "'")
@@ -73,7 +80,7 @@ parseFile fileName = do
     h <- openFile fileName ReadMode 
     fileLines <- fmap lines (hGetContents h)
     return $ OpData { 
-              bmName =fileName
+              bmName   = takeBaseName fileName
             , opCounts = map readCount fileLines
     }
     where
