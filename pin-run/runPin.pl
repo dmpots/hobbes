@@ -18,11 +18,10 @@ while(<>) {
 
 sub runPin {
     my ($name, $dir, $cmd) = @_;
-    my ($exe) = split(/\s+/, $cmd);
-    $exe =~ s#^\./##;
 
     my $cwd = getcwd();
-    my $pinCmd = "$PinPrefix -o $cwd/RESULTS/$exe.$Pintool.$$.LOG -- $cmd\n";
+    my $pinCmd = "$PinPrefix -o $cwd/RESULTS/$name.$Pintool.$$.LOG -- $cmd\n";
+    print "COMMAND: $pinCmd\n";
     chdir $dir or die "Can't cd to $dir: $!\n";
     SanityCheck($cmd);
     unless ($SanityCheckOnly) {
