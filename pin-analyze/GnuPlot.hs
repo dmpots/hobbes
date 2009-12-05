@@ -56,7 +56,9 @@ header info counts = [
     e = show ((read s) + 2 * ((length counts) - 1))
 
     -- select terminal based on user preference
-    terminal   = "set terminal x11" -- or postscript eps
+    terminal   = "set terminal x11"   ++ "\n" ++
+                 "#set terminal aqua" ++ "\n" ++
+                 "#set terminal postscript eps color colortext solid enhanced"
 
     -- different settings for stacked or plain histograms
     xtic       = if stacked then "set xtic rotate by   0"

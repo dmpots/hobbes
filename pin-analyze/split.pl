@@ -31,7 +31,7 @@ foreach $file (@ARGV) {
 
         ($opcode, $opname, $count) = split ' ', $_;
         print FH_DYNAMIC "($opcode, $opname, $count)\n"
-            if $opcode < 3000;
+            if $opname !~ /^\s*\*/
     }
     
     close FH; 

@@ -68,9 +68,10 @@ createGraph options results = do
         , stackGraph     = optStacked options
     }
         filledResults = fillMissingData results
+        graph         = mkGnuPlotGraph info
+    -- Only output data file here if desired
     putStrLn ("Writing Graph and Data to '" ++ outPrefix ++ "'")
-    (writeGnuPlotGraph . (mkGnuPlotGraph info)) filledResults
-
+    (writeGnuPlotGraph . graph) filledResults
     where outPrefix = optOutPrefix options
 
 

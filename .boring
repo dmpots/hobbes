@@ -116,3 +116,4 @@
 (^|/)pin-analyze/.*\.gnuplot$
 (^|/)pin-analyze/.*\.dat$
 (^|/)pin-analyze/LOG
+(^|/)nofib-pin/RESULTS

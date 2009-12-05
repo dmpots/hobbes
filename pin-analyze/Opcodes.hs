@@ -301,6 +301,9 @@ data Opcode =
     | MINSS
     | MONITOR
     | MOV
+    | MOV_MR
+    | MOV_RM
+    | MOV_RR
     | MOVAPD
     | MOVAPS
     | MOVBE
