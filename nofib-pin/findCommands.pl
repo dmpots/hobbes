@@ -49,8 +49,9 @@ foreach $cmd (@CmdLines) {
     $find_name = $ToRun;
     $find_name =~ s#\./##;
     $dir = dirname(`find $NoFibHome -name $find_name -type f | grep -v '_darcs'`);
+    $bmName = basename($dir);
 
-    print "$dir|";
+    print "$bmName|$dir|";
     print "$ToRun @PgmArgs < $PgmStdinFile \n"
 }
 

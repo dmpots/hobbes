@@ -12,12 +12,12 @@ $SanityCheckOnly=0;
 
 while(<>) {
     chomp;
-    my ($dir,$cmd) = split(/\|/);
-    runPin($dir, $cmd);
+    my ($name,$dir,$cmd) = split(/\|/);
+    runPin($name, $dir, $cmd);
 }
 
 sub runPin {
-    my ($dir, $cmd) = @_;
+    my ($name, $dir, $cmd) = @_;
     my ($exe) = split(/\s+/, $cmd);
     $exe =~ s#^\./##;
 
