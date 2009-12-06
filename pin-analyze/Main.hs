@@ -1,5 +1,6 @@
 module Main where
 import Control.Monad
+import Data.Char
 import GnuPlot
 import OpcodeMix
 import Opcodes
@@ -83,10 +84,20 @@ parseFile fileName = do
     h <- openFile fileName ReadMode 
     fileLines <- fmap lines (hGetContents h)
     return $ OpData { 
-              bmName   = takeBaseName fileName
+              bmName   = (formatBmName . takeBaseName) fileName
             , opCounts = map readCount fileLines
     }
     where
     readCount = dropFirst . (read :: String -> (OpId, Opcodes.Opcode, OpCount))
     dropFirst (x,y,z) = (y,z)
+
+formatBmName :: String -> String    
+formatBmName fileName = base ++ rest
+  where
+  (base, suffix) = splitAtDot fileName
+  rest = 
+    if all isDigit base  -- add spec number to bench name
+    then '.' : (fst $ splitAtDot (dropWhile (== '.') suffix))
+    else []
+  splitAtDot = span (/= '.')
 

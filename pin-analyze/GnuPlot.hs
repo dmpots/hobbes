@@ -98,7 +98,7 @@ generateColumnLabels counts = opcodeLabel ++ columnLabels
     where
     opcodeLabel   = [S "opcode"]
     bmLabels      = map (S . bmName) counts
-    percentLabels = map (S . (++" - % of Total") . bmName) counts
+    percentLabels = map (S . (++" %") . bmName) counts
     columnLabels  = weave bmLabels percentLabels
 
 writeGnuPlotGraph :: GnuPlotGraph -> IO ()
