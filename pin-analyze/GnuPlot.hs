@@ -4,6 +4,7 @@ import Data.List
 import Numeric
 import System.IO
 import System.FilePath.Posix
+import Util
 
 data PlotInfo = PlotInfo {
       title          :: String
@@ -22,7 +23,7 @@ type GnuPlotGraph = (PlotInfo, GraphScript, GraphData)
 type Title = String
 type GraphHeader = String
 
-mkGnuPlotGraph :: PlotInfo -> [PinOpCodeData] -> GnuPlotGraph
+mkGnuPlotGraph :: PlotInfo -> [PinOpCodeAnalysisData] -> GnuPlotGraph
 mkGnuPlotGraph info counts = (info, graphScript, graphData)
     where
         graphScript = mkGraphHeader info counts
@@ -30,7 +31,7 @@ mkGnuPlotGraph info counts = (info, graphScript, graphData)
 
 
 
-mkGraphHeader :: PlotInfo -> [PinOpCodeData] -> GraphHeader
+mkGraphHeader :: PlotInfo -> [GenPinOpCodeData a] -> GraphHeader
 mkGraphHeader info counts = concat $ intersperse "\n" (header info counts)
 header info counts = [
       "BASE_FILENAME='"++(takeBaseName.dataFileName $ info)++"'"
@@ -61,51 +62,44 @@ header info counts = [
                  "#set terminal postscript eps color colortext solid enhanced"
 
     -- different settings for stacked or plain histograms
-    xtic       = if stacked then "set xtic rotate by   0"
+    xtic       = if stacked then "set xtic rotate by -90"
                             else "set xtic rotate by -90"
     histoStyle = if stacked then "set style histogram columnstacked"
                             else "set style histogram clustered gap 2"
     keyOrXtic  = if stacked then "key(1)" else "xtic(1)"
     stacked    = (stackGraph info)
 
-{-
-#set style histogram columnstacked
-#plot for [COL=2:2] DAT_FILENAME using COL:key(1) 
--}
-
-mkGraphData :: PlotInfo -> [PinOpCodeData] -> GraphData
+mkGraphData :: PlotInfo -> [PinOpCodeAnalysisData] -> GraphData
 mkGraphData info []     = [[]]
 mkGraphData info counts = 
     let -- colLabels like File1.log, File2.log
         colLabels   = generateColumnLabels counts
         -- rowLabels like ADD, MOV, etc.
-        rowLabels   = map (S . show . fst) (opCounts . head $ counts)
+        rowLabels   = map (S . formatOpLabels . label) (opCounts $ head  counts)
         -- columns are counts of operations
         countCols   = map formatCnts rawCounts
         -- percentColumns are percent of total ops
-        percentCols = map percentsOfTotal rawCounts
+        percentCols = map formatPercents rawPercents
         -- data access utilites
-        formatCnts  = map I 
-        bmOpCounts  = map opCounts counts
-        rawCounts   = map (map snd) bmOpCounts
+        formatCnts     = map I 
+        formatPercents = map F
+        analysisData   = map opCounts counts :: [[AnalysisData]]
+        rawCounts      = map (map rawCount)     analysisData
+        rawPercents    = map (map percentTotal) analysisData
     in
     colLabels : transpose (rowLabels : (weave countCols percentCols))
 
-generateColumnLabels :: [PinOpCodeData] -> [DataColumn]
+formatOpLabels :: AnalysisLabel -> String
+formatOpLabels (StringLabel s) = s
+formatOpLabels (OpcodeLabel o) = show o
+
+generateColumnLabels :: [GenPinOpCodeData a] -> [DataColumn]
 generateColumnLabels counts = opcodeLabel ++ columnLabels
     where
     opcodeLabel   = [S "opcode"]
     bmLabels      = map (S . bmName) counts
     percentLabels = map (S . (++" - % of Total") . bmName) counts
     columnLabels  = weave bmLabels percentLabels
-
-
-percentsOfTotal :: [Integer] -> [DataColumn]
-percentsOfTotal counts = map (F.(/total).fromIntegral) counts
-    where total = fromIntegral (sum counts)
-
-weave :: [a] -> [a] -> [a]
-weave a b = concat $ zipWith (\x y -> x:y:[]) a b
 
 writeGnuPlotGraph :: GnuPlotGraph -> IO ()
 writeGnuPlotGraph graph = 

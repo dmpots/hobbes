@@ -15,6 +15,14 @@ type PinOpCodeData = GenPinOpCodeData [OpCounts]
 type OpcodeMap = Map Opcode OpCount
 type PinOpCodeMapData = GenPinOpCodeData OpcodeMap
 
+data AnalysisData = AnalysisData {
+      label         :: AnalysisLabel
+    , rawCount      :: OpCount
+    , percentTotal  :: Double
+}
+type PinOpCodeAnalysisData = GenPinOpCodeData [AnalysisData]
+data AnalysisLabel = StringLabel String | OpcodeLabel Opcode
+    deriving (Eq, Show)
 
 fillMissingData :: [PinOpCodeData] -> [PinOpCodeData]
 fillMissingData pinData = map fill mapData
@@ -38,4 +46,24 @@ collectAllOpCodes pinData = Set.toList . Set.fromList $ allOpCodes
     allOpCodes = map fst (concatMap opCounts pinData)
 
 
+convertToAnalysisData :: [PinOpCodeData] -> [PinOpCodeAnalysisData]
+convertToAnalysisData counts = 
+  zipWith OpData bmNames analysisData
+  where
+  analysisData  = zipWith (zipWith convert) bmOpCounts percentCounts 
+                                                :: [[AnalysisData]]
+  bmNames       = map bmName counts             :: [String]
+  percentCounts = map percentsOfTotal rawCounts :: [[Double]]
+  rawCounts     = map (map snd) bmOpCounts      :: [[Integer]]
+  bmOpCounts    = map opCounts counts           :: [[OpCounts]]
+  convert (code, count) percent = 
+      AnalysisData { 
+          label        = OpcodeLabel code
+        , rawCount     = count
+        , percentTotal = percent
+      }
+
+percentsOfTotal :: [OpCount] -> [Double]
+percentsOfTotal counts = map ((/total).fromIntegral) counts
+    where total = fromIntegral (sum counts)
 
