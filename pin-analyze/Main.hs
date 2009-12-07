@@ -17,6 +17,7 @@ data Options = Options {
   , optNormalize  :: Bool
   , optStacked    :: Bool
   , optThreshold  :: Double
+  , optExcelData  :: Bool
 }
 
 defaultOptions = Options {
@@ -25,6 +26,7 @@ defaultOptions = Options {
   , optNormalize = True
   , optStacked   = True
   , optThreshold = 0.0
+  , optExcelData = False
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -48,6 +50,10 @@ cmdLineOptions = [
     , Option ['f'] ["filter"]
       (ReqArg (\t opts -> opts { optThreshold = read t }) "DOUBLE")
       "Filter threshold"
+
+    , Option ['x'] ["excel-data"]
+      (NoArg (\opts -> opts { optExcelData = not (optExcelData opts)}))
+      "Generate data for excel import"
   ] 
 
 main :: IO ()
@@ -71,6 +77,7 @@ createGraph options results = do
           title          = optTitle options
         , scriptFileName = outPrefix ++ ".gnuplot"
         , dataFileName   = outPrefix ++ ".dat"
+        , excelFileName  = outPrefix ++ ".txt"
         , normalizeGraph = optNormalize options
         , stackGraph     = optStacked options
     }
@@ -79,12 +86,15 @@ createGraph options results = do
         analysisResults = convertToAnalysisData filledResults
         filteredResults = dropUnimportantData threshold analysisResults
         graph           = mkGnuPlotGraph info filteredResults
+        outPrefix       = optOutPrefix options
 
     -- Only output data file here if desired
     putStrLn ("Writing Graph and Data to '" ++ outPrefix ++ "'")
     writeGnuPlotGraph graph
-    where outPrefix = optOutPrefix options
-
+    if optExcelData options then  
+       writeExcelData graph >> 
+       putStrLn ("Writing Excel Data to '" ++ (excelFileName info) ++ "'") 
+      else return ()
 
 parseFile :: FilePath -> IO PinOpCodeData
 parseFile fileName = do

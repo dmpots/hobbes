@@ -10,6 +10,7 @@ data PlotInfo = PlotInfo {
       title          :: String
     , dataFileName   :: FilePath
     , scriptFileName :: FilePath
+    , excelFileName  :: FilePath
     , normalizeGraph :: Bool
     , stackGraph     :: Bool
 }
@@ -133,3 +134,12 @@ formatDataRow dataRow = format dataRow
     extract (S s) = show s
     extract (F f) = (showFFloat (Just 4) f) ""
      
+writeExcelData :: GnuPlotGraph -> IO ()
+writeExcelData graph = do
+  let (info, script, dataFile) = graph 
+      selectFun = if (normalizeGraph info) then oddPositions 
+        else (\l -> (head l) : evenPositions l)
+  h <- openFile (excelFileName info) WriteMode
+  mapM_ (hPutStrLn h . formatDataRow . selectFun) dataFile 
+  hClose h
+

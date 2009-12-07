@@ -118,3 +118,4 @@
 (^|/)pin-analyze/LOG
 (^|/)nofib-pin/RESULTS
 (^|/)pin-run/RESULTS
+(^|/)pin-analyze/__PinAlyze__
