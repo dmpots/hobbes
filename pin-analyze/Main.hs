@@ -16,6 +16,7 @@ data Options = Options {
   , optOutPrefix  :: String
   , optNormalize  :: Bool
   , optStacked    :: Bool
+  , optThreshold  :: Double
 }
 
 defaultOptions = Options {
@@ -23,6 +24,7 @@ defaultOptions = Options {
   , optOutPrefix = "__PinAlyze__"
   , optNormalize = True
   , optStacked   = True
+  , optThreshold = 0.0
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -42,6 +44,10 @@ cmdLineOptions = [
     , Option ['s'] ["stacked"]
       (NoArg (\opts -> opts { optStacked = not (optStacked opts)}))
       "Generate a stacked histogram"
+
+    , Option ['f'] ["filter"]
+      (ReqArg (\t opts -> opts { optThreshold = read t }) "DOUBLE")
+      "Filter threshold"
   ] 
 
 main :: IO ()
@@ -68,9 +74,11 @@ createGraph options results = do
         , normalizeGraph = optNormalize options
         , stackGraph     = optStacked options
     }
+        threshold       = optThreshold options 
         filledResults   = fillMissingData results
         analysisResults = convertToAnalysisData filledResults
-        graph           = mkGnuPlotGraph info analysisResults
+        filteredResults = dropUnimportantData threshold analysisResults
+        graph           = mkGnuPlotGraph info filteredResults
 
     -- Only output data file here if desired
     putStrLn ("Writing Graph and Data to '" ++ outPrefix ++ "'")

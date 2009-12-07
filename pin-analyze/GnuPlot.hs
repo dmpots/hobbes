@@ -48,13 +48,18 @@ header info counts = [
     , "set style data histogram"
     , histoStyle
     , "set style fill solid"
-    , "plot for [COL="++s++":"++e++":2] DAT_FILENAME using COL:"++(keyOrXtic)
-      ++ " title column"
+    , plotCommand
     ] 
     where
     -- select actual counts or normalized data based on user preference
-    s = show (if normalizeGraph info then 3 else 2)
-    e = show ((read s) + 2 * ((length counts) - 1))
+    s = if normalizeGraph info then 3 else 2
+    e = (s + 2 * ((length counts) - 1))
+    range = [s,(s+2)..e]
+    plotCommand = 
+        "plot DAT_FILENAME using "++(show s)++":"++(keyOrXtic)
+        ++ " title column "
+        ++(concatMap (\c -> "\\\n    ,DAT_FILENAME using " ++(show c)) 
+          (tail range))
 
     -- select terminal based on user preference
     terminal   = "set terminal x11"   ++ "\n" ++

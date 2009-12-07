@@ -21,8 +21,9 @@ data AnalysisData = AnalysisData {
     , percentTotal  :: Double
 }
 type PinOpCodeAnalysisData = GenPinOpCodeData [AnalysisData]
+type POAD = PinOpCodeAnalysisData 
 data AnalysisLabel = StringLabel String | OpcodeLabel Opcode
-    deriving (Eq, Show)
+    deriving (Eq, Show, Ord)
 
 fillMissingData :: [PinOpCodeData] -> [PinOpCodeData]
 fillMissingData pinData = map fill mapData
@@ -66,4 +67,30 @@ convertToAnalysisData counts =
 percentsOfTotal :: [OpCount] -> [Double]
 percentsOfTotal counts = map ((/total).fromIntegral) counts
     where total = fromIntegral (sum counts)
+
+
+dropUnimportantData :: Double -> [POAD] ->  [POAD] 
+dropUnimportantData threshold analysisData = 
+  map filterData analysisData
+  where
+  filterData opcodeData =
+    let opcodeFilter = (\aData -> Set.member (label aData) chosenOnes) in
+    opcodeData {
+        opCounts = filter opcodeFilter (opCounts opcodeData)
+    }
+    
+  sets = map (chooseImportantOpCodes threshold) analysisData
+  chosenOnes = foldr Set.union Set.empty sets :: Set AnalysisLabel
+
+
+chooseImportantOpCodes :: Double -> PinOpCodeAnalysisData -> Set AnalysisLabel
+chooseImportantOpCodes threshold  (OpData bm analysisData) =
+  foldr unionIf (Set.empty) analysisData 
+  where
+  unionIf aData set =
+    if (percentTotal aData) > threshold 
+    then Set.insert (label aData) set 
+    else set
+
+
 
