@@ -25,6 +25,17 @@ type POAD = PinOpCodeAnalysisData
 data AnalysisLabel = StringLabel String | OpcodeLabel Opcode
     deriving (Eq, Show, Ord)
 
+readCount :: String -> OpCounts
+readCount line = 
+  if opId /= (fromEnum opcode) then errorOut else (opcode, count)
+  where 
+  (opId, opcode, count) = read line :: (OpId, Opcode, OpCount)
+  errorOut = error errMsg
+                   
+  errMsg   = "Suspect data!\nID: "++(show opId)++" does not match "
+             ++ "opcode enum for "++(show opcode)
+
+
 fillMissingData :: [PinOpCodeData] -> [PinOpCodeData]
 fillMissingData pinData = map fill mapData
     where

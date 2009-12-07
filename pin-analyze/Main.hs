@@ -106,8 +106,6 @@ parseFile fileName = do
             , opCounts = map readCount fileLines
     }
     where
-    readCount = dropFirst . (read :: String -> (OpId, Opcodes.Opcode, OpCount))
-    dropFirst (x,y,z) = (y,z)
 
 formatBmName :: String -> String    
 formatBmName fileName = base ++ rest
