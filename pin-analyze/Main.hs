@@ -1,5 +1,6 @@
 module Main where
 import Control.Monad
+import Cluster
 import Data.Char
 import GnuPlot
 import OpcodeMix
@@ -9,7 +10,6 @@ import System.Environment
 import System.IO
 import System.FilePath.Posix
 
-
 -- Command Line Options
 data Options = Options {
     optTitle      :: String
@@ -18,6 +18,9 @@ data Options = Options {
   , optStacked    :: Bool
   , optThreshold  :: Double
   , optExcelData  :: Bool
+  , optCluster    :: Bool
+  , optNumCluster :: Int
+  , optWriteGraph :: Bool
 }
 
 defaultOptions = Options {
@@ -27,6 +30,9 @@ defaultOptions = Options {
   , optStacked   = True
   , optThreshold = 0.0
   , optExcelData = False
+  , optCluster   = False
+  , optNumCluster= 2
+  , optWriteGraph= True
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -54,6 +60,19 @@ cmdLineOptions = [
     , Option ['x'] ["excel-data"]
       (NoArg (\opts -> opts { optExcelData = not (optExcelData opts)}))
       "Generate data for excel import"
+
+    , Option ['c'] ["cluster"]
+      (NoArg (\opts -> opts { optCluster = not (optCluster opts)}))
+      "Compute clusters for data"
+
+    , Option ['k'] ["cluster"]
+      (ReqArg (\t opts -> opts {  optCluster    = True
+                                , optNumCluster = read t }) "INT")
+      "Number of clusters for k-means"
+
+    , Option ['g'] ["write-graph"]
+      (NoArg (\opts -> opts { optWriteGraph = not (optWriteGraph opts)}))
+      "Write graph and data files"
   ] 
 
 main :: IO ()
@@ -72,8 +91,22 @@ parseCmdLineOptions argv =
 
 createGraph :: Options -> [PinOpCodeData] -> IO ()
 createGraph options []      = return ()
-createGraph options results = do
-    let info = PlotInfo {
+createGraph options results = 
+  let threshold       = optThreshold options 
+      filledResults   = fillMissingData results
+      analysisResults = convertToAnalysisData filledResults
+      filteredResults = dropUnimportantData threshold analysisResults
+      graph           = mkGnuPlotGraph info filteredResults
+      clusters        = cluster filteredResults (optNumCluster options)
+      outPrefix       = optOutPrefix options
+      info            = plotInfo options
+  in
+  do writeGnuPlotGraphIf options graph
+     writeExcelIf    options graph 
+     writeClustersIf options clusters 
+
+plotInfo :: Options -> PlotInfo
+plotInfo options = PlotInfo {
           title          = optTitle options
         , scriptFileName = outPrefix ++ ".gnuplot"
         , dataFileName   = outPrefix ++ ".dat"
@@ -81,20 +114,31 @@ createGraph options results = do
         , normalizeGraph = optNormalize options
         , stackGraph     = optStacked options
     }
-        threshold       = optThreshold options 
-        filledResults   = fillMissingData results
-        analysisResults = convertToAnalysisData filledResults
-        filteredResults = dropUnimportantData threshold analysisResults
-        graph           = mkGnuPlotGraph info filteredResults
-        outPrefix       = optOutPrefix options
+    where
+    outPrefix       = optOutPrefix options
 
-    -- Only output data file here if desired
-    putStrLn ("Writing Graph and Data to '" ++ outPrefix ++ "'")
-    writeGnuPlotGraph graph
-    if optExcelData options then  
-       writeExcelData graph >> 
-       putStrLn ("Writing Excel Data to '" ++ (excelFileName info) ++ "'") 
-      else return ()
+writeGnuPlotGraphIf :: Options -> GnuPlotGraph -> IO ()
+writeGnuPlotGraphIf options graph 
+  | optWriteGraph options =
+      do putStrLn ("Writing Graph and Data to '" ++(optOutPrefix options)++ "'")
+         writeGnuPlotGraph graph
+  | otherwise = return ()
+
+writeExcelIf :: Options -> GnuPlotGraph -> IO ()
+writeExcelIf options graph
+  | optExcelData options = do
+       putStrLn ("Writing Excel Data to '" ++ excelFileName ++ "'") 
+       writeExcelData graph 
+  | otherwise            = return ()
+  where
+  excelFileName  = (optOutPrefix options) ++ ".txt"
+
+writeClustersIf :: Options -> [OpcodeCluster] -> IO ()
+writeClustersIf options clusters
+  | optCluster options = do
+       putStrLn ("Writing Clusters ")
+       writeClusters stdout clusters
+  | otherwise            = return ()
 
 parseFile :: FilePath -> IO PinOpCodeData
 parseFile fileName = do
