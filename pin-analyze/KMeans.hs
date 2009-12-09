@@ -1,25 +1,15 @@
-module KMeans (kmeans, kmeans', ClusterElement(..))
+module KMeans (kmeans, kmeans')
     where
 
 import Data.List (transpose, sort, groupBy, minimumBy, sortBy)
 import Data.Function (on)
 import Data.Ord (comparing)
+import ClusterElement
 
-type Vector b = [(b, Double)]
 type NPoint   = [Double]
 type Centroid = NPoint
+type Vector b = [(b, Double)]
 
-data ClusterElement b = CE { 
-    shortName  :: String        -- for printing
-  , label      :: Maybe String  -- for validation/printing
-  , dataPoint  :: Vector b      -- b is type of feature, Double is value
-} 
-type Cluster b = [ClusterElement b]
-
-instance (Eq b) => Eq (ClusterElement b) where
-    (==) x y = (dataPoint x) == (dataPoint y)
-
---dist a b = sqrt . sum $ zipWith (\x y-> (x-y) ^ 2) a b
 dist :: ClusterElement b -> NPoint -> Double
 dist ce point = sqrt . sum $ zipWith (\x y-> (x-y) ^ 2) cePoint point
   where

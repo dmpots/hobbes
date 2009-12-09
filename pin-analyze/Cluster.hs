@@ -1,4 +1,5 @@
 module Cluster where
+import ClusterElement
 import Data.List
 import KMeans
 import Opcodes
@@ -17,8 +18,8 @@ convertToClusterElements :: [PinOpCodeAnalysisData] -> [OpcodeClusterElement]
 convertToClusterElements analysisData = map convert analysisData
   where 
   convert e = CE {
-      shortName    = bmName e
-    , KMeans.label = Nothing
+      shortName = bmName e
+    , dataLabel = Unknown
     , dataPoint = map convertPoint (opCounts e)
   }
   convertPoint (AnalysisData (OpcodeLabel oc) _ p) = (oc,p)

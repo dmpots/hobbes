@@ -147,7 +147,8 @@ parseFile fileName = do
     fileLines <- fmap lines (hGetContents h)
     return $ OpData { 
               bmName   = (formatBmName . takeBaseName) fileName
-            , opCounts = map readCount fileLines
+            , bmLabel  = read (head fileLines)
+            , opCounts = map readCount $ tail fileLines
     }
     where
 

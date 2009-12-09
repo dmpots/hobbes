@@ -1,5 +1,6 @@
 module OpcodeMix where
 import Opcodes
+import ClusterElement
 import Data.Set(Set) 
 import qualified Data.Set as Set
 import Data.Map(Map) 
@@ -10,7 +11,11 @@ type OpCount = Integer
 type BenchmarkName = String
 type OpCounts  = (Opcode, OpCount)
 
-data GenPinOpCodeData a = OpData { bmName :: String, opCounts :: a}
+data GenPinOpCodeData a = OpData { 
+      bmName :: String
+    , bmLabel :: ProgramClass
+    , opCounts :: a
+}
 type PinOpCodeData = GenPinOpCodeData [OpCounts]
 type OpcodeMap = Map Opcode OpCount
 type PinOpCodeMapData = GenPinOpCodeData OpcodeMap
@@ -41,7 +46,7 @@ fillMissingData pinData = map fill mapData
     where
     opcodes = collectAllOpCodes pinData
     mapData = opCountsToMap pinData
-    fill d@(OpData n opMap)  = d {opCounts = map (countOrZero opMap) opcodes}
+    fill d  = d {opCounts = map (countOrZero (opCounts d)) opcodes}
     countOrZero opMap opcode = 
         case Map.lookup opcode opMap of
             Just count -> (opcode, count)
@@ -60,11 +65,12 @@ collectAllOpCodes pinData = Set.toList . Set.fromList $ allOpCodes
 
 convertToAnalysisData :: [PinOpCodeData] -> [PinOpCodeAnalysisData]
 convertToAnalysisData counts = 
-  zipWith OpData bmNames analysisData
+  zipWith3 OpData bmNames bmLabels analysisData
   where
   analysisData  = zipWith (zipWith convert) bmOpCounts percentCounts 
                                                 :: [[AnalysisData]]
-  bmNames       = map bmName counts             :: [String]
+  bmNames       = map bmName  counts            :: [String]
+  bmLabels      = map bmLabel counts            :: [ProgramClass]
   percentCounts = map percentsOfTotal rawCounts :: [[Double]]
   rawCounts     = map (map snd) bmOpCounts      :: [[Integer]]
   bmOpCounts    = map opCounts counts           :: [[OpCounts]]
@@ -95,8 +101,8 @@ dropUnimportantData threshold analysisData =
 
 
 chooseImportantOpCodes :: Double -> PinOpCodeAnalysisData -> Set AnalysisLabel
-chooseImportantOpCodes threshold  (OpData bm analysisData) =
-  foldr unionIf (Set.empty) analysisData 
+chooseImportantOpCodes threshold  d =
+  foldr unionIf (Set.empty) (opCounts d)
   where
   unionIf aData set =
     if (percentTotal aData) > threshold 
