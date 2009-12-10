@@ -52,7 +52,9 @@ sub ParseArgs {
         #elsif($arg =~ /^-(.*)/) {print STDERR "UNKNOWN ARG: $arg\n"; 
         #                         $Status++;}
         else { #assume rest are command line args
-            $cmdLine .= " $arg";
+            $cmdLine .= " $arg ";
+            $cmdLine .= join(' ', @Args);
+            last;
         }
     }
 
