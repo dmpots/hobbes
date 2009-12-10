@@ -18,8 +18,8 @@ convertToClusterElements :: [PinOpCodeAnalysisData] -> [OpcodeClusterElement]
 convertToClusterElements analysisData = map convert analysisData
   where 
   convert e = CE {
-      shortName = bmName e
-    , dataLabel = Unknown
+      shortName = bmName  e
+    , dataLabel = bmLabel e
     , dataPoint = map convertPoint (opCounts e)
   }
   convertPoint (AnalysisData (OpcodeLabel oc) _ p) = (oc,p)

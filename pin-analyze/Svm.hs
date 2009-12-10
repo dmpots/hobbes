@@ -1,12 +1,12 @@
 module Svm where
 
+import Cluster
 import ClusterElement
+import Data.List
 import Data.SVM
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
-
-type Blah = ClusterElement Int
-
+import System.IO
 
 ---
 ---
@@ -20,4 +20,27 @@ t  = train (CSvc 1.0) (RBF 1.0) p
 d  = t >>= (\m -> return $ predict m v3)
 cc  = crossValidate (CSvc 1.0) (RBF 1.0) p 2
   
+
+trainModel' :: Double -> Double -> [OpcodeClusterElement] -> IO Model
+trainModel' c gamma vectors = train algorithm kernel problem
+  where
+      algorithm = CSvc c
+      kernel    = RBF gamma
+      problem   = undefined
+
+
+writeSVMFormattedData :: Handle -> [OpcodeClusterElement] -> IO ()
+writeSVMFormattedData h clusterData = mapM_ (printSVM h) clusterData
+  where
+  printSVM h element = 
+    let label  = show  (fromEnum . dataLabel $ element)  ++ " "
+        points = (concat . (intersperse " ") . map format) (dataPoint element)
+        format = (\(op, percent) -> (show . fromEnum) op++":"++show percent)
+    in
+    hPutStr h label >> hPutStrLn h points 
+
+
+    
+
+
 

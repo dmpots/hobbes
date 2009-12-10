@@ -9,6 +9,7 @@ import System.Console.GetOpt
 import System.Environment
 import System.IO
 import System.FilePath.Posix
+import Svm
 
 -- Command Line Options
 data Options = Options {
@@ -21,6 +22,7 @@ data Options = Options {
   , optCluster    :: Bool
   , optNumCluster :: Int
   , optWriteGraph :: Bool
+  , optWriteSvm   :: Bool
 }
 
 defaultOptions = Options {
@@ -32,7 +34,8 @@ defaultOptions = Options {
   , optExcelData = False
   , optCluster   = False
   , optNumCluster= 2
-  , optWriteGraph= True
+  , optWriteGraph= False
+  , optWriteSvm  = False
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -47,7 +50,7 @@ cmdLineOptions = [
 
     , Option ['n'] ["normalize counts"]
       (NoArg (\opts -> opts { optNormalize = not (optNormalize opts)}))
-      "Normalize counts as a percentage of total for each benchmark"
+      "Normalize counts as a percentage of total"
 
     , Option ['s'] ["stacked"]
       (NoArg (\opts -> opts { optStacked = not (optStacked opts)}))
@@ -73,6 +76,10 @@ cmdLineOptions = [
     , Option ['g'] ["write-graph"]
       (NoArg (\opts -> opts { optWriteGraph = not (optWriteGraph opts)}))
       "Write graph and data files"
+
+    , Option ['v'] ["write-svm"]
+      (NoArg (\opts -> opts { optWriteSvm = not (optWriteSvm opts)}))
+      "Write svm formatted data files"
   ] 
 
 main :: IO ()
@@ -104,6 +111,7 @@ createGraph options results =
   do writeGnuPlotGraphIf options graph
      writeExcelIf    options graph 
      writeClustersIf options clusters 
+     writeSvmIf options filteredResults
 
 plotInfo :: Options -> PlotInfo
 plotInfo options = PlotInfo {
@@ -139,6 +147,17 @@ writeClustersIf options clusters
        putStrLn ("Writing Clusters ")
        writeClusters stdout clusters
   | otherwise            = return ()
+
+
+writeSvmIf :: Options -> [PinOpCodeAnalysisData] -> IO ()
+writeSvmIf options filteredResults
+  | optWriteSvm options = do
+       putStrLn ("Writing Svm Data")
+       h <- openFile fileName WriteMode 
+       writeSVMFormattedData h (convertToClusterElements filteredResults)
+       hClose h
+  | otherwise            = return ()
+  where fileName = (optOutPrefix options) ++ ".svm"
 
 parseFile :: FilePath -> IO PinOpCodeData
 parseFile fileName = do
