@@ -117,5 +117,6 @@
 (^|/)pin-analyze/.*\.dat$
 (^|/)pin-analyze/LOG
 (^|/)nofib-pin/RESULTS
-(^|/)pin-run/RESULTS
+(^|/)pin-run/RESULTS/nofib$
+(^|/)pin-run/RESULTS/spec.*$
 (^|/)pin-analyze/__PinAlyze__
