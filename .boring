@@ -120,3 +120,5 @@
 (^|/)pin-run/RESULTS/nofib$
 (^|/)pin-run/RESULTS/spec.*$
 (^|/)pin-analyze/__PinAlyze__
+(^|/)pin-analyze/TRAIN
+(^|/)pin-analyze/PREDICT

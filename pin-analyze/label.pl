@@ -1,21 +1,19 @@
 #!/usr/bin/perl
 
 use File::Basename;
-
-$ProgramClass  = "HaskellProgram|CProgram|NofibGhc|SpecGcc|SpecIcc";
-$ProgramClass .= "|ShootoutGhc|ShootoutGcc";
+require "programClass.pl";
 
 # Find program class for these files
 $label = shift @ARGV;
-if ($label !~ /$ProgramClass/) {
+if(not checkClass($label)) {
     print "ERROR: must specify program class as first argument\n";
     print "ProgramClass is one of\n";
-    $cs = join("\n  ", split(/\|/, $ProgramClass));
+    $cs = join("\n  ", @ProgramClasses);
     print "  $cs\n";
 }
 
 foreach $file (@ARGV) {
-    open FH, '<', $file;
+    open(FH, '<', $file) || die "unable to open file $file";
     $mode = '';
     header: while (<FH>) {
         if(/^#.*\$(static).*/) {$mode= uc $1;last header;}
