@@ -122,3 +122,6 @@
 (^|/)pin-analyze/__PinAlyze__
 (^|/)pin-analyze/TRAIN
 (^|/)pin-analyze/PREDICT
+(^|/)pin-analyze/libsvm-2.9/svm-train
+(^|/)pin-analyze/libsvm-2.9/svm-predict
+(^|/)pin-analyze/libsvm-2.9/svm-scale

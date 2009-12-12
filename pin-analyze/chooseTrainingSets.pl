@@ -4,7 +4,7 @@ use File::Copy "cp";
 use File::Basename;
 require 'programClass.pl';
 
-$Pgm="chooseTrainingSets.pl";
+$Pgm="chooseTrainingSets";
 $RESULTS = "../pin-run/RESULTS";
 $Nofib="$RESULTS/nofib";
 $Spec_full="$RESULTS/spec.full";
@@ -18,7 +18,7 @@ die usage() unless $trainSize =~ m/^\d+$/;
 %allSets = @ARGV;
 for my $label (keys %allSets) {
     my $dir = $allSets{$label};
-    chop $dir if $dir[-1] == "/";
+    chop $dir if ($dir  =~ m/\/$/);
     $allSets{$label} = $dir;
     if(not checkClass($label)) {
         print "ERROR: Invalid Class: $label\n";
@@ -111,7 +111,7 @@ sub mkErr {
 
 sub chkErr {
     if ($Err) {
-        print "Too many errors, exiting\n";
+        print "$Pgm: Too many errors, exiting\n";
         exit($Err);
     }
 }
