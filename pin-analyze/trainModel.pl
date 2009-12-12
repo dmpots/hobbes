@@ -28,9 +28,10 @@ if($pinalyze) {
 # generate svm formatted data
   print "Generating svm formatted data\n";
   $pinalyze = "./pinalyze";
-  $rc = system("$pinalyze -o TRAIN   -v TRAIN/*");
+  $threshold = 0.0;
+  $rc = system("$pinalyze -o TRAIN   -f $threshold -v TRAIN/*");
   check($rc, "Error generating svm TRAINING data");
-  $rc = system("$pinalyze -o PREDICT -v PREDICT/*");
+  $rc = system("$pinalyze -o PREDICT -f $threshold -v PREDICT/*");
   check($rc, "Error generating svm PREDICTION data");
 }
 
