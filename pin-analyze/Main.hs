@@ -2,6 +2,7 @@ module Main where
 import Control.Monad
 import Cluster
 import Data.Char
+import Data.Maybe
 import GnuPlot
 import OpcodeMix
 import Opcodes
@@ -19,10 +20,10 @@ data Options = Options {
   , optStacked    :: Bool
   , optThreshold  :: Double
   , optExcelData  :: Bool
-  , optCluster    :: Bool
-  , optNumCluster :: Int
+  , optNumCluster :: Maybe Int
   , optWriteGraph :: Bool
   , optWriteSvm   :: Bool
+  , optSvmModel   :: Maybe String
 }
 
 defaultOptions = Options {
@@ -32,10 +33,10 @@ defaultOptions = Options {
   , optStacked   = True
   , optThreshold = 0.0
   , optExcelData = False
-  , optCluster   = False
-  , optNumCluster= 2
+  , optNumCluster= Nothing
   , optWriteGraph= False
   , optWriteSvm  = False
+  , optSvmModel  = Nothing
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -64,13 +65,8 @@ cmdLineOptions = [
       (NoArg (\opts -> opts { optExcelData = not (optExcelData opts)}))
       "Generate data for excel import"
 
-    , Option ['c'] ["cluster"]
-      (NoArg (\opts -> opts { optCluster = not (optCluster opts)}))
-      "Compute clusters for data"
-
     , Option ['k'] ["cluster"]
-      (ReqArg (\t opts -> opts {  optCluster    = True
-                                , optNumCluster = read t }) "INT")
+      (ReqArg (\t opts -> opts { optNumCluster = Just(read t) }) "INT")
       "Number of clusters for k-means"
 
     , Option ['g'] ["write-graph"]
@@ -80,6 +76,10 @@ cmdLineOptions = [
     , Option ['v'] ["write-svm"]
       (NoArg (\opts -> opts { optWriteSvm = not (optWriteSvm opts)}))
       "Write svm formatted data files"
+
+    , Option ['m'] ["svm-model"]
+      (ReqArg (\t opts -> opts { optSvmModel = Just t }) "MODEL_FILE")
+      "Use svm model for prediction"
   ] 
 
 main :: IO ()
@@ -104,14 +104,16 @@ createGraph options results =
       analysisResults = convertToAnalysisData filledResults
       filteredResults = dropUnimportantData threshold analysisResults
       graph           = mkGnuPlotGraph info filteredResults
-      clusters        = cluster filteredResults (optNumCluster options)
+      clusters        = cluster filteredResults (fromJust$optNumCluster options)
       outPrefix       = optOutPrefix options
       info            = plotInfo options
+      clusterElements = convertToClusterElements filteredResults
   in
   do writeGnuPlotGraphIf options graph
      writeExcelIf    options graph 
      writeClustersIf options clusters 
      writeSvmIf options filteredResults
+     writeSvmPredictionIf options clusterElements
 
 plotInfo :: Options -> PlotInfo
 plotInfo options = PlotInfo {
@@ -143,7 +145,7 @@ writeExcelIf options graph
 
 writeClustersIf :: Options -> [OpcodeCluster] -> IO ()
 writeClustersIf options clusters
-  | optCluster options = do
+  | isJust (optNumCluster options) = do
        putStrLn ("Writing Clusters ")
        writeClusters stdout clusters
   | otherwise            = return ()
@@ -156,6 +158,15 @@ writeSvmIf options filteredResults
        h <- openFile fileName WriteMode 
        writeSVMFormattedData h (convertToClusterElements filteredResults)
        hClose h
+  | otherwise            = return ()
+  where fileName = (optOutPrefix options) ++ ".svm"
+
+writeSvmPredictionIf :: Options -> [OpcodeClusterElement] -> IO ()
+writeSvmPredictionIf options filteredResults
+  | isJust (optSvmModel options) = do
+       let modelFile = fromJust (optSvmModel options)
+       putStrLn ("Predicting Svm Data")
+       writePredictionDataUsingModel modelFile stdout filteredResults
   | otherwise            = return ()
   where fileName = (optOutPrefix options) ++ ".svm"
 

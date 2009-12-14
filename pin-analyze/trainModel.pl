@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 
 $Pgm = "trainModel";
-$chooseTrainingSets = 1;
-$pinalyze           = 1;
-$grid               = 1;
-$svm_train          = 1;
+$chooseTrainingSets = 0;
+$pinalyze           = 0;
+$grid               = 0;
+$svm_train          = 0;
 $svm_predict        = 1;
 
 # choose training set
