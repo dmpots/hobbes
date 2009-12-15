@@ -1,19 +1,22 @@
 #!/usr/bin/perl
 
 $Pgm = "trainModel";
-$chooseTrainingSets = 0;
-$pinalyze           = 0;
-$grid               = 0;
-$svm_train          = 0;
+$chooseTrainingSets = 1;
+$pinalyze           = 1;
+$grid               = 1;
+$svm_train          = 1;
 $svm_predict        = 1;
 
 # choose training set
 if($chooseTrainingSets) {
   print "Choosing training sets\n";
-  $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib";
-  $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.full";
+  my $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib";
+  my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc";
+  my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc";
+  my $setSize        = 10;
+  my @classes        = ($haskellProgram, $specGcc, $specIcc);
 
-  $rc = system("./chooseTrainingSets.pl 10 $haskellProgram $specGcc");
+  $rc = system("./chooseTrainingSets.pl $setSize @classes");
   check($rc, "Error choosing training sets");
 }
 
