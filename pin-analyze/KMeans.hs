@@ -1,10 +1,11 @@
 module KMeans (kmeans, kmeans')
     where
 
+import ClusterElement
 import Data.List (transpose, sort, groupBy, minimumBy, sortBy)
 import Data.Function (on)
 import Data.Ord (comparing)
-import ClusterElement
+import System.Random
 
 type NPoint   = [Double]
 type Centroid = NPoint
@@ -36,11 +37,11 @@ recluster :: [Cluster b] -> [Cluster b]
 recluster clusters = recluster' centroids $ concat clusters
     where centroids = map centroid clusters
 
-part :: Int -> [a] -> [[a]]
-part x ys
-     | null  zs' = [zs]
-     | otherwise = zs : part x zs'
-    where (zs, zs') = splitAt x ys
+part :: Int -> Int -> [a] -> [[a]]
+part n dim ys
+     | n <= 1    = [zs]
+     | otherwise = zs : part (n-1) dim zs'
+    where (zs, zs') = splitAt dim ys
 
 -- | Recluster points
 --kmeans' :: (Num a, Ord a) => [[Vector a]] -> [[Vector a]]
@@ -53,6 +54,25 @@ kmeans' clusters
 -- | Cluster points into k clusters.
 -- |
 -- | The initial clusters are chosen arbitrarily
-kmeans :: (Eq b) => Int -> [ClusterElement b] -> [Cluster b]
-kmeans k elems = kmeans' $ part l elems
-    where l = (length elems + k - 1) `div` k
+kmeans :: RandomGen g => (Eq b) => g -> Int -> [ClusterElement b] -> [Cluster b]
+kmeans gen k []    =  []
+kmeans gen k elems = 
+  kmeans' initialClusters
+  where 
+  --initialClusters = recluster' initialPoints elems
+  initialClusters = randomPartition gen k elems
+  initialPoints   = part k (length (dataPoint . head $ elems)) randomSource
+  randomSource    = randomRs (0, 1.0) gen :: [Double]
+
+randomPartition :: RandomGen g => g -> Int -> [a] -> [[a]]
+randomPartition gen k list = partition gen initial list
+  where
+  initial = replicate k []
+  partition g partitions []     = partitions
+  partition g partitions (x:xs) = 
+    let (index, g') = randomR (0, k-1) g
+        (yss, ys:yss') = splitAt index partitions
+    in
+    partition g' (yss ++ [x:ys] ++ yss') xs
+  
+

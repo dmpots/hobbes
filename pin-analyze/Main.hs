@@ -10,6 +10,7 @@ import System.Console.GetOpt
 import System.Environment
 import System.IO
 import System.FilePath.Posix
+import System.Random
 import Svm
 
 -- Command Line Options
@@ -104,14 +105,15 @@ createGraph options results =
       analysisResults = convertToAnalysisData filledResults
       filteredResults = dropUnimportantData threshold analysisResults
       graph           = mkGnuPlotGraph info filteredResults
-      clusters        = cluster filteredResults (fromJust$optNumCluster options)
+      numClusters     = (fromJust$optNumCluster options)
       outPrefix       = optOutPrefix options
       info            = plotInfo options
       clusterElements = convertToClusterElements filteredResults
   in
-  do writeGnuPlotGraphIf options graph
+  do gen <- newStdGen
+     writeGnuPlotGraphIf options graph
      writeExcelIf    options graph 
-     writeClustersIf options clusters 
+     writeClustersIf options filteredResults
      writeSvmIf options filteredResults
      writeSvmPredictionIf options clusterElements
 
@@ -143,10 +145,13 @@ writeExcelIf options graph
   where
   excelFileName  = (optOutPrefix options) ++ ".txt"
 
-writeClustersIf :: Options -> [OpcodeCluster] -> IO ()
-writeClustersIf options clusters
+writeClustersIf :: Options -> [PinOpCodeAnalysisData] -> IO ()
+writeClustersIf options filteredResults
   | isJust (optNumCluster options) = do
        putStrLn ("Writing Clusters ")
+       gen <- getStdGen
+       let numClusters  = (fromJust $ optNumCluster options)
+       let clusters     = clusterK gen filteredResults numClusters
        writeClusters stdout clusters
   | otherwise            = return ()
 
