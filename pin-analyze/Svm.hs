@@ -57,8 +57,11 @@ formatPredictions predictions =
            ++" out of " ++(show.length $ predictions)
            ++" ("++(show formatPercent)++")"
   formatPercent = (fromIntegral (length right) / fromIntegral (length predictions))
-  rightList = concat $ intersperse "\n" $ map (\(n,k,_) -> n ++ ": "++(show k)) right
-  wrongList = concat $ intersperse "\n" $ map (\(n,k,_) -> n ++ ": "++(show k)) wrong
+  rightList =  formatList right
+  wrongList = formatList wrong
+  formatList = (concat . (intersperse "\n") . (map formatPrediction))
+  formatPrediction (n,actual,predicted) =
+     n ++ " [Acutal = "++(show actual)++", Predicted = "++(show predicted)++"]"
 
 predictElements :: Model -> [OpcodeClusterElement] -> [PredictedElement]
 predictElements model elements = predictIt converted
