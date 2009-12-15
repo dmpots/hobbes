@@ -13,7 +13,7 @@ if($chooseTrainingSets) {
   my $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib";
   my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc";
   my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc";
-  my $setSize        = 10;
+  my $setSize        = 5;
   my @classes        = ($haskellProgram, $specGcc, $specIcc);
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
@@ -31,7 +31,7 @@ if($pinalyze) {
 # generate svm formatted data
   print "Generating svm formatted data\n";
   $pinalyze = "./pinalyze";
-  $threshold = 0.0;
+  $threshold = 0.10;
   $rc = system("$pinalyze -o TRAIN   -f $threshold -v TRAIN/*");
   check($rc, "Error generating svm TRAINING data");
   $rc = system("$pinalyze -o PREDICT -f $threshold -v PREDICT/*");

@@ -97,7 +97,8 @@ Usage: grid.py [-log2c begin,end,step] [-log2g begin,end,step] [-v fold]
     assert os.path.exists(svmtrain_exe),"svm-train executable not found"    
     assert os.path.exists(gnuplot_exe),"gnuplot executable not found"
     assert os.path.exists(dataset_pathname),"dataset not found"
-    gnuplot = Popen(gnuplot_exe,stdin = PIPE).stdin
+    #gnuplot = Popen(gnuplot_exe,stdin = PIPE).stdin
+    gnuplot = open('/dev/null', 'w')
 
 
 def range_f(begin,end,step):
