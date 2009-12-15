@@ -15,7 +15,8 @@ data GenPinOpCodeData a = OpData {
       bmName :: String
     , bmLabel :: ProgramClass
     , opCounts :: a
-}
+} deriving(Show, Read)
+
 type PinOpCodeData = GenPinOpCodeData [OpCounts]
 type OpcodeMap = Map Opcode OpCount
 type PinOpCodeMapData = GenPinOpCodeData OpcodeMap
@@ -24,11 +25,11 @@ data AnalysisData = AnalysisData {
       label         :: AnalysisLabel
     , rawCount      :: OpCount
     , percentTotal  :: Double
-}
+} deriving(Show, Read)
 type PinOpCodeAnalysisData = GenPinOpCodeData [AnalysisData]
 type POAD = PinOpCodeAnalysisData 
 data AnalysisLabel = StringLabel String | OpcodeLabel Opcode
-    deriving (Eq, Show, Ord)
+    deriving (Eq, Show, Read, Ord)
 
 readCount :: String -> OpCounts
 readCount line = 

@@ -15,29 +15,33 @@ import Svm
 
 -- Command Line Options
 data Options = Options {
-    optTitle      :: String
-  , optOutPrefix  :: String
-  , optNormalize  :: Bool
-  , optStacked    :: Bool
-  , optThreshold  :: Double
-  , optExcelData  :: Bool
-  , optNumCluster :: Maybe Int
-  , optWriteGraph :: Bool
-  , optWriteSvm   :: Bool
-  , optSvmModel   :: Maybe String
+    optTitle        :: String
+  , optOutPrefix    :: String
+  , optNormalize    :: Bool
+  , optStacked      :: Bool
+  , optThreshold    :: Double
+  , optExcelData    :: Bool
+  , optNumCluster   :: Maybe Int
+  , optWriteGraph   :: Bool
+  , optWriteSvm     :: Bool
+  , optSvmModel     :: Maybe String
+  , optWriteRawData :: Bool
+  , optReadRawData  :: Maybe String
 }
 
 defaultOptions = Options {
-    optTitle     = "PinAlyze"
-  , optOutPrefix = "__PinAlyze__"
-  , optNormalize = True
-  , optStacked   = True
-  , optThreshold = 0.0
-  , optExcelData = False
-  , optNumCluster= Nothing
-  , optWriteGraph= False
-  , optWriteSvm  = False
-  , optSvmModel  = Nothing
+    optTitle        = "PinAlyze"
+  , optOutPrefix    = "__PinAlyze__"
+  , optNormalize    = True
+  , optStacked      = True
+  , optThreshold    = 0.0
+  , optExcelData    = False
+  , optNumCluster   = Nothing
+  , optWriteGraph   = False
+  , optWriteSvm     = False
+  , optSvmModel     = Nothing
+  , optWriteRawData = False
+  , optReadRawData  = Nothing
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -81,13 +85,22 @@ cmdLineOptions = [
     , Option ['m'] ["svm-model"]
       (ReqArg (\t opts -> opts { optSvmModel = Just t }) "MODEL_FILE")
       "Use svm model for prediction"
+
+    , Option ['w'] ["write-raw"]
+      (NoArg (\opts -> opts { optWriteRawData = not (optWriteRawData opts)}))
+      "Write raw formatted data files (using show)"
+
+    , Option ['r'] ["read-raw"]
+      (ReqArg (\t opts -> opts { optReadRawData = Just t }) "RAW_FILE")
+      "Read raw formatted data files (using read)"
   ] 
 
 main :: IO ()
 main = do
-    (options, files) <- parseCmdLineOptions =<< getArgs 
-    opCodeCounts <- mapM parseFile files
-    createGraph options opCodeCounts
+    (options, files)<- parseCmdLineOptions =<< getArgs 
+    opCodeCounts    <- mapM parseFile files
+    filteredResults <- loadAndPrepareResults options opCodeCounts
+    processResults options filteredResults
 
 parseCmdLineOptions :: [String] -> IO (Options, [String])
 parseCmdLineOptions argv =
@@ -97,15 +110,31 @@ parseCmdLineOptions argv =
   where header = "Usage: pinalyze [OPTION...] files..."
 
 
-createGraph :: Options -> [PinOpCodeData] -> IO ()
-createGraph options []      = return ()
-createGraph options results = 
+loadAndPrepareResults :: Options->[PinOpCodeData]-> IO [PinOpCodeAnalysisData]
+loadAndPrepareResults options results =
   let threshold       = optThreshold options 
       filledResults   = fillMissingData results
       analysisResults = convertToAnalysisData filledResults
       filteredResults = dropUnimportantData threshold analysisResults
-      graph           = mkGnuPlotGraph info filteredResults
-      numClusters     = (fromJust$optNumCluster options)
+      rawDataFile     = optReadRawData options
+  in
+  if isJust rawDataFile then
+    readRawData (fromJust rawDataFile)
+  else
+    return filteredResults
+
+readRawData :: FilePath -> IO [PinOpCodeAnalysisData]
+readRawData fileName = do
+  h <- openFile fileName ReadMode
+  liftM read (hGetContents h)
+  
+  
+
+processResults :: Options -> [PinOpCodeAnalysisData] -> IO ()
+processResults options []      = return ()
+processResults options filteredResults = 
+  let graph           = mkGnuPlotGraph info filteredResults
+      numClusters     = fromJust (optNumCluster options)
       outPrefix       = optOutPrefix options
       info            = plotInfo options
       clusterElements = convertToClusterElements filteredResults
@@ -116,6 +145,7 @@ createGraph options results =
      writeClustersIf options filteredResults
      writeSvmIf options filteredResults
      writeSvmPredictionIf options clusterElements
+     writeRawDataIf options filteredResults
 
 plotInfo :: Options -> PlotInfo
 plotInfo options = PlotInfo {
@@ -174,6 +204,17 @@ writeSvmPredictionIf options filteredResults
        writePredictionDataUsingModel modelFile stdout filteredResults
   | otherwise            = return ()
   where fileName = (optOutPrefix options) ++ ".svm"
+
+
+writeRawDataIf :: Options -> [PinOpCodeAnalysisData] -> IO ()
+writeRawDataIf options filteredResults
+  | optWriteRawData options = do
+       putStrLn ("Writing Raw Data")
+       h <- openFile fileName WriteMode 
+       hPutStrLn h (show filteredResults)
+       hClose h
+  | otherwise            = return ()
+  where fileName = (optOutPrefix options) ++ ".raw"
 
 parseFile :: FilePath -> IO PinOpCodeData
 parseFile fileName = do
