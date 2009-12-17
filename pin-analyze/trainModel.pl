@@ -7,13 +7,37 @@ $grid               = 1;
 $svm_train          = 1;
 $svm_predict        = 1;
 
+# params
+$TrainSize = 5;
+$Threshold = 0.0;
+$SpecOnly  = 0;
+if (@ARGV > 0) {
+  my $t = shift @ARGV;
+  if ($t !~ /^\d+$/) {print "BAD TrainSize: $t\n"; exit 1;}
+  $TrainSize = $t;
+}
+if (@ARGV > 0) {
+  my $t = shift @ARGV;
+  if ($t !~ /^\d+(\.\d+)?$/) {print "BAD Threshold: $t\n"; exit 1;}
+  if ($t > 1.0)      {print "BAD Threshold: $t\n"; exit 1;}
+  $Threshold = $t;
+}
+if (@ARGV > 0) {
+  my $t = shift @ARGV;
+  if ($t =~ /spec/i) {$SpecOnly = 1;}
+}
+print "USING TrainSize = $TrainSize, Threshold = $Threshold, SpecOnly = $SpecOnly\n";
+
 # choose training set
 if($chooseTrainingSets) {
   print "Choosing training sets\n";
-  my $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib";
+  my $haskellProgram = "";
+  unless ($SpecOnly) {
+     $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib";
+  }	
   my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc";
   my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc";
-  my $setSize        = 5;
+  my $setSize        = $TrainSize;
   my @classes        = ($haskellProgram, $specGcc, $specIcc);
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
@@ -31,7 +55,7 @@ if($pinalyze) {
 # generate svm formatted data
   print "Generating svm formatted data\n";
   $pinalyze = "./pinalyze";
-  $threshold = 0.10;
+  $threshold = $Threshold;
   $rc = system("$pinalyze -o TRAIN   -f $threshold -v TRAIN/*");
   check($rc, "Error generating svm TRAINING data");
   $rc = system("$pinalyze -o PREDICT -f $threshold -v PREDICT/*");
