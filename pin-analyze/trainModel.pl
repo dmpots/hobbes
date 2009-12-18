@@ -33,10 +33,10 @@ if($chooseTrainingSets) {
   print "Choosing training sets\n";
   my $haskellProgram = "";
   unless ($SpecOnly) {
-     $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib";
+     $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib.opcodemix";
   }	
-  my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc";
-  my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc";
+  my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc.opcodemix";
+  my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc.opcodemix";
   my $setSize        = $TrainSize;
   my @classes        = ($haskellProgram, $specGcc, $specIcc);
 
