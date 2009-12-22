@@ -13,12 +13,12 @@ import System.Random
 type OpcodeClusterElement = ClusterElement Opcode
 type OpcodeCluster        = [ClusterElement Opcode]
 
-clusterK :: (RandomGen g) => g ->  [PinOpCodeAnalysisData] -> Int -> [OpcodeCluster]
+clusterK :: (RandomGen g) => g ->  [PinAnalysisData] -> Int -> [OpcodeCluster]
 clusterK gen analysisData numClusters = kmeans gen numClusters clusterElements
   where
   clusterElements = convertToClusterElements analysisData
 
-convertToClusterElements :: [PinOpCodeAnalysisData] -> [OpcodeClusterElement]
+convertToClusterElements :: [PinAnalysisData] -> [OpcodeClusterElement]
 convertToClusterElements analysisData = map convert analysisData
   where 
   convert e = CE {

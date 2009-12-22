@@ -25,7 +25,7 @@ type GnuPlotGraph = (PlotInfo, GraphScript, GraphData)
 type Title = String
 type GraphHeader = String
 
-mkGnuPlotGraph :: PlotInfo -> [PinOpCodeAnalysisData] -> GnuPlotGraph
+mkGnuPlotGraph :: PlotInfo -> [PinAnalysisData] -> GnuPlotGraph
 mkGnuPlotGraph info counts = (info, graphScript, graphData)
     where
         graphScript = mkGraphHeader info counts
@@ -76,7 +76,7 @@ header info counts = [
     keyOrXtic  = if stacked then "key(1)" else "xtic(1)"
     stacked    = (stackGraph info)
 
-mkGraphData :: PlotInfo -> [PinOpCodeAnalysisData] -> GraphData
+mkGraphData :: PlotInfo -> [PinAnalysisData] -> GraphData
 mkGraphData info []     = [[]]
 mkGraphData info counts = 
     let -- colLabels like File1.log, File2.log
@@ -97,7 +97,6 @@ mkGraphData info counts =
     colLabels : transpose (rowLabels : (weave countCols percentCols))
 
 formatOpLabels :: AnalysisLabel -> String
-formatOpLabels (StringLabel s) = s
 formatOpLabels (OpcodeLabel o) = show o
 
 generateColumnLabels :: [GenPinData a] -> [DataColumn]

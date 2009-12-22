@@ -111,11 +111,11 @@ parseCmdLineOptions argv =
   where header = "Usage: pinalyze [OPTION...] files..."
 
 
-loadAndPrepareResults :: Options->[PinOpCodeData]-> IO [PinOpCodeAnalysisData]
+loadAndPrepareResults :: Options->[PinOpCodeData]-> IO [PinAnalysisData]
 loadAndPrepareResults options results =
   let threshold       = optThreshold options 
       filledResults   = fillMissingData results
-      analysisResults = convertToAnalysisData filledResults
+      analysisResults = convertToAnalysisData filledResults OpcodeLabel
       filteredResults = dropUnimportantData threshold analysisResults
       rawDataFile     = optReadRawData options
   in
@@ -124,14 +124,14 @@ loadAndPrepareResults options results =
   else
     return filteredResults
 
-readRawData :: FilePath -> IO [PinOpCodeAnalysisData]
+readRawData :: FilePath -> IO [PinAnalysisData]
 readRawData fileName = do
   h <- openFile fileName ReadMode
   liftM read (hGetContents h)
   
   
 
-processResults :: Options -> [PinOpCodeAnalysisData] -> IO ()
+processResults :: Options -> [PinAnalysisData] -> IO ()
 processResults options []      = return ()
 processResults options filteredResults = 
   let graph           = mkGnuPlotGraph info filteredResults
@@ -176,7 +176,7 @@ writeExcelIf options graph
   where
   excelFileName  = (optOutPrefix options) ++ ".txt"
 
-writeClustersIf :: Options -> [PinOpCodeAnalysisData] -> IO ()
+writeClustersIf :: Options -> [PinAnalysisData] -> IO ()
 writeClustersIf options filteredResults
   | isJust (optNumCluster options) = do
        putStrLn ("Writing Clusters ")
@@ -187,7 +187,7 @@ writeClustersIf options filteredResults
   | otherwise            = return ()
 
 
-writeSvmIf :: Options -> [PinOpCodeAnalysisData] -> IO ()
+writeSvmIf :: Options -> [PinAnalysisData] -> IO ()
 writeSvmIf options filteredResults
   | optWriteSvm options = do
        putStrLn ("Writing Svm Data")
@@ -207,7 +207,7 @@ writeSvmPredictionIf options filteredResults
   where fileName = (optOutPrefix options) ++ ".svm"
 
 
-writeRawDataIf :: Options -> [PinOpCodeAnalysisData] -> IO ()
+writeRawDataIf :: Options -> [PinAnalysisData] -> IO ()
 writeRawDataIf options filteredResults
   | optWriteRawData options = do
        putStrLn ("Writing Raw Data")
