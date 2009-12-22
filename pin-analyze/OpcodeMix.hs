@@ -1,6 +1,7 @@
 module OpcodeMix where
 import Opcodes
 import ClusterElement
+import PinData
 import Data.Set(Set) 
 import qualified Data.Set as Set
 import Data.Map(Map) 
@@ -11,22 +12,17 @@ type OpCount = Integer
 type BenchmarkName = String
 type OpCounts  = (Opcode, OpCount)
 
-data GenPinOpCodeData a = OpData { 
-      bmName :: String
-    , bmLabel :: ProgramClass
-    , opCounts :: a
-} deriving(Show, Read)
 
-type PinOpCodeData = GenPinOpCodeData [OpCounts]
+type PinOpCodeData = GenPinData [OpCounts]
 type OpcodeMap = Map Opcode OpCount
-type PinOpCodeMapData = GenPinOpCodeData OpcodeMap
+type PinOpCodeMapData = GenPinData OpcodeMap
 
 data AnalysisData = AnalysisData {
       label         :: AnalysisLabel
     , rawCount      :: OpCount
     , percentTotal  :: Double
 } deriving(Show, Read)
-type PinOpCodeAnalysisData = GenPinOpCodeData [AnalysisData]
+type PinOpCodeAnalysisData = GenPinData [AnalysisData]
 type POAD = PinOpCodeAnalysisData 
 data AnalysisLabel = StringLabel String | OpcodeLabel Opcode
     deriving (Eq, Show, Read, Ord)
@@ -43,30 +39,30 @@ readCount line =
 
 
 fillMissingData :: [PinOpCodeData] -> [PinOpCodeData]
-fillMissingData pinData = map fill mapData
+fillMissingData allPinData = map fill mapData
     where
-    opcodes = collectAllOpCodes pinData
-    mapData = opCountsToMap pinData
-    fill d  = d {opCounts = map (countOrZero (opCounts d)) opcodes}
+    opcodes = collectAllOpCodes allPinData
+    mapData = opCountsToMap allPinData
+    fill d  = d {pinData = map (countOrZero (pinData d)) opcodes}
     countOrZero opMap opcode = 
         case Map.lookup opcode opMap of
             Just count -> (opcode, count)
             Nothing    -> (opcode, 0)
 
 opCountsToMap :: [PinOpCodeData] -> [PinOpCodeMapData]
-opCountsToMap pinData = map transform pinData
+opCountsToMap = map transform 
     where
-    transform  d = d { opCounts = Map.fromList (opCounts d)}
+    transform  d = d { pinData = Map.fromList (pinData d)}
 
 collectAllOpCodes :: [PinOpCodeData] -> [Opcode]
-collectAllOpCodes pinData = Set.toList . Set.fromList $ allOpCodes
+collectAllOpCodes allPinData = Set.toList . Set.fromList $ allOpCodes
     where 
-    allOpCodes = map fst (concatMap opCounts pinData)
+    allOpCodes = map fst (concatMap pinData allPinData)
 
 
 convertToAnalysisData :: [PinOpCodeData] -> [PinOpCodeAnalysisData]
 convertToAnalysisData counts = 
-  zipWith3 OpData bmNames bmLabels analysisData
+  zipWith3 PinData bmNames bmLabels analysisData
   where
   analysisData  = zipWith (zipWith convert) bmOpCounts percentCounts 
                                                 :: [[AnalysisData]]
@@ -74,7 +70,7 @@ convertToAnalysisData counts =
   bmLabels      = map bmLabel counts            :: [ProgramClass]
   percentCounts = map percentsOfTotal rawCounts :: [[Double]]
   rawCounts     = map (map snd) bmOpCounts      :: [[Integer]]
-  bmOpCounts    = map opCounts counts           :: [[OpCounts]]
+  bmOpCounts    = map pinData counts           :: [[OpCounts]]
   convert (code, count) percent = 
       AnalysisData { 
           label        = OpcodeLabel code
@@ -94,7 +90,7 @@ dropUnimportantData threshold analysisData =
   filterData opcodeData =
     let opcodeFilter = (\aData -> Set.member (label aData) chosenOnes) in
     opcodeData {
-        opCounts = filter opcodeFilter (opCounts opcodeData)
+        pinData = filter opcodeFilter (pinData opcodeData)
     }
     
   sets = map (chooseImportantOpCodes threshold) analysisData
@@ -103,7 +99,7 @@ dropUnimportantData threshold analysisData =
 
 chooseImportantOpCodes :: Double -> PinOpCodeAnalysisData -> Set AnalysisLabel
 chooseImportantOpCodes threshold  d =
-  foldr unionIf (Set.empty) (opCounts d)
+  foldr unionIf (Set.empty) (pinData d)
   where
   unionIf aData set =
     if (percentTotal aData) > threshold 

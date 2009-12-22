@@ -1,5 +1,6 @@
 module GnuPlot where
 import OpcodeMix
+import PinData
 import Data.List
 import Numeric
 import System.IO
@@ -32,7 +33,7 @@ mkGnuPlotGraph info counts = (info, graphScript, graphData)
 
 
 
-mkGraphHeader :: PlotInfo -> [GenPinOpCodeData a] -> GraphHeader
+mkGraphHeader :: PlotInfo -> [GenPinData a] -> GraphHeader
 mkGraphHeader info counts = concat $ intersperse "\n" (header info counts)
 header info counts = [
       "BASE_FILENAME='"++(takeBaseName.dataFileName $ info)++"'"
@@ -81,7 +82,7 @@ mkGraphData info counts =
     let -- colLabels like File1.log, File2.log
         colLabels   = generateColumnLabels counts
         -- rowLabels like ADD, MOV, etc.
-        rowLabels   = map (S . formatOpLabels . label) (opCounts $ head  counts)
+        rowLabels   = map (S . formatOpLabels . label) (pinData $ head  counts)
         -- columns are counts of operations
         countCols   = map formatCnts rawCounts
         -- percentColumns are percent of total ops
@@ -89,7 +90,7 @@ mkGraphData info counts =
         -- data access utilites
         formatCnts     = map I 
         formatPercents = map F
-        analysisData   = map opCounts counts :: [[AnalysisData]]
+        analysisData   = map pinData counts :: [[AnalysisData]]
         rawCounts      = map (map rawCount)     analysisData
         rawPercents    = map (map percentTotal) analysisData
     in
@@ -99,7 +100,7 @@ formatOpLabels :: AnalysisLabel -> String
 formatOpLabels (StringLabel s) = s
 formatOpLabels (OpcodeLabel o) = show o
 
-generateColumnLabels :: [GenPinOpCodeData a] -> [DataColumn]
+generateColumnLabels :: [GenPinData a] -> [DataColumn]
 generateColumnLabels counts = opcodeLabel ++ columnLabels
     where
     opcodeLabel   = [S "opcode"]

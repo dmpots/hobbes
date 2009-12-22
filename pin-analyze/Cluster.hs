@@ -1,5 +1,6 @@
 module Cluster where
 import ClusterElement
+import PinData
 import Data.List
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
@@ -23,7 +24,7 @@ convertToClusterElements analysisData = map convert analysisData
   convert e = CE {
       shortName = bmName  e
     , dataLabel = bmLabel e
-    , dataPoint = map convertPoint (opCounts e)
+    , dataPoint = map convertPoint (pinData e)
   }
   convertPoint (AnalysisData (OpcodeLabel oc) _ p) = (oc,p)
         

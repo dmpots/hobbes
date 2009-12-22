@@ -6,6 +6,7 @@ import Data.Maybe
 import GnuPlot
 import OpcodeMix
 import Opcodes
+import PinData
 import System.Console.GetOpt
 import System.Environment
 import System.IO
@@ -221,10 +222,10 @@ parseFile fileName = do
     putStrLn ("Parsing "++fileName)
     h <- openFile fileName ReadMode 
     fileLines <- fmap lines (hGetContents h)
-    return $ OpData { 
+    return $ PinData { 
               bmName   = (formatBmName . takeBaseName) fileName
             , bmLabel  = read (head fileLines)
-            , opCounts = map readCount $ tail fileLines
+            , pinData  = map readCount $ tail fileLines
     }
     where
 
