@@ -5,6 +5,8 @@ use File::Basename;
 $PinDir="$ENV{HOME}/pin";
 $SimpleDir="$PinDir/source/tools/SimpleExamples/obj-intel64";
 $InstMixPinTool="$SimpleDir/opcodemix.so";
+#$InstMixPinTool="$SimpleDir/jumpmix.so";
+#$InstMixPinTool="$SimpleDir/regmix.so";
 $Pintool=basename($InstMixPinTool);
 $PinPrefix="setarch x86_64 -R $PinDir/pin -t $InstMixPinTool";
 $DieOnNofibFailure=1;
