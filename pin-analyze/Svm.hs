@@ -6,6 +6,7 @@ import Data.List
 import Data.SVM
 import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
+import PinData
 import System.IO
 
 {-
@@ -22,7 +23,7 @@ type PredictionElement = (String, ProgramClass, Vector)
 type PredictedElement  = (String, ProgramClass, ProgramClass)
   
 
-trainModel' :: Double -> Double -> [OpcodeClusterElement] -> IO Model
+trainModel' :: Double -> Double -> [PinClusterElement] -> IO Model
 trainModel' c gamma vectors = train algorithm kernel problem
   where
       algorithm = CSvc c
@@ -30,18 +31,18 @@ trainModel' c gamma vectors = train algorithm kernel problem
       problem   = undefined
 
 
-writeSVMFormattedData :: Handle -> [OpcodeClusterElement] -> IO ()
+writeSVMFormattedData :: Handle -> [PinClusterElement] -> IO ()
 writeSVMFormattedData h clusterData = mapM_ (printSVM h) clusterData
   where
   printSVM h element = 
     let label  = show  (fromEnum . dataLabel $ element)  ++ " "
         points = (concat . (intersperse " ") . map format) (dataPoint element)
-        format = (\(op, percent) -> (show . fromEnum) op++":"++show percent)
+        format = (\(op, percent) -> (show op)++":"++show percent)
     in
     hPutStr h label >> hPutStrLn h points 
 
 
-writePredictionDataUsingModel::FilePath->Handle->[OpcodeClusterElement]->IO ()
+writePredictionDataUsingModel::FilePath->Handle->[PinClusterElement]->IO ()
 writePredictionDataUsingModel modelFile h elements = do
   model <- loadModel modelFile
   let predicted = predictElements model elements
@@ -63,20 +64,20 @@ formatPredictions predictions =
   formatPrediction (n,actual,predicted) =
      n ++ " [Acutal = "++(show actual)++", Predicted = "++(show predicted)++"]"
 
-predictElements :: Model -> [OpcodeClusterElement] -> [PredictedElement]
+predictElements :: Model -> [PinClusterElement] -> [PredictedElement]
 predictElements model elements = predictIt converted
   where
   predictIt = map (\(name, klass, vec) -> (name, klass, predictVector model vec))
   converted = convertElementsToVectors elements
 
-convertElementsToVectors :: [OpcodeClusterElement] -> [PredictionElement]
+convertElementsToVectors :: [PinClusterElement] -> [PredictionElement]
 convertElementsToVectors = map convertElement 
 
-convertElement :: OpcodeClusterElement -> PredictionElement
+convertElement :: PinClusterElement -> PredictionElement
 convertElement element =
   (shortName element, dataLabel element, IntMap.fromList vecList)
   where
-  vecList = map (\(x, y) -> (fromEnum x, y)) (dataPoint element)
+  vecList = map (\(x, y) -> (alEnum x, y)) (dataPoint element)
 
 predictVector :: Model -> Vector -> ProgramClass
 predictVector model vector = prediction

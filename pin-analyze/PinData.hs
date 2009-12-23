@@ -31,6 +31,9 @@ data AnalysisLabel =
   | JumpLabel    Jump
     deriving (Eq, Show, Read, Ord)
 
+alEnum (OpcodeLabel oc) = fromEnum oc
+alEnum (JumpLabel   jl) = fromEnum jl
+
 fillMissingData :: Ord k => [GenCountData k] -> [GenCountData k]
 fillMissingData allPinData = zipWith fill allPinData mapData
     where

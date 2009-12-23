@@ -10,15 +10,15 @@ import OpcodeMix
 import System.IO
 import System.Random
 
-type OpcodeClusterElement = ClusterElement Opcode
-type OpcodeCluster        = [ClusterElement Opcode]
+type PinClusterElement = ClusterElement AnalysisLabel
+type PinCluster        = [PinClusterElement]
 
-clusterK :: (RandomGen g) => g ->  [PinAnalysisData] -> Int -> [OpcodeCluster]
+clusterK :: (RandomGen g) => g ->  [PinAnalysisData] -> Int -> [PinCluster]
 clusterK gen analysisData numClusters = kmeans gen numClusters clusterElements
   where
   clusterElements = convertToClusterElements analysisData
 
-convertToClusterElements :: [PinAnalysisData] -> [OpcodeClusterElement]
+convertToClusterElements :: [PinAnalysisData] -> [PinClusterElement]
 convertToClusterElements analysisData = map convert analysisData
   where 
   convert e = CE {
@@ -26,10 +26,10 @@ convertToClusterElements analysisData = map convert analysisData
     , dataLabel = bmLabel e
     , dataPoint = map convertPoint (pinData e)
   }
-  convertPoint (AnalysisData (OpcodeLabel oc) _ p) = (oc,p)
+  convertPoint (AnalysisData l _ p) = (l,p)
         
 
-writeClusters :: Handle -> [OpcodeCluster] -> IO ()
+writeClusters :: Handle -> [PinCluster] -> IO ()
 writeClusters h clusters = 
   mapM_ printCluster $ zip (clusterStats clusters) clusters
   where
@@ -45,14 +45,14 @@ writeClusters h clusters =
     --hPutStrLn h "]"
     hPutStrLn h line
 
-  showElement :: OpcodeClusterElement -> String
+  showElement :: PinClusterElement -> String
   showElement (CE n l dp) = n 
 
   --showClass (pc, cnt) = (show pc) ++ ":"++(show cnt)
     
     
 
-clusterStats :: [OpcodeCluster] -> [(Int, [(ProgramClass, Int)])]
+clusterStats :: [PinCluster] -> [(Int, [(ProgramClass, Int)])]
 clusterStats clusters = stats
   where
   stats    = zip [1..] (map occurs clusters)

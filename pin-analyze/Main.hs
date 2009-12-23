@@ -225,7 +225,7 @@ writeSvmIf options filteredResults
   | otherwise            = return ()
   where fileName = (optOutPrefix options) ++ ".svm"
 
-writeSvmPredictionIf :: Options -> [OpcodeClusterElement] -> IO ()
+writeSvmPredictionIf :: Options -> [PinClusterElement] -> IO ()
 writeSvmPredictionIf options filteredResults
   | isJust (optSvmModel options) = do
        let modelFile = fromJust (optSvmModel options)
