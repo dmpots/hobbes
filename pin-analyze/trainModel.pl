@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 
+BEGIN {$| = 1;} #autoflush
 $Pgm = "trainModel";
 $chooseTrainingSets = 1;
 $pinalyze           = 1;
@@ -72,6 +73,7 @@ if($pinalyze) {
 
 # grid search for best params
 if($grid) {
+  print "Searching for svm parameters\n";
   $gridSearch = "libsvm-2.9/tools/grid.py -svmtrain libsvm-2.9/svm-train";
   $rc = system("$gridSearch TRAIN.svm > _T 2>/dev/null");
   check($rc, "Error searching for parameters");

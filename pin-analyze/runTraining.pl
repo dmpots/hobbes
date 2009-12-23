@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use Statistics::Descriptive;
 
+BEGIN {$| = 1;} #autoflush
 $argCount = $#ARGV + 1;
 $iters = shift @ARGV;
 if ($iters !~ /^\d+$/) {
