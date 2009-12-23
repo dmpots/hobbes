@@ -3,11 +3,10 @@ import Opcodes
 import PinData
 
 type OpId    = Int
-type OpCounts  = (Opcode, PinCounter)
-type PinOpCodeData = GenCountData Opcode
+type PinOpcodeData = GenCountData Opcode
 
-readCount :: String -> OpCounts
-readCount line = 
+readOpcodeCount :: String -> (Opcode, PinCounter)
+readOpcodeCount line = 
   if opId /= (fromEnum opcode) then errorOut else (opcode, count)
   where 
   (opId, opcode, count) = read line :: (OpId, Opcode, PinCounter)

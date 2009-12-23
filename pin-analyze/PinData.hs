@@ -5,12 +5,16 @@ import qualified Data.Set as Set
 import Data.Map(Map) 
 import qualified Data.Map as Map
 import Opcodes
+import Jumpcodes
 
 data GenPinData a = PinData { 
       bmName  :: String
     , bmLabel :: ProgramClass
     , pinData :: a
 } deriving(Show, Read)
+
+data PinTool = OpcodeMix | JumpMix
+  deriving(Eq, Enum, Show, Read)
 
 type PinCounter = Integer
 type GenCountData k  = GenPinData [(k,PinCounter)]
@@ -24,7 +28,7 @@ data AnalysisData = AnalysisData {
 
 data AnalysisLabel = 
     OpcodeLabel  Opcode
-  | JumpmixLabel Opcode
+  | JumpLabel    Jump
     deriving (Eq, Show, Read, Ord)
 
 fillMissingData :: Ord k => [GenCountData k] -> [GenCountData k]

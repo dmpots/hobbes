@@ -2,10 +2,10 @@
 
 $Pgm = "trainModel";
 $chooseTrainingSets = 1;
-$pinalyze           = 1;
-$grid               = 1;
-$svm_train          = 1;
-$svm_predict        = 1;
+$pinalyze           = 0;
+$grid               = 0;
+$svm_train          = 0;
+$svm_predict        = 0;
 
 # params
 $TrainSize = 5;

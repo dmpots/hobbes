@@ -4,6 +4,7 @@ import Cluster
 import Data.Char
 import Data.Maybe
 import GnuPlot
+import JumpMix
 import OpcodeMix
 import Opcodes
 import PinData
@@ -99,8 +100,33 @@ cmdLineOptions = [
 main :: IO ()
 main = do
     (options, files)<- parseCmdLineOptions =<< getArgs 
-    opCodeCounts    <- mapM parseFile files
-    filteredResults <- loadAndPrepareResults options opCodeCounts
+    pinTools        <- mapM parseTool files
+    doCheckPinTools pinTools
+    case (head pinTools) of
+      OpcodeMix -> doOpcodemix options files
+      JumpMix   -> doJumpmix   options files
+
+doCheckPinTools :: [PinTool] -> IO ()
+doCheckPinTools [] = return ()
+doCheckPinTools tools = 
+  if (all (== (head tools)) tools) then
+    return ()
+  else
+    error "Error: All files must use the same pin tool"
+
+doOpcodemix :: Options -> [FilePath] -> IO ()
+doOpcodemix options files = do
+  pinCounts <- mapM parseOpcodemixFile files
+  doMain options pinCounts OpcodeLabel
+                
+doJumpmix :: Options -> [FilePath] -> IO ()
+doJumpmix options files = do
+  pinCounts <- mapM parseJumpmixFile files
+  doMain options pinCounts JumpLabel
+
+doMain :: Ord k => Options -> [GenCountData k] -> (k -> AnalysisLabel) -> IO ()
+doMain options pinCounts mkLabel = do
+    filteredResults <- loadAndPrepareResults options pinCounts mkLabel
     processResults options filteredResults
 
 parseCmdLineOptions :: [String] -> IO (Options, [String])
@@ -111,11 +137,15 @@ parseCmdLineOptions argv =
   where header = "Usage: pinalyze [OPTION...] files..."
 
 
-loadAndPrepareResults :: Options->[PinOpCodeData]-> IO [PinAnalysisData]
-loadAndPrepareResults options results =
+loadAndPrepareResults :: Ord k 
+  => Options 
+  -> [GenCountData k]
+  -> (k -> AnalysisLabel)
+  -> IO [PinAnalysisData]
+loadAndPrepareResults options results mkLabel =
   let threshold       = optThreshold options 
       filledResults   = fillMissingData results
-      analysisResults = convertToAnalysisData filledResults OpcodeLabel
+      analysisResults = convertToAnalysisData filledResults mkLabel
       filteredResults = dropUnimportantData threshold analysisResults
       rawDataFile     = optReadRawData options
   in
@@ -129,8 +159,6 @@ readRawData fileName = do
   h <- openFile fileName ReadMode
   liftM read (hGetContents h)
   
-  
-
 processResults :: Options -> [PinAnalysisData] -> IO ()
 processResults options []      = return ()
 processResults options filteredResults = 
@@ -217,17 +245,34 @@ writeRawDataIf options filteredResults
   | otherwise            = return ()
   where fileName = (optOutPrefix options) ++ ".raw"
 
-parseFile :: FilePath -> IO PinOpCodeData
-parseFile fileName = do
+parseTool :: FilePath -> IO PinTool
+parseTool fileName = do
+    h <- openFile fileName ReadMode 
+    toolName <- fmap lines (hGetContents h)
+    return $ read (head toolName)
+
+parseOpcodemixFile :: FilePath -> IO PinOpcodeData
+parseOpcodemixFile fileName = parseFile fileName readOpcodeCount
+
+parseJumpmixFile :: FilePath -> IO PinJumpData
+parseJumpmixFile fileName = parseFile fileName readJumpCount
+
+parseFile :: FilePath -> (String -> (k, PinCounter)) -> IO (GenCountData k)
+parseFile fileName reader = do
     putStrLn ("Parsing "++fileName)
     h <- openFile fileName ReadMode 
     fileLines <- fmap lines (hGetContents h)
+    let [tool,progClass] = take 2 fileLines
+    let body             = drop 2 fileLines
     return $ PinData { 
               bmName   = (formatBmName . takeBaseName) fileName
-            , bmLabel  = read (head fileLines)
-            , pinData  = map readCount $ tail fileLines
+            , bmLabel  = read progClass
+            , pinData  = map reader body
     }
     where
+
+--chooseReader :: PinTool -> (String -> (k, PinCounter))
+chooseReader OpcodeMix = readOpcodeCount
 
 formatBmName :: String -> String    
 formatBmName fileName = base ++ rest
