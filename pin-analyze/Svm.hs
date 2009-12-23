@@ -4,7 +4,6 @@ import Cluster
 import ClusterElement
 import Data.List
 import Data.SVM
-import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
 import PinData
 import System.IO
@@ -24,22 +23,22 @@ type PredictedElement  = (String, ProgramClass, ProgramClass)
   
 
 trainModel' :: Double -> Double -> [PinClusterElement] -> IO Model
-trainModel' c gamma vectors = train algorithm kernel problem
+trainModel' c' gamma' _ = train algorithm kernel problem
   where
-      algorithm = CSvc c
-      kernel    = RBF gamma
+      algorithm = CSvc c'
+      kernel    = RBF gamma'
       problem   = undefined
 
 
 writeSVMFormattedData :: Handle -> [PinClusterElement] -> IO ()
-writeSVMFormattedData h clusterData = mapM_ (printSVM h) clusterData
+writeSVMFormattedData handle clusterData = mapM_ (printSVM handle) clusterData
   where
   printSVM h element = 
-    let label  = show  (fromEnum . dataLabel $ element)  ++ " "
+    let classLabel  = show  (fromEnum . dataLabel $ element)  ++ " "
         points = (concat . (intersperse " ") . map format) (dataPoint element)
         format = (\(op, percent) -> (show op)++":"++show percent)
     in
-    hPutStr h label >> hPutStrLn h points 
+    hPutStr h classLabel >> hPutStrLn h points 
 
 
 writePredictionDataUsingModel::FilePath->Handle->[PinClusterElement]->IO ()
@@ -57,7 +56,8 @@ formatPredictions predictions =
   header = "Correctly predicted " ++(show.length $ right)
            ++" out of " ++(show.length $ predictions)
            ++" ("++(show formatPercent)++")"
-  formatPercent = (fromIntegral (length right) / fromIntegral (length predictions))
+  formatPercent = (fromIntegral (length right) / totalPreds)
+  totalPreds = fromIntegral (length predictions) :: Double
   rightList =  formatList right
   wrongList = formatList wrong
   formatList = (concat . (intersperse "\n") . (map formatPrediction))

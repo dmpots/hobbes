@@ -2,11 +2,8 @@ module Cluster where
 import ClusterElement
 import PinData
 import Data.List
-import Data.IntMap (IntMap)
 import qualified Data.IntMap as IntMap
 import KMeans
-import Opcodes
-import OpcodeMix
 import System.IO
 import System.Random
 
@@ -46,7 +43,7 @@ writeClusters h clusters =
     hPutStrLn h line
 
   showElement :: PinClusterElement -> String
-  showElement (CE n l dp) = n 
+  showElement  e = shortName e
 
   --showClass (pc, cnt) = (show pc) ++ ":"++(show cnt)
     

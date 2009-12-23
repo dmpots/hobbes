@@ -2,7 +2,6 @@ module PinData where
 import ClusterElement
 import Data.Set(Set) 
 import qualified Data.Set as Set
-import Data.Map(Map) 
 import qualified Data.Map as Map
 import Opcodes
 import Jumpcodes
@@ -31,6 +30,7 @@ data AnalysisLabel =
   | JumpLabel    Jump
     deriving (Eq, Show, Read, Ord)
 
+alEnum :: AnalysisLabel -> Int
 alEnum (OpcodeLabel oc) = fromEnum oc
 alEnum (JumpLabel   jl) = fromEnum jl
 

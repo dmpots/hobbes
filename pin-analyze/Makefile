@@ -10,7 +10,7 @@ Opcodes.hs: Opcodes.txt mkOpCodes.pl
 	./mkOpCodes.pl Opcodes.txt > Opcodes.hs
 
 pinalyze: $(SOURCES)
-	ghc -O --make -o $(EXE) $(SOURCES) 
+	ghc -Wall -O --make -o $(EXE) $(SOURCES) 
 
 $(LIBSVMPROGS): $(LIBSVMSRCS)
 	make -C $(LIBSVMDIR)

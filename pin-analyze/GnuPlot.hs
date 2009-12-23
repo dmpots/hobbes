@@ -1,5 +1,4 @@
 module GnuPlot where
-import OpcodeMix
 import PinData
 import Data.List
 import Numeric
@@ -29,13 +28,14 @@ mkGnuPlotGraph :: PlotInfo -> [PinAnalysisData] -> GnuPlotGraph
 mkGnuPlotGraph info counts = (info, graphScript, graphData)
     where
         graphScript = mkGraphHeader info counts
-        graphData   = mkGraphData info counts
+        graphData   = mkGraphData counts
 
 
 
 mkGraphHeader :: PlotInfo -> [GenPinData a] -> GraphHeader
-mkGraphHeader info counts = concat $ intersperse "\n" (header info counts)
-header info counts = [
+mkGraphHeader info counts = concat $ intersperse "\n" (plotHeader info counts)
+plotHeader :: PlotInfo -> [a] -> [String]
+plotHeader info counts = [
       "BASE_FILENAME='"++(takeBaseName.dataFileName $ info)++"'"
     , "OUT_FILENAME=BASE_FILENAME.'.eps'"
     , "DAT_FILENAME=BASE_FILENAME.'.dat'"
@@ -76,9 +76,9 @@ header info counts = [
     keyOrXtic  = if stacked then "key(1)" else "xtic(1)"
     stacked    = (stackGraph info)
 
-mkGraphData :: PlotInfo -> [PinAnalysisData] -> GraphData
-mkGraphData info []     = [[]]
-mkGraphData info counts = 
+mkGraphData :: [PinAnalysisData] -> GraphData
+mkGraphData []     = [[]]
+mkGraphData counts = 
     let -- colLabels like File1.log, File2.log
         colLabels   = generateColumnLabels counts
         -- rowLabels like ADD, MOV, etc.
@@ -98,6 +98,7 @@ mkGraphData info counts =
 
 formatOpLabels :: AnalysisLabel -> String
 formatOpLabels (OpcodeLabel o) = show o
+formatOpLabels (JumpLabel  jl) = show jl
 
 generateColumnLabels :: [GenPinData a] -> [DataColumn]
 generateColumnLabels counts = opcodeLabel ++ columnLabels
@@ -136,9 +137,10 @@ formatDataRow dataRow = format dataRow
      
 writeExcelData :: GnuPlotGraph -> IO ()
 writeExcelData graph = do
-  let (info, script, dataFile) = graph 
+  let (info, _, dataFile) = graph 
       selectFun = if (normalizeGraph info) then oddPositions 
         else (\l -> (head l) : evenPositions l)
+  putStrLn ("Writing Excel Data to '" ++ (excelFileName info) ++ "'") 
   h <- openFile (excelFileName info) WriteMode
   mapM_ (hPutStrLn h . formatDataRow . selectFun) dataFile 
   hClose h

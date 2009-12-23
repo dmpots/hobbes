@@ -6,7 +6,6 @@ import Data.Maybe
 import GnuPlot
 import JumpMix
 import OpcodeMix
-import Opcodes
 import PinData
 import System.Console.GetOpt
 import System.Environment
@@ -31,6 +30,7 @@ data Options = Options {
   , optReadRawData  :: Maybe String
 }
 
+defaultOptions :: Options
 defaultOptions = Options {
     optTitle        = "PinAlyze"
   , optOutPrefix    = "__PinAlyze__"
@@ -160,15 +160,13 @@ readRawData fileName = do
   liftM read (hGetContents h)
   
 processResults :: Options -> [PinAnalysisData] -> IO ()
-processResults options []      = return ()
+processResults _       []              = return ()
 processResults options filteredResults = 
   let graph           = mkGnuPlotGraph info filteredResults
-      numClusters     = fromJust (optNumCluster options)
-      outPrefix       = optOutPrefix options
       info            = plotInfo options
       clusterElements = convertToClusterElements filteredResults
   in
-  do gen <- newStdGen
+  do 
      writeGnuPlotGraphIf options graph
      writeExcelIf    options graph 
      writeClustersIf options filteredResults
@@ -197,12 +195,8 @@ writeGnuPlotGraphIf options graph
 
 writeExcelIf :: Options -> GnuPlotGraph -> IO ()
 writeExcelIf options graph
-  | optExcelData options = do
-       putStrLn ("Writing Excel Data to '" ++ excelFileName ++ "'") 
-       writeExcelData graph 
+  | optExcelData options = writeExcelData graph 
   | otherwise            = return ()
-  where
-  excelFileName  = (optOutPrefix options) ++ ".txt"
 
 writeClustersIf :: Options -> [PinAnalysisData] -> IO ()
 writeClustersIf options filteredResults
@@ -232,7 +226,6 @@ writeSvmPredictionIf options filteredResults
        putStrLn ("Predicting Svm Data")
        writePredictionDataUsingModel modelFile stdout filteredResults
   | otherwise            = return ()
-  where fileName = (optOutPrefix options) ++ ".svm"
 
 
 writeRawDataIf :: Options -> [PinAnalysisData] -> IO ()
@@ -262,17 +255,14 @@ parseFile fileName reader = do
     putStrLn ("Parsing "++fileName)
     h <- openFile fileName ReadMode 
     fileLines <- fmap lines (hGetContents h)
-    let [tool,progClass] = take 2 fileLines
-    let body             = drop 2 fileLines
+    let [_,progClass]  = take 2 fileLines
+    let body           = drop 2 fileLines
     return $ PinData { 
               bmName   = (formatBmName . takeBaseName) fileName
             , bmLabel  = read progClass
             , pinData  = map reader body
     }
     where
-
---chooseReader :: PinTool -> (String -> (k, PinCounter))
-chooseReader OpcodeMix = readOpcodeCount
 
 formatBmName :: String -> String    
 formatBmName fileName = base ++ rest
