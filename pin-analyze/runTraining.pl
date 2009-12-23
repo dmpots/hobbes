@@ -26,7 +26,7 @@ if (@ARGV > 0) {
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
-  if ($t =~ /spec/i) {$SpecOnly = "SPEC";}
+  $SpecOnly = $t;
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;

@@ -26,7 +26,9 @@ if (@ARGV > 0) {
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
-  if ($t =~ /spec/i) {$SpecOnly = 1;}
+  if ($t =~ /hgcc/i)  {$SpecOnly = 1;}
+  if ($t =~ /hicc/i)  {$SpecOnly = 2;}
+  if ($t =~ /spec/i)  {$SpecOnly = 3;}
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
@@ -40,14 +42,16 @@ print "USING TrainSize = $TrainSize, Threshold = $Threshold, SpecOnly = $SpecOnl
 # choose training set
 if($chooseTrainingSets) {
   print "Choosing training sets\n";
-  my $haskellProgram = "";
-  unless ($SpecOnly) {
-     $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib.$PinTool";
-  }	
+  my $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib.$PinTool";
   my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc.$PinTool";
   my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc.$PinTool";
   my $setSize        = $TrainSize;
-  my @classes        = ($haskellProgram, $specGcc, $specIcc);
+  #my @classes        = ($haskellProgram, $specGcc, $specIcc);
+  my @classes        = ();
+  if ($SpecOnly == 0) {push @classes, ($haskellProgram, $specGcc, $specIcc);}
+  if ($SpecOnly == 1) {push @classes, ($haskellProgram, $specGcc);}
+  if ($SpecOnly == 2) {push @classes, ($haskellProgram, $specIcc);}
+  if ($SpecOnly == 3) {push @classes, ($specGcc,        $specIcc);}
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
   check($rc, "Error choosing training sets");
