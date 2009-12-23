@@ -6,4 +6,5 @@ type PinJumpData = GenCountData Jump
 
 
 readJumpCount :: String -> (Jump, PinCounter)
-readJumpCount = undefined
+readJumpCount line = read line
+

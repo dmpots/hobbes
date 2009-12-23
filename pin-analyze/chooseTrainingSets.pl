@@ -92,7 +92,7 @@ for my $label (keys %allSets) {
         chkErr();
     }
 
-    print "Removing .LOG and .STATIC.LOG files\n";
+    print "Removing copied .LOG and .STATIC.LOG files\n";
          @deleteFiles = (@copiedTrainSet, @copiedPredictSet);
     push @deleteFiles, (<$TrainDir/*.STATIC.LOG>, <$PredictDir/*.STATIC.LOG>);
     $cnt = unlink @deleteFiles;

@@ -2,15 +2,16 @@
 
 $Pgm = "trainModel";
 $chooseTrainingSets = 1;
-$pinalyze           = 0;
-$grid               = 0;
-$svm_train          = 0;
-$svm_predict        = 0;
+$pinalyze           = 1;
+$grid               = 1;
+$svm_train          = 1;
+$svm_predict        = 1;
 
 # params
 $TrainSize = 5;
 $Threshold = 0.0;
 $SpecOnly  = 0;
+$PinTool   = "opcodemix";
 if (@ARGV > 0) {
   my $t = shift @ARGV;
   if ($t !~ /^\d+$/) {print "BAD TrainSize: $t\n"; exit 1;}
@@ -26,17 +27,24 @@ if (@ARGV > 0) {
   my $t = shift @ARGV;
   if ($t =~ /spec/i) {$SpecOnly = 1;}
 }
-print "USING TrainSize = $TrainSize, Threshold = $Threshold, SpecOnly = $SpecOnly\n";
+if (@ARGV > 0) {
+  my $t = shift @ARGV;
+  if    ($t =~ /opcod/i){$PinTool = "opcodemix";}
+  elsif ($t =~ /jump/i) {$PinTool = "jumpmix";}
+  elsif ($t =~ /reg/i)  {$PinTool = "regmix";}
+}
+
+print "USING TrainSize = $TrainSize, Threshold = $Threshold, SpecOnly = $SpecOnly PinTool = $PinTool\n";
 
 # choose training set
 if($chooseTrainingSets) {
   print "Choosing training sets\n";
   my $haskellProgram = "";
   unless ($SpecOnly) {
-     $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib.opcodemix";
+     $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib.$PinTool";
   }	
-  my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc.opcodemix";
-  my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc.opcodemix";
+  my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc.$PinTool";
+  my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc.$PinTool";
   my $setSize        = $TrainSize;
   my @classes        = ($haskellProgram, $specGcc, $specIcc);
 

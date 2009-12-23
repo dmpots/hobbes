@@ -8,35 +8,16 @@ import qualified Data.IntMap as IntMap
 import PinData
 import System.IO
 
-{-
-v1 = IntMap.fromList [(1, 0.25), (2, 0.25)]
-v2 = IntMap.fromList [(1, 0.5),  (2, 0.75)]
-v3 = IntMap.fromList [(1, 0.5),  (2, 0.5)]
-
-p  = [(1.0, v1), (2.0, v2), (2.0, v3), (1.0, v1)]
-t  = train (CSvc 1.0) (RBF 1.0) p
-d  = t >>= (\m -> return $ predict m v3)
-cc  = crossValidate (CSvc 1.0) (RBF 1.0) p 2
--}
 type PredictionElement = (String, ProgramClass, Vector)
 type PredictedElement  = (String, ProgramClass, ProgramClass)
   
-
-trainModel' :: Double -> Double -> [PinClusterElement] -> IO Model
-trainModel' c' gamma' _ = train algorithm kernel problem
-  where
-      algorithm = CSvc c'
-      kernel    = RBF gamma'
-      problem   = undefined
-
-
 writeSVMFormattedData :: Handle -> [PinClusterElement] -> IO ()
 writeSVMFormattedData handle clusterData = mapM_ (printSVM handle) clusterData
   where
   printSVM h element = 
     let classLabel  = show  (fromEnum . dataLabel $ element)  ++ " "
         points = (concat . (intersperse " ") . map format) (dataPoint element)
-        format = (\(op, percent) -> (show op)++":"++show percent)
+        format = (\(op, percent) -> (show.alEnum$op)++":"++show percent)
     in
     hPutStr h classLabel >> hPutStrLn h points 
 

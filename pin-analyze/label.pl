@@ -7,12 +7,14 @@ require "programClass.pl";
 # Find program class for these files
 my $Pgm = "label.pl";
 my $OPCODEMIX = "OpcodeMix";
+my $JUMPMIX   = "JumpMix";
 my $label = shift @ARGV;
 if(not checkClass($label)) {
     print "ERROR: must specify program class as first argument\n";
     print "ProgramClass is one of\n";
     my $cs = join("\n  ", @ProgramClasses);
     print "  $cs\n";
+    exit 1;
 }
 
 foreach $file (@ARGV) {
@@ -20,6 +22,9 @@ foreach $file (@ARGV) {
     my $fileType = testFile($file);
     if($fileType eq $OPCODEMIX) {
       parseOpcodeMix($file);
+    }
+    elsif($fileType eq $JUMPMIX) {
+      parseJumpMix($file);
     }
     else {
       print "$Pgm: UNKNOWN file type for file: $file\n";
@@ -33,10 +38,46 @@ sub testFile {
 
   open(FH, '<', $fileName) || die "unable to open file $fileName";
   while(<FH>) {
-    if (/^#(\s)*opcode/) {$fileType = $OPCODEMIX; last;}
+    if (/^#(\s)*opcode/)  {$fileType = $OPCODEMIX;last;}
+    if (/^#(\s)*JUMPMIX/) {$fileType = $JUMPMIX;  last;}
   }
   close FH;
   return $fileType;
+}
+
+sub parseJumpMix {
+  my $file = shift @_;
+  my ($base, $dir, $ext) = fileparse($file, ".LOG");
+  my $outf = $dir.$base.".JUMPMIX".$ext;
+
+  open(FH, '<', $file) || die "unable to open file $file";
+  open FH_DYNAMIC, '>', $outf
+      or die "Unable to open file $outf: $!";
+  print FH_DYNAMIC "$JUMPMIX\n";
+  print FH_DYNAMIC "$label\n";
+
+  header: while (<FH>) {
+      if(/^#.*$/) {next header;}
+      else        {last header;}
+  }
+
+  do {
+    next if (/^#.*$/);
+
+    if(/(\d+)\s+([\w-]+)\s+(\d+)\s+(\d+)/) {
+      my ($id, $name, $seen, $taken) = ($1, $2, $3, $4);
+      $name =~ s/indirect-(call|branch)/I\u\L$1/;
+      $name = ucfirst($name);
+
+      print FH_DYNAMIC "(${name}Seen,  $seen)\n";
+      print FH_DYNAMIC "(${name}Taken, $taken)\n";
+      #print "$id - $name - $seen - $taken\n";
+    }
+
+  } while(<FH>);
+
+  close FH_DYNAMIC;
+  close FH;
 }
 
 
@@ -49,7 +90,7 @@ sub parseOpcodeMix {
         if(/^#.*\$(static).*/) {$mode= uc $1;last header;}
     }
     my ($base, $dir, $ext) = fileparse($file, ".LOG");
-    my $outf = $dir.$base.".".$mode.$ext;
+    my $outf = $dir.$base.".OPCODEMIX.".$mode.$ext;
 
     open FH_STATIC, '>', $outf
         or die "Unable to open file $outf: $!";
@@ -64,7 +105,7 @@ sub parseOpcodeMix {
         print FH_STATIC "($opcode, $opname, $count)\n" 
             if $opname !~ /^\s*\*/
     }
-    my $outf = $dir.$base.".".$mode.$ext;
+    my $outf = $dir.$base.".OPCODEMIX.".$mode.$ext;
     open FH_DYNAMIC, '>', $outf
         or die "Unable to open file $outf: $!";
     print FH_DYNAMIC "$OPCODEMIX\n";
