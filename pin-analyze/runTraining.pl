@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use Statistics::Descriptive;
+use Time::Local;
 
 BEGIN {$| = 1;} #autoflush
 $argCount = $#ARGV + 1;
@@ -47,7 +48,8 @@ for(my $i = 0; $i < $iters; $i++) {
     print LOG;
     if(/^Accuracy = (\d+(?:\.\d+)?)%/) {
       print;
-      push @results, $1
+      push @results, $1;
+      print LOG scalar(localtime), "\n";
     }
   }
   close TRAIN;
