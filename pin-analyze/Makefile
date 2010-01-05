@@ -7,7 +7,7 @@ LIBSVMPROGS:=$(LIBSVMDIR)/svm-train $(LIBSVMDIR)/svm-predict
 DEFAULT: pinalyze $(LIBSVMPROGS)
 
 Opcodes.hs: Opcodes.txt mkOpCodes.pl
-	./mkOpCodes.pl Opcodes.txt > Opcodes.hs
+	perl mkOpCodes.pl Opcodes.txt > Opcodes.hs
 
 pinalyze: $(SOURCES)
 	ghc -Wall -O --make -o $(EXE) $(SOURCES) 
