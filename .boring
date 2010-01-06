@@ -119,6 +119,7 @@
 (^|/)nofib-pin/RESULTS
 (^|/)pin-run/RESULTS/nofib.*$
 (^|/)pin-run/RESULTS/spec.*$
+(^|/)pin-run/RESULTS/shootout.*$
 (^|/)pin-analyze/__PinAlyze__
 (^|/)pin-analyze/TRAIN
 (^|/)pin-analyze/PREDICT
