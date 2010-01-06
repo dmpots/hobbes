@@ -8,6 +8,7 @@ require "programClass.pl";
 my $Pgm = "label.pl";
 my $OPCODEMIX = "OpcodeMix";
 my $JUMPMIX   = "JumpMix";
+my $REGMIX    = "RegMix";
 my $label = shift @ARGV;
 if(not checkClass($label)) {
     print "ERROR: must specify program class as first argument\n";
@@ -26,6 +27,9 @@ foreach $file (@ARGV) {
     elsif($fileType eq $JUMPMIX) {
       parseJumpMix($file);
     }
+    elsif($fileType eq $REGMIX) {
+      parseRegMix($file);
+    }
     else {
       print "$Pgm: UNKNOWN file type for file: $file\n";
       exit 1;
@@ -40,9 +44,45 @@ sub testFile {
   while(<FH>) {
     if (/^#(\s)*opcode/)  {$fileType = $OPCODEMIX;last;}
     if (/^#(\s)*JUMPMIX/) {$fileType = $JUMPMIX;  last;}
+    if (/^#(\s)*num(\s)+reg/) {$fileType = $REGMIX;  last;}
   }
   close FH;
   return $fileType;
+}
+
+sub parseRegMix {
+  my $file = shift @_;
+  my ($base, $dir, $ext) = fileparse($file, ".LOG");
+  my $outf = $dir.$base.".REGMIX".$ext;
+
+  open(FH, '<', $file) || die "unable to open file $file";
+  open FH_DYNAMIC, '>', $outf
+      or die "Unable to open file $outf: $!";
+  print FH_DYNAMIC "$REGMIX\n";
+  print FH_DYNAMIC "$label\n";
+
+  header: while (<FH>) {
+      if(/^#.*$/) {next header;}
+      else        {last header;}
+  }
+
+  do {
+    next if (/^#.*$/);
+
+    if(/(\d+)\s+(r[\w]+)\s+(\d+)\s+(\d+)/) {
+      my ($id, $name, $read, $written) = ($1, $2, $3, $4);
+      $name = uc($name);
+
+      print FH_DYNAMIC "(${name}_R, $read)\n";
+      print FH_DYNAMIC "(${name}_W, $written)\n";
+      #print "$id - $name - $read - $written\n";
+    }
+
+  } while(<FH>);
+
+  close FH_DYNAMIC;
+  close FH;
+
 }
 
 sub parseJumpMix {

@@ -5,6 +5,7 @@ import qualified Data.Set as Set
 import qualified Data.Map as Map
 import Opcodes
 import Jumpcodes
+import Regcodes
 
 data GenPinData a = PinData { 
       bmName  :: String
@@ -12,7 +13,7 @@ data GenPinData a = PinData {
     , pinData :: a
 } deriving(Show, Read)
 
-data PinTool = OpcodeMix | JumpMix
+data PinTool = OpcodeMix | JumpMix | RegMix
   deriving(Eq, Enum, Show, Read)
 
 type PinCounter = Integer
@@ -28,11 +29,13 @@ data AnalysisData = AnalysisData {
 data AnalysisLabel = 
     OpcodeLabel  Opcode
   | JumpLabel    Jump
+  | RegLabel     Reg
     deriving (Eq, Show, Read, Ord)
 
 alEnum :: AnalysisLabel -> Int
 alEnum (OpcodeLabel oc) = fromEnum oc
 alEnum (JumpLabel   jl) = fromEnum jl
+alEnum (RegLabel    rl) = fromEnum rl
 
 fillMissingData :: Ord k => [GenCountData k] -> [GenCountData k]
 fillMissingData allPinData = zipWith fill allPinData mapData

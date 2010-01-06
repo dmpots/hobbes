@@ -7,6 +7,7 @@ import GnuPlot
 import JumpMix
 import OpcodeMix
 import PinData
+import RegMix
 import System.Console.GetOpt
 import System.Environment
 import System.IO
@@ -105,6 +106,7 @@ main = do
     case (head pinTools) of
       OpcodeMix -> doOpcodemix options files
       JumpMix   -> doJumpmix   options files
+      RegMix    -> doRegmix    options files
 
 doCheckPinTools :: [PinTool] -> IO ()
 doCheckPinTools [] = return ()
@@ -123,6 +125,11 @@ doJumpmix :: Options -> [FilePath] -> IO ()
 doJumpmix options files = do
   pinCounts <- mapM parseJumpmixFile files
   doMain options pinCounts JumpLabel
+
+doRegmix :: Options -> [FilePath] -> IO ()
+doRegmix options files = do
+  pinCounts <- mapM parseRegmixFile files
+  doMain options pinCounts RegLabel
 
 doMain :: Ord k => Options -> [GenCountData k] -> (k -> AnalysisLabel) -> IO ()
 doMain options pinCounts mkLabel = do
@@ -249,6 +256,9 @@ parseOpcodemixFile fileName = parseFile fileName readOpcodeCount
 
 parseJumpmixFile :: FilePath -> IO PinJumpData
 parseJumpmixFile fileName = parseFile fileName readJumpCount
+
+parseRegmixFile :: FilePath -> IO PinRegData
+parseRegmixFile fileName = parseFile fileName readRegCount
 
 parseFile :: FilePath -> (String -> (k, PinCounter)) -> IO (GenCountData k)
 parseFile fileName reader = do

@@ -99,6 +99,7 @@ mkGraphData counts =
 formatOpLabels :: AnalysisLabel -> String
 formatOpLabels (OpcodeLabel o) = show o
 formatOpLabels (JumpLabel  jl) = show jl
+formatOpLabels (RegLabel   rl) = show rl
 
 generateColumnLabels :: [GenPinData a] -> [DataColumn]
 generateColumnLabels counts = opcodeLabel ++ columnLabels
