@@ -12,7 +12,7 @@ if ($iters !~ /^\d+$/) {
 
 $TrainSize = 5;
 $Threshold = 0.0;
-$SpecOnly  = "ALL";
+$ProgSets  = "ALL";
 $PinTool   = "opcodemix";
 if (@ARGV > 0) {
   my $t = shift @ARGV;
@@ -27,15 +27,16 @@ if (@ARGV > 0) {
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
-  $SpecOnly = $t;
+  $ProgSets = $t;
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
   if    ($t =~ /opcod/i){$PinTool = "opcodemix";}
   elsif ($t =~ /jump/i) {$PinTool = "jumpmix";}
   elsif ($t =~ /reg/i)  {$PinTool = "regmix";}
+  else {print "BAD PinTool: $t"; exit 1;}
 }
-print "USING TrainSize = $TrainSize, Threshold = $Threshold, SpecOnly = $SpecOnly PinTool = $PinTool\n";
+print "USING TrainSize = $TrainSize, Threshold = $Threshold, ProgSets = $ProgSets PinTool = $PinTool\n";
 
 
 #print "$iters\n";
@@ -43,7 +44,7 @@ open LOG, '>', "__TRAINLOG__";
 
 my @results = ();
 for(my $i = 0; $i < $iters; $i++) {
-  open(TRAIN, "./trainModel.pl $TrainSize $Threshold $SpecOnly $PinTool|") || die "unable to run training";
+  open(TRAIN, "./trainModel.pl $TrainSize $Threshold $ProgSets $PinTool|") || die "unable to run training";
   while(<TRAIN>) {
     print LOG;
     if(/^Accuracy = (\d+(?:\.\d+)?)%/) {

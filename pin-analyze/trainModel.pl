@@ -11,7 +11,7 @@ $svm_predict        = 1;
 # params
 $TrainSize = 5;
 $Threshold = 0.0;
-$SpecOnly  = 0;
+$ProgSets  = 0;
 $PinTool   = "opcodemix";
 if (@ARGV > 0) {
   my $t = shift @ARGV;
@@ -26,32 +26,43 @@ if (@ARGV > 0) {
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
-  if ($t =~ /hgcc/i)  {$SpecOnly = 1;}
-  if ($t =~ /hicc/i)  {$SpecOnly = 2;}
-  if ($t =~ /spec/i)  {$SpecOnly = 3;}
+  if    ($t =~ /indi/i)  {$ProgSets = 1;}
+  elsif ($t =~ /hgcc/i)  {$ProgSets = 2;}
+  elsif ($t =~ /hicc/i)  {$ProgSets = 3;}
+  elsif ($t =~ /spec/i)  {$ProgSets = 4;}
+  elsif ($t =~ /shoot/i) {$ProgSets = 5;}
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
   if    ($t =~ /opcod/i){$PinTool = "opcodemix";}
   elsif ($t =~ /jump/i) {$PinTool = "jumpmix";}
   elsif ($t =~ /reg/i)  {$PinTool = "regmix";}
+  else {print "BAD PinTool: $t"; exit 1;}
 }
 
-print "USING TrainSize = $TrainSize, Threshold = $Threshold, SpecOnly = $SpecOnly PinTool = $PinTool\n";
+print "USING TrainSize = $TrainSize, Threshold = $Threshold, ProgSets = $ProgSets PinTool = $PinTool\n";
 
 # choose training set
 if($chooseTrainingSets) {
   print "Choosing training sets\n";
-  my $haskellProgram = "HaskellProgram ../pin-run/RESULTS/nofib.$PinTool";
-  my $specGcc        = "SpecGcc        ../pin-run/RESULTS/spec.gcc.$PinTool";
-  my $specIcc        = "SpecIcc        ../pin-run/RESULTS/spec.icc.$PinTool";
+  my $Hprogs   = "HaskellProgram ../pin-run/RESULTS/H.$PinTool";
+  my $Cprogs   = "CProgram       ../pin-run/RESULTS/C.$PinTool";
+
+  my $nofibGhc = "NofibGhc    ../pin-run/RESULTS/nofib.$PinTool";
+  my $specGcc  = "SpecGcc     ../pin-run/RESULTS/spec.gcc.$PinTool";
+  my $specIcc  = "SpecIcc     ../pin-run/RESULTS/spec.icc.$PinTool";
+  my $shootGhc = "ShootoutGhc ../pin-run/RESULTS/shootout.ghc.$PinTool";
+  my $shootGcc = "ShootoutGcc ../pin-run/RESULTS/shootout.gcc.$PinTool";
   my $setSize        = $TrainSize;
-  #my @classes        = ($haskellProgram, $specGcc, $specIcc);
   my @classes        = ();
-  if ($SpecOnly == 0) {push @classes, ($haskellProgram, $specGcc, $specIcc);}
-  if ($SpecOnly == 1) {push @classes, ($haskellProgram, $specGcc);}
-  if ($SpecOnly == 2) {push @classes, ($haskellProgram, $specIcc);}
-  if ($SpecOnly == 3) {push @classes, ($specGcc,        $specIcc);}
+  if ($ProgSets == 0) {push @classes, ($Hprogs, $Cprogs);}
+  if ($ProgSets == 1) {push @classes, ($nofibGhc, $specGcc, $specIcc);
+                       push @classes, ($shootGhc, $shootGcc);}
+  if ($ProgSets == 2) {push @classes, ($nofibGhc, $specGcc);}
+  if ($ProgSets == 3) {push @classes, ($nofibGhc, $specIcc);}
+  if ($ProgSets == 4) {push @classes, ($specGcc,  $specIcc);}
+  if ($ProgSets == 5) {push @classes, ($shootGhc, $shootGcc);}
+  if ($ProgSets  > 5) {print "Unknown ProgSets: $ProgSets"; exit 1;}
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
   check($rc, "Error choosing training sets");
