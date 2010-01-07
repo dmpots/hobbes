@@ -248,8 +248,9 @@ writeRawDataIf options filteredResults
 parseTool :: FilePath -> IO PinTool
 parseTool fileName = do
     h <- openFile fileName ReadMode 
-    toolName <- fmap lines (hGetContents h)
-    return $ read (head toolName)
+    toolName <- hGetLine h
+    hClose h
+    return $ read toolName
 
 parseOpcodemixFile :: FilePath -> IO PinOpcodeData
 parseOpcodemixFile fileName = parseFile fileName readOpcodeCount
@@ -264,7 +265,8 @@ parseFile :: FilePath -> (String -> (k, PinCounter)) -> IO (GenCountData k)
 parseFile fileName reader = do
     putStrLn ("Parsing "++fileName)
     h <- openFile fileName ReadMode 
-    fileLines <- fmap lines (hGetContents h)
+    fileLines <- readFileLines h
+    hClose h
     let [_,progClass]  = take 2 fileLines
     let body           = drop 2 fileLines
     return $ PinData { 
@@ -272,7 +274,16 @@ parseFile fileName reader = do
             , bmLabel  = read progClass
             , pinData  = map reader body
     }
-    where
+
+readFileLines :: Handle -> IO [String]
+readFileLines h = do
+  do { eof <- hIsEOF h
+     ; if eof then 
+        return []
+       else do { line <- hGetLine h
+               ; rest <- readFileLines h
+               ; return (line : rest) }
+     }
 
 formatBmName :: String -> String    
 formatBmName fileName = base ++ rest
