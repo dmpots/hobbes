@@ -17,7 +17,7 @@ def processFiles(files)
   means = []
   files.each do |file|
     File.open(file).lines.each do |line|
-      if line =~ /^STATS\(.*?\) = (\d+\.?\d+)\/(\d+\.?\d+)\/(\d+\.?\d+)/ then
+      if line =~ /^STATS\(.*?\) = (\d+\.?\d*)\/(\d+\.?\d*)\/(\d+\.?\d*)/ then
         n,g,x = [$1.to_f, $2.to_f, $3.to_f]
         if g != 0.0 then
           means << g
