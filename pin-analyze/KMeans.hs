@@ -1,4 +1,4 @@
-module KMeans (kmeans, kmeans')
+module KMeans (kmeans, pairs)
     where
 
 import ClusterElement
@@ -66,4 +66,8 @@ randomPartition gen k list = partition gen initial list
     in
     partition g' (yss ++ [x:ys] ++ yss') xs
   
+
+pairs :: [a] -> [(a,a)]
+pairs [] = []
+pairs (x:xs) = [(x,y) | y <- xs] ++ pairs xs
 

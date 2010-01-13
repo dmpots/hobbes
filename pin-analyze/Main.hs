@@ -212,7 +212,7 @@ writeClustersIf options filteredResults
        gen <- getStdGen
        let numClusters  = (fromJust $ optNumCluster options)
        let clusters     = clusterK gen filteredResults numClusters
-       writeClusters stdout clusters
+       writeClusters stdout clusters filteredResults
   | otherwise            = return ()
 
 

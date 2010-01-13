@@ -6,8 +6,6 @@ require 'programClass.pl';
 
 $Pgm="chooseTrainingSets";
 $RESULTS = "../pin-run/RESULTS";
-$Nofib="$RESULTS/nofib";
-$Spec_full="$RESULTS/spec.full";
 
 $TrainDir="TRAIN";
 $PredictDir="PREDICT";
