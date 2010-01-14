@@ -8,6 +8,14 @@ $grid               = 1;
 $svm_train          = 1;
 $svm_predict        = 1;
 
+if (grep(/--KMEANS/i, @ARGV) ) {
+  $pinalyze           = 0;
+  $grid               = 0;
+  $svm_train          = 0;
+  $svm_predict        = 0;
+  print "--KMEANS detected. Only running chooseTrainingSets.pl\n";
+}
+
 # params
 $TrainSize = 5;
 $Threshold = 0.0;

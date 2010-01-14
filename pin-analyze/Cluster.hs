@@ -7,12 +7,14 @@ import KMeans
 import Numeric
 import System.IO
 import System.Random
+import Util
 
 type PinClusterElement = ClusterElement AnalysisLabel
 type PinCluster        = [PinClusterElement]
 
-clusterK :: (RandomGen g) => g ->  [PinAnalysisData] -> Int -> [PinCluster]
-clusterK gen analysisData numClusters = kmeans gen numClusters clusterElements
+clusterK :: (RandomGen g) => g ->  [PinAnalysisData] -> Int -> ([PinCluster],g)
+clusterK gen analysisData numClusters = 
+  kmeans gen numClusters clusterElements
   where
   clusterElements = convertToClusterElements analysisData
 
@@ -65,8 +67,8 @@ writeClusters :: Handle -> [PinCluster] -> [PinAnalysisData] -> IO ()
 writeClusters h clusters filteredResults = do
   mapM_ printCluster $ zip (clusterStats clusters) clusters
   putStrLn ("Accuracy = " ++ accuracyS ++ "%")
-  putStrLn ("STATS(min/mean/max) = " ++ 
-            accuracyS ++ "/" ++ accuracyS ++ "/"++accuracyS )
+  --putStrLn ("STATS(min/mean/max) = " ++ 
+  --          accuracyS ++ "/" ++ accuracyS ++ "/"++accuracyS )
   return ()
   where
   accuracyS  = (showFFloat (Just 4) accuracy "")

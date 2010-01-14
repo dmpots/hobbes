@@ -2,15 +2,20 @@
 #
 #
 $LoopSize   = 100;
+$Method     = "kmeans"; # kmeans or svm
 @Tools      = qw(opcodemix jumpmix regmix);
 @TrainSizes = qw(02 04 06 08 10);
 @Cutoffs    = qw(0.00 0.01 0.02 0.03 0.04 0.05 0.10);
 @ProgSets   = qw(HNHS);
 #@ProgSets   = qw(SHOOTOUT HGCC HICC HNHS SPEC SSGCC  ALL);
+
+if($Method eq "kmeans") {
+  @TrainSizes = qw(0);
+}
+
 $Total   = @Tools * @TrainSizes * @Cutoffs * @ProgSets;
 $Current = 0;
 print "$Total\n"; 
-#exit 0;
 
 for my $spec      (@ProgSets)   {
 for my $tool      (@Tools)      {
@@ -19,14 +24,19 @@ for my $cutoff    (@Cutoffs)    {
   $start = time();
   $Current++;
   $count   = "($Current/$Total)";
-  $outFile = "RESULTS/svm.$tool.$trainSize.-$cutoff-.$spec";
-  $cmd = "./runTraining.pl $LoopSize $trainSize $cutoff $spec $tool | tee -a $outFile";
+  $outFile = "RESULTS/$Method.$tool.$trainSize.-$cutoff-.$spec";
+  if( $Method eq "kmeans") {
+    $cmd = "./runKmeans.pl $LoopSize $cutoff $spec $tool";
+  }
+  else {
+    $cmd = "./runTraining.pl $LoopSize $trainSize $cutoff $spec $tool";
+  }
   $mailCmd = "mail -s \"[TRAIN] finished\" dmp\@rice.edu < $outFile";
 
   print "$count\n";
   print "$cmd\n";
   system("echo \"$count\" > $outFile");
-  system($cmd);
+  system("$cmd >> $outFile");
   if($? == -1) {
     print "Failed to execute: $!\n";
     exit 1;
@@ -38,7 +48,7 @@ for my $cutoff    (@Cutoffs)    {
   else {
     $rc = $? >> 8;
     if ($rc != 0) {
-        print "ERROR: $!";
+        print "ERROR: $rc $!\n";
         exit 1;
     }
   }

@@ -24,6 +24,7 @@ data Options = Options {
   , optThreshold    :: Double
   , optExcelData    :: Bool
   , optNumCluster   :: Maybe Int
+  , optClusterIters :: Int
   , optWriteGraph   :: Bool
   , optWriteSvm     :: Bool
   , optSvmModel     :: Maybe String
@@ -40,6 +41,7 @@ defaultOptions = Options {
   , optThreshold    = 0.0
   , optExcelData    = False
   , optNumCluster   = Nothing
+  , optClusterIters = 1
   , optWriteGraph   = False
   , optWriteSvm     = False
   , optSvmModel     = Nothing
@@ -76,6 +78,10 @@ cmdLineOptions = [
     , Option ['k'] ["cluster"]
       (ReqArg (\t opts -> opts { optNumCluster = Just(read t) }) "INT")
       "Number of clusters for k-means"
+
+    , Option ['i'] ["iters"]
+      (ReqArg (\t opts -> opts { optClusterIters = read t }) "INT")
+      "Number of iterations for k-means"
 
     , Option ['g'] ["write-graph"]
       (NoArg (\opts -> opts { optWriteGraph = not (optWriteGraph opts)}))
@@ -210,9 +216,14 @@ writeClustersIf options filteredResults
   | isJust (optNumCluster options) = do
        putStrLn ("Writing Clusters ")
        gen <- getStdGen
-       let numClusters  = (fromJust $ optNumCluster options)
-       let clusters     = clusterK gen filteredResults numClusters
-       writeClusters stdout clusters filteredResults
+       let numClusters     = (fromJust $ optNumCluster   options)
+           numIters        = (           optClusterIters options)
+           (css, _gen')    = foldr foldFun ([], gen) [1..numIters]
+           foldFun _n (cs, g) = 
+             let {(c, g') = clusterK g filteredResults numClusters } in 
+             (c : cs, g')
+             
+       mapM_ (\c -> writeClusters stdout c filteredResults) css
   | otherwise            = return ()
 
 

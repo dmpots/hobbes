@@ -1,4 +1,4 @@
-module KMeans (kmeans, pairs)
+module KMeans (kmeans)
     where
 
 import ClusterElement
@@ -6,6 +6,7 @@ import Data.List (transpose, groupBy, minimumBy, sortBy)
 import Data.Function (on)
 import Data.Ord (comparing)
 import System.Random
+import Util
 
 type NPoint   = [Double]
 type Centroid = NPoint
@@ -48,26 +49,16 @@ kmeans' clusters
 -- | Cluster points into k clusters.
 -- |
 -- | The initial clusters are chosen arbitrarily
-kmeans :: RandomGen g => (Eq b) => g -> Int -> [ClusterElement b] -> [Cluster b]
-kmeans _   _ []    =  []
+kmeans :: RandomGen g 
+          => (Eq b) 
+          => g 
+          -> Int 
+          -> [ClusterElement b] 
+          -> ([Cluster b], g)
+kmeans gen _ []    =  ([], gen)
 kmeans gen k elems = 
-  kmeans' initialClusters
+  (kmeans' initialClusters, gen')
   where 
-  initialClusters = randomPartition gen k elems
+  (initialClusters, gen') = randomPartition gen k elems
 
-randomPartition :: RandomGen g => g -> Int -> [a] -> [[a]]
-randomPartition gen k list = partition gen initial list
-  where
-  initial = replicate k []
-  partition _ partitions []     = partitions
-  partition g partitions (x:xs) = 
-    let (index, g') = randomR (0, k-1) g
-        (yss, ys:yss') = splitAt index partitions
-    in
-    partition g' (yss ++ [x:ys] ++ yss') xs
-  
-
-pairs :: [a] -> [(a,a)]
-pairs [] = []
-pairs (x:xs) = [(x,y) | y <- xs] ++ pairs xs
 
