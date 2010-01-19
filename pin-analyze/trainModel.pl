@@ -41,6 +41,7 @@ if (@ARGV > 0) {
   elsif ($t =~ /shoot/i) {$ProgSets = 5;}
   elsif ($t =~ /ssgcc/i) {$ProgSets = 6;}
   elsif ($t =~ /hnhs/i)  {$ProgSets = 7;}
+  elsif ($t =~ /hsgp/i)  {$ProgSets = 8;}
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
@@ -74,7 +75,8 @@ if($chooseTrainingSets) {
   if ($ProgSets == 5) {push @classes, ($shootGhc, $shootGcc);}
   if ($ProgSets == 6) {push @classes, ($shootGcc, $specGcc);}
   if ($ProgSets == 7) {push @classes, ($nofibGhc, $shootGhc);}
-  if ($ProgSets  > 7) {print "Unknown ProgSets: $ProgSets"; exit 1;}
+  if ($ProgSets == 8) {push @classes, ($shootGhc, $specGcc);}
+  if ($ProgSets  > 8) {print "Unknown ProgSets: $ProgSets"; exit 1;}
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
   check($rc, "Error choosing training sets");
