@@ -1,0 +1,7 @@
+sumsq|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/libraries/dph/examples/sumsq/par|./sumsq 10000000 
+sumsq_prim|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/libraries/dph/examples/sumsq/par|./prim 10000000 
+dotp|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/libraries/dph/examples/dotp/par|./dotp 100000000 
+dotp_prim|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/libraries/dph/examples/dotp/par|./prim 100000000 
+dotp|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/libraries/dph/examples/smvm/par|./smvm ../smvm/test.mat
+dotp|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/libraries/dph/examples/smvm/par|./prim ../smvm/test.mat
+
