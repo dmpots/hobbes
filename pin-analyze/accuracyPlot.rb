@@ -35,7 +35,7 @@ if __FILE__ == $0 then
 files = {}
 ARGV.each do |file|
   ext = File.extname(file).gsub(/^\./, "")
-  if ext =~ /SPEC|HICC|HGCC|SHOOTOUT|SSGCC|HNHS/ then
+  if ext =~ /SPEC|HICC|HGCC|SHOOTOUT|SSGCC|HNHS|HSGP/ then
     pinTool =
     case file 
       when /jumpmix/   
