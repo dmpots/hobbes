@@ -1,0 +1,8 @@
+parfib|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib/parallel/parfib|./parfib 43 11 < /dev/null 
+partree|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib/parallel/partree|./partree 300 100 < /dev/null 
+sumeuler|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib/parallel/sumeuler|./sumeuler 38 8000 100 < /dev/null 
+matmult|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib/parallel/matmult|./matmult 600 1 10 < /dev/null 
+ray|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib/parallel/ray|./ray 1000 < /dev/null 
+gray|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib/parallel/gray|./gray  < /dev/null 
+prsa|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib/parallel/prsa|./prsa 500000 < /dev/null 
+mandel|/home/dave/ghc-BUILD/ghc-HEAD-BUILD/nofib/parallel/mandel|./mandel -2.0 -2.0 2.0 2.0 1024 1024 256 < /dev/null 
