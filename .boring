@@ -122,6 +122,8 @@
 (^|/)pin-run/RESULTS/shootout.*$
 (^|/)pin-run/RESULTS/C.*$
 (^|/)pin-run/RESULTS/H.*$
+(^|/)pin-run/RESULTS/1/.*$
+(^|/)pin-run/RESULTS/1
 (^|/)pin-analyze/__PinAlyze__
 (^|/)pin-analyze/TRAIN
 (^|/)pin-analyze/PREDICT
@@ -131,3 +133,4 @@
 (^|/)pin-analyze/__TRAINLOG__$
 (^|/)pin-analyze/__KMEANLOG__$
 (^|/)pin-analyze/RESULTS
+(^|/)pin-analyze/nohup.out$
