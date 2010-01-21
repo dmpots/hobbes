@@ -117,7 +117,9 @@
 (^|/)pin-analyze/.*\.dat$
 (^|/)pin-analyze/LOG
 (^|/)nofib-pin/RESULTS
+(^|/)pin-run/RESULTS/dph.*$
 (^|/)pin-run/RESULTS/nofib.*$
+(^|/)pin-run/RESULTS/nofibpar.*$
 (^|/)pin-run/RESULTS/spec.*$
 (^|/)pin-run/RESULTS/shootout.*$
 (^|/)pin-run/RESULTS/C.*$
