@@ -19,30 +19,43 @@ clusterK gen analysisData numClusters =
   clusterElements = convertToClusterElements analysisData
 
 --clusterAccuracy :: [PinAnalysisData] -> [PinCluster] -> Double
-randIndex :: [PinAnalysisData] -> [PinCluster] -> Double
-randIndex candidates clusters = (a + b) / nc2
+kMeansRandIndex :: [GenPinData a] -> [GenCluster b c] -> Double
+kMeansRandIndex candidates clusters = randIndex candidates cluster1 cluster2
+  where
+  cluster1 = clusterAssignment clusters
+  cluster2 = bmLabel
+
+-- Compute the Rand Index of the cluster assignments
+-- 
+-- Given a set of n elements  and two partitions of S to compare,  X and Y we
+-- define the following:
+-- a, the number of pairs of elements in S that are in the same set in X and in
+--    the same set in Y
+-- b, the number of pairs of elements in S that are in different sets in X and
+--    in different sets in Y
+-- c, the number of pairs of elements in S that are in the same set in X and in
+--    different sets in Y
+-- d, the number of pairs of elements in S that are in different sets in X and
+--    in the same set in Y
+-- 
+-- The rand index R is:
+-- R = a + b / (a + b + c + d) = a + b / (n choose 2)
+randIndex :: Eq b => Eq c => [a] -> (a -> b) -> (a -> c) -> Double
+randIndex candidates partition1 partition2 = (a + b) / nc2
   where
   a  = toFloat as
   b  = toFloat bs
   nc2= toFloat allPairs
-  as = [(assign bm1) | (bm1,bm2) <- allPairs, 
-                                    (assign bm1 == assign bm2), 
-                                    (bmLabel bm1 == bmLabel bm2)]
-  bs = [(assign bm1) | (bm1,bm2) <- allPairs, 
-                                    (assign bm1 /= assign bm2), 
-                                    (bmLabel bm1 /= bmLabel bm2)]
+  as = [bm1 | (bm1,bm2) <- allPairs, 
+                           (partition1 bm1 == partition1 bm2), 
+                           (partition2 bm1 == partition2 bm2)]
+  bs = [bm1 | (bm1,bm2) <- allPairs, 
+                           (partition1 bm1 /= partition1 bm2), 
+                           (partition2 bm1 /= partition2 bm2)]
   allPairs = pairs candidates
-  assign   = clusterAssignment clusters
   toFloat  = (fromIntegral . length)
 
---clusterAssignments :: [String] -> [PinCluster] -> IntMap
---clusterAssignments bmNames clusters =
---  foldr foldFun 
---  where
---  foldFun = (\bmName bmMap -> 
---              IntMap.insert bmName (clusterAssignment clusters bmName))
-
-clusterAssignment :: [PinCluster] -> PinAnalysisData -> Integer
+clusterAssignment :: [GenCluster a b] -> GenPinData c -> Integer
 clusterAssignment clusters pinAnalData = 
   case found of 
       Nothing    -> error("No cluster assignment found for pin data: "++benchName)
@@ -72,7 +85,7 @@ writeClusters h clusters filteredResults = do
   return ()
   where
   accuracyS  = (showFFloat (Just 4) accuracy "")
-  accuracy   = (randIndex filteredResults clusters) * 100.0
+  accuracy   = (kMeansRandIndex filteredResults clusters) * 100.0
   totalCount = show (length (concat clusters))
   --printCluster :: ((Int, [(ProgramClass, Int)]),[OpcodeClusterElement]) -> IO ()
   printCluster ((i, classCounts), clusterElems) = do

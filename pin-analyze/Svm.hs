@@ -6,6 +6,7 @@ import Data.List
 import Data.SVM
 import qualified Data.IntMap as IntMap
 import PinData
+import Numeric
 import System.IO
 
 type PredictionElement = (String, ProgramClass, Vector)
@@ -34,10 +35,14 @@ formatPredictions predictions =
   where
   (right, wrong) = partition correctPrediction predictions
   correctPrediction (_, a, b) = a == b
-  header = "Correctly predicted " ++(show.length $ right)
-           ++" out of " ++(show.length $ predictions)
-           ++" ("++(show formatPercent)++")"
-  formatPercent = (fromIntegral (length right) / totalPreds)
+  header =    "Accuracy = "++ formatAccuracy
+           ++ " ("++(show.length $ right)++"/"++(show.length $ predictions)++")"
+           ++ "\n"
+           ++ "RandIndx = "++formatRandIndex
+  formatAccuracy   = (showFFloat (Just 4) accuracy  "%")
+  formatRandIndex  = (showFFloat (Just 4) randIdx   "%")
+  accuracy = (fromIntegral (length right) / totalPreds) * 100.0
+  randIdx  = (svmRandIndex predictions) * 100.0
   totalPreds = fromIntegral (length predictions) :: Double
   rightList =  formatList right
   wrongList = formatList wrong
@@ -67,3 +72,10 @@ predictVector model vector = prediction
   enumVal    = toEnum . fst . properFraction
   
 
+svmRandIndex :: [PredictedElement] -> Double
+svmRandIndex predicted = randIndex predicted partition1 partition2
+  where
+  partition1 = predictedClass
+  partition2 = actualClass
+  predictedClass (_, _, p) = p
+  actualClass    (_, a, _) = a

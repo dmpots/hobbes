@@ -96,8 +96,6 @@ if($pinalyze) {
   $threshold = $Threshold;
   $rc = system("$pinalyze -o TRAIN   -f $threshold -v TRAIN/*");
   check($rc, "Error generating svm TRAINING data");
-  $rc = system("$pinalyze -o PREDICT -f $threshold -v PREDICT/*");
-  check($rc, "Error generating svm PREDICTION data");
 }
 
 # grid search for best params
@@ -126,8 +124,11 @@ if($svm_train) {
 if($svm_predict) {
   print "Predicting with model\n";
   unlink 'PREDICT.out';
-  $predict = "./libsvm-2.9/svm-predict";
-  $rc = system("$predict PREDICT.svm TRAIN.svm.model PREDICT.out\n");
+  #$rc = system("$pinalyze -o PREDICT -f $threshold -v PREDICT/*");
+  #check($rc, "Error generating svm PREDICTION data");
+  #$predict = "./libsvm-2.9/svm-predict";
+  #$rc = system("$predict PREDICT.svm TRAIN.svm.model PREDICT.out\n");
+  $rc = system("./pinalyze -m TRAIN.svm.model -f $Threshold PREDICT/*\n");
   check($rc, "Error predicting");
 }
 

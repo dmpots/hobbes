@@ -43,6 +43,7 @@ print "USING TrainSize = $TrainSize, Threshold = $Threshold, ProgSets = $ProgSet
 open LOG, '>', "__TRAINLOG__";
 
 my @results = ();
+my @randResults = ();
 for(my $i = 0; $i < $iters; $i++) {
   open(TRAIN, "./trainModel.pl $TrainSize $Threshold $ProgSets $PinTool|") || die "unable to run training";
   while(<TRAIN>) {
@@ -52,16 +53,28 @@ for(my $i = 0; $i < $iters; $i++) {
       push @results, $1;
       print LOG scalar(localtime), "\n";
     }
+    if(/RandIndx = (\d+(?:\.\d+)?)%/) {
+      print;
+      push @randResults, $1;
+    }
   }
   close TRAIN;
 }
 close LOG;
 
-#print "@results\n";
+# Accuracy Summary
 $stat = Statistics::Descriptive::Full->new();
 $stat->add_data(@results);
 ($min, $mean, $max) = ($stat->min(),$stat->geometric_mean(),$stat->max());
 printf("STATS(min/mean/max) = %.2f/%.2f/%.2f\n", $min,$mean,$max);
+
+# Rand Index Summary
+if(@randResults) {
+  $stat2 = Statistics::Descriptive::Full->new();
+  $stat2->add_data(@randResults);
+}
+($min, $mean, $max) = ($stat2->min(),$stat2->geometric_mean(),$stat2->max());
+printf("RANDStats()         = %.2f/%.2f/%.2f\n", $min,$mean,$max);
 
 
 
