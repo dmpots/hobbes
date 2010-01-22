@@ -17,6 +17,7 @@ if (system("$cmd > $TmpFile") != 0) {
 }
 
 # run kmeans
+print "USING Iters = $Iters, Threshold = $Cutoff, ProgSets = $ProgSet PinTool = $Tool\n";
 $cmd = "./pinalyze -k 2 -i $Iters PREDICT/*";
 @results = ();
 open LOG, '>', $TmpFile;
