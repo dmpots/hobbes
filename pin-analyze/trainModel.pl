@@ -79,13 +79,13 @@ if($chooseTrainingSets) {
   elsif ($ProgSets =~ /indi/i){@classes = ($nofibGhc, $specGcc, $specIcc);}
   elsif ($ProgSets =~ /HNGS/i){@classes = ($nofibGhc, $specGcc);}
   elsif ($ProgSets =~ /HNIS/i){@classes = ($nofibGhc, $specIcc);}
-  elsif ($ProgSets =~ /GSIS/i){@classes = ($specGcc,  $specIcc);}
-  elsif ($ProgSets =~ /HTGT/i){@classes = ($shootGhc, $shootGcc);}
-  elsif ($ProgSets =~ /GTGS/i){@classes = ($shootGcc, $specGcc);}
   elsif ($ProgSets =~ /HNHT/i){@classes = ($nofibGhc, $shootGhc);}
+  elsif ($ProgSets =~ /HNHP/i){@classes = ($nofibGhc, $parallelGhc);}
   elsif ($ProgSets =~ /HTGS/i){@classes = ($shootGhc, $specGcc);}
-  elsif ($ProgSets =~ /HPGS/i){@classes = ($parallelGhc, $specGcc);}
-  elsif ($ProgSets =~ /HPHN/i){@classes = ($parallelGhc, $nofibGhc);}
+  elsif ($ProgSets =~ /HTGT/i){@classes = ($shootGhc, $shootGcc);}
+  elsif ($ProgSets =~ /GSHP/i){@classes = ($specGcc, $parallelGhc);}
+  elsif ($ProgSets =~ /GSIS/i){@classes = ($specGcc,  $specIcc);}
+  elsif ($ProgSets =~ /GSGT/i){@classes = ($specGcc, $shootGcc);}
   else  {print "Unknown ProgSets: $ProgSets"; exit 1;}
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
