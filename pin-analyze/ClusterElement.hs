@@ -10,6 +10,9 @@ data ProgramClass =
   | SpecIcc
   | ShootoutGhc
   | ShootoutGcc
+  | NofibparGhc
+  | DphGhc
+  | ParallelGhc
   deriving (Enum, Ord, Eq, Show, Read)
 
 data GenClusterElement a b = CE { 

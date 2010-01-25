@@ -1,6 +1,6 @@
 
 $ProgramClassRE  = "HaskellProgram|CProgram|NofibGhc|SpecGcc|SpecIcc";
-$ProgramClassRE .= "|ShootoutGhc|ShootoutGcc";
+$ProgramClassRE .= "|ShootoutGhc|ShootoutGcc|NofibparGhc|DphGhc|ParallelGhc";
 @ProgramClasses = split(/\|/, $ProgramClassRE);
 $ProgramClassStrings = "  " . join("\n  ", @ProgramClasses);
 

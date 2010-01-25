@@ -3,11 +3,12 @@
 #
 $LoopSize   = 100;
 $Method     = "svm"; # kmeans or svm
-@Tools      = qw(opcodemix jumpmix regmix);
+@Tools      = qw(opcodemix);
+#@Tools     = qw(opcodemix jumpmix regmix);
 @TrainSizes = qw(02 04 06 08 10);
 @Cutoffs    = qw(0.00 0.01 0.02 0.03 0.04 0.05 0.10);
-@ProgSets   = qw(HSGP);
-#@ProgSets   = qw(SHOOTOUT HGCC HICC HNHS HSGP SPEC SSGCC ALL);
+@ProgSets   = qw(HNGS);
+#@ProgSets  = qw( HNGS HNIS GSIS HTGT GTGS HNHT HTGS HPGS HPHN ALL INDIVIDUAL )
 
 if($Method eq "kmeans") {
   @TrainSizes = qw(0);

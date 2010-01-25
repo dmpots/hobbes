@@ -1,4 +1,19 @@
 #!/usr/bin/perl
+#
+# ProgSets Key = $Compiler$Suite$Compiler$Suite where
+# Compilers
+#  H = Ghc
+#  G = Gcc
+#  I = Icc
+#
+# Suites
+#  S = spec
+#  T = shootout
+#  N = nofib
+#  P = parallel
+#  R = nofibpar
+#  D = dph 
+
 
 BEGIN {$| = 1;} #autoflush
 $Pgm = "trainModel";
@@ -34,14 +49,7 @@ if (@ARGV > 0) {
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
-  if    ($t =~ /indi/i)  {$ProgSets = 1;}
-  elsif ($t =~ /hgcc/i)  {$ProgSets = 2;}
-  elsif ($t =~ /hicc/i)  {$ProgSets = 3;}
-  elsif ($t =~ /spec/i)  {$ProgSets = 4;}
-  elsif ($t =~ /shoot/i) {$ProgSets = 5;}
-  elsif ($t =~ /ssgcc/i) {$ProgSets = 6;}
-  elsif ($t =~ /hnhs/i)  {$ProgSets = 7;}
-  elsif ($t =~ /hsgp/i)  {$ProgSets = 8;}
+  $ProgSets = $t;
 }
 if (@ARGV > 0) {
   my $t = shift @ARGV;
@@ -59,24 +67,26 @@ if($chooseTrainingSets) {
   my $Hprogs   = "HaskellProgram ../pin-run/RESULTS/H.$PinTool";
   my $Cprogs   = "CProgram       ../pin-run/RESULTS/C.$PinTool";
 
-  my $nofibGhc = "NofibGhc    ../pin-run/RESULTS/nofib.$PinTool";
-  my $specGcc  = "SpecGcc     ../pin-run/RESULTS/spec.gcc.$PinTool";
-  my $specIcc  = "SpecIcc     ../pin-run/RESULTS/spec.icc.$PinTool";
-  my $shootGhc = "ShootoutGhc ../pin-run/RESULTS/shootout.ghc.$PinTool";
-  my $shootGcc = "ShootoutGcc ../pin-run/RESULTS/shootout.gcc.$PinTool";
-  my $setSize        = $TrainSize;
-  my @classes        = ();
-  if ($ProgSets == 0) {push @classes, ($Hprogs, $Cprogs);}
-  if ($ProgSets == 1) {push @classes, ($nofibGhc, $specGcc, $specIcc);
-                       push @classes, ($shootGhc, $shootGcc);}
-  if ($ProgSets == 2) {push @classes, ($nofibGhc, $specGcc);}
-  if ($ProgSets == 3) {push @classes, ($nofibGhc, $specIcc);}
-  if ($ProgSets == 4) {push @classes, ($specGcc,  $specIcc);}
-  if ($ProgSets == 5) {push @classes, ($shootGhc, $shootGcc);}
-  if ($ProgSets == 6) {push @classes, ($shootGcc, $specGcc);}
-  if ($ProgSets == 7) {push @classes, ($nofibGhc, $shootGhc);}
-  if ($ProgSets == 8) {push @classes, ($shootGhc, $specGcc);}
-  if ($ProgSets  > 8) {print "Unknown ProgSets: $ProgSets"; exit 1;}
+  my $nofibGhc    = "NofibGhc    ../pin-run/RESULTS/nofib.$PinTool";
+  my $specGcc     = "SpecGcc     ../pin-run/RESULTS/spec.gcc.$PinTool";
+  my $specIcc     = "SpecIcc     ../pin-run/RESULTS/spec.icc.$PinTool";
+  my $shootGhc    = "ShootoutGhc ../pin-run/RESULTS/shootout.ghc.$PinTool";
+  my $shootGcc    = "ShootoutGcc ../pin-run/RESULTS/shootout.gcc.$PinTool";
+  my $parallelGhc = "ParallelGhc ../pin-run/RESULTS/parallel.ghc.$PinTool";
+  my $setSize     = $TrainSize;
+  my @classes     = ();
+  if    ($ProgSets =~ /all/i) {@classes = ($Hprogs, $Cprogs);}
+  elsif ($ProgSets =~ /indi/i){@classes = ($nofibGhc, $specGcc, $specIcc);}
+  elsif ($ProgSets =~ /HNGS/i){@classes = ($nofibGhc, $specGcc);}
+  elsif ($ProgSets =~ /HNIS/i){@classes = ($nofibGhc, $specIcc);}
+  elsif ($ProgSets =~ /GSIS/i){@classes = ($specGcc,  $specIcc);}
+  elsif ($ProgSets =~ /HTGT/i){@classes = ($shootGhc, $shootGcc);}
+  elsif ($ProgSets =~ /GTGS/i){@classes = ($shootGcc, $specGcc);}
+  elsif ($ProgSets =~ /HNHT/i){@classes = ($nofibGhc, $shootGhc);}
+  elsif ($ProgSets =~ /HTGS/i){@classes = ($shootGhc, $specGcc);}
+  elsif ($ProgSets =~ /HPGS/i){@classes = ($parallelGhc, $specGcc);}
+  elsif ($ProgSets =~ /HPHN/i){@classes = ($parallelGhc, $nofibGhc);}
+  else  {print "Unknown ProgSets: $ProgSets"; exit 1;}
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
   check($rc, "Error choosing training sets");
