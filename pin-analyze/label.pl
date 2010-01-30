@@ -9,6 +9,7 @@ my $Pgm = "label.pl";
 my $OPCODEMIX = "OpcodeMix";
 my $JUMPMIX   = "JumpMix";
 my $REGMIX    = "RegMix";
+my $BLOCKMIX  = "BlockMix";
 my $label = shift @ARGV;
 if(not checkClass($label)) {
     print "ERROR: must specify program class as first argument\n";
@@ -30,6 +31,9 @@ foreach $file (@ARGV) {
     elsif($fileType eq $REGMIX) {
       parseRegMix($file);
     }
+    elsif($fileType eq $BLOCKMIX) {
+      parseBlockMix($file);
+    }
     else {
       print "$Pgm: UNKNOWN file type for file: $file\n";
       exit 1;
@@ -42,9 +46,10 @@ sub testFile {
 
   open(FH, '<', $fileName) || die "unable to open file $fileName";
   while(<FH>) {
-    if (/^#(\s)*opcode/)  {$fileType = $OPCODEMIX;last;}
-    if (/^#(\s)*JUMPMIX/) {$fileType = $JUMPMIX;  last;}
+    if (/^#(\s)*opcode/)      {$fileType = $OPCODEMIX;last;}
+    if (/^#(\s)*JUMPMIX/)     {$fileType = $JUMPMIX;  last;}
     if (/^#(\s)*num(\s)+reg/) {$fileType = $REGMIX;  last;}
+    if (/^#(\s)*block-length/){$fileType = $BLOCKMIX;  last;}
   }
   close FH;
   return $fileType;
@@ -162,4 +167,35 @@ sub parseOpcodeMix {
     close FH; 
     close FH_STATIC;
     close FH_DYNAMIC;
+}
+
+sub parseBlockMix {
+  my $file = shift @_;
+  my ($base, $dir, $ext) = fileparse($file, ".LOG");
+  my $outf = $dir.$base.".BLOCKMIX".$ext;
+
+  open(FH, '<', $file) || die "unable to open file $file";
+  open FH_DYNAMIC, '>', $outf
+      or die "Unable to open file $outf: $!";
+  print FH_DYNAMIC "$BLOCKMIX\n";
+  print FH_DYNAMIC "$label\n";
+
+  header: while (<FH>) {
+      if(/^#.*$/) {next header;}
+      else        {last header;}
+  }
+
+  do {
+    next if (/^#.*$/);
+
+    if(/\s*(\d+)\s+(\d+)\s+\d+\.\d+/) {
+      my ($size, $count) = ($1, $2);
+      print FH_DYNAMIC "($size, $count)\n";
+    }
+
+  } while(<FH>);
+
+  close FH_DYNAMIC;
+  close FH;
+
 }

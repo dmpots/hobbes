@@ -34,6 +34,7 @@ if (@ARGV > 0) {
   if    ($t =~ /opcod/i){$PinTool = "opcodemix";}
   elsif ($t =~ /jump/i) {$PinTool = "jumpmix";}
   elsif ($t =~ /reg/i)  {$PinTool = "regmix";}
+  elsif ($t =~ /bbl/i)  {$PinTool = "bblengthmix";}
   else {print "BAD PinTool: $t"; exit 1;}
 }
 print "USING TrainSize = $TrainSize, Threshold = $Threshold, ProgSets = $ProgSets PinTool = $PinTool\n";
