@@ -5,6 +5,7 @@ use File::Basename;
 $PinDir="$ENV{HOME}/pin";
 $SimpleDir="$PinDir/source/tools/SimpleExamples/obj-intel64";
 $InstMixPinTool="$SimpleDir/opcodemix.so";
+#$InstMixPinTool="$SimpleDir/bblengthmix.so";
 #$InstMixPinTool="$SimpleDir/jumpmix.so";
 #$InstMixPinTool="$SimpleDir/regmix.so";
 $Pintool=basename($InstMixPinTool);
