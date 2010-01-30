@@ -1,4 +1,5 @@
 module Main where
+import BBLengthMix
 import Control.Monad
 import Cluster
 import Data.Char
@@ -110,9 +111,10 @@ main = do
     pinTools        <- mapM parseTool files
     doCheckPinTools pinTools
     case (head pinTools) of
-      OpcodeMix -> doOpcodemix options files
-      JumpMix   -> doJumpmix   options files
-      RegMix    -> doRegmix    options files
+      OpcodeMix  -> doMainWithParser options files readOpcodeCount OpcodeLabel
+      JumpMix    -> doMainWithParser options files readJumpCount   JumpLabel
+      RegMix     -> doMainWithParser options files readRegCount    RegLabel
+      BBLengthMix-> doMainWithParser options files readBBLengthCount BBLengthLabel
 
 doCheckPinTools :: [PinTool] -> IO ()
 doCheckPinTools [] = return ()
@@ -122,20 +124,15 @@ doCheckPinTools tools =
   else
     error "Error: All files must use the same pin tool"
 
-doOpcodemix :: Options -> [FilePath] -> IO ()
-doOpcodemix options files = do
-  pinCounts <- mapM parseOpcodemixFile files
-  doMain options pinCounts OpcodeLabel
-                
-doJumpmix :: Options -> [FilePath] -> IO ()
-doJumpmix options files = do
-  pinCounts <- mapM parseJumpmixFile files
-  doMain options pinCounts JumpLabel
-
-doRegmix :: Options -> [FilePath] -> IO ()
-doRegmix options files = do
-  pinCounts <- mapM parseRegmixFile files
-  doMain options pinCounts RegLabel
+doMainWithParser :: Ord k => 
+     Options 
+  -> [FilePath]
+  -> (String -> (k, PinCounter)) 
+  -> (k -> AnalysisLabel) 
+  -> IO ()
+doMainWithParser options files pinParser labelMaker = do
+  pinCounts <- mapM (\f -> parseFile f pinParser) files
+  doMain options pinCounts labelMaker
 
 doMain :: Ord k => Options -> [GenCountData k] -> (k -> AnalysisLabel) -> IO ()
 doMain options pinCounts mkLabel = do
@@ -262,15 +259,6 @@ parseTool fileName = do
     toolName <- hGetLine h
     hClose h
     return $ read toolName
-
-parseOpcodemixFile :: FilePath -> IO PinOpcodeData
-parseOpcodemixFile fileName = parseFile fileName readOpcodeCount
-
-parseJumpmixFile :: FilePath -> IO PinJumpData
-parseJumpmixFile fileName = parseFile fileName readJumpCount
-
-parseRegmixFile :: FilePath -> IO PinRegData
-parseRegmixFile fileName = parseFile fileName readRegCount
 
 parseFile :: FilePath -> (String -> (k, PinCounter)) -> IO (GenCountData k)
 parseFile fileName reader = do

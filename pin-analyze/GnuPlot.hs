@@ -97,9 +97,10 @@ mkGraphData counts =
     colLabels : transpose (rowLabels : (weave countCols percentCols))
 
 formatOpLabels :: AnalysisLabel -> String
-formatOpLabels (OpcodeLabel o) = show o
-formatOpLabels (JumpLabel  jl) = show jl
-formatOpLabels (RegLabel   rl) = show rl
+formatOpLabels (OpcodeLabel   o)  = show o
+formatOpLabels (JumpLabel     jl) = show jl
+formatOpLabels (RegLabel      rl) = show rl
+formatOpLabels (BBLengthLabel bl) = show bl
 
 generateColumnLabels :: [GenPinData a] -> [DataColumn]
 generateColumnLabels counts = opcodeLabel ++ columnLabels

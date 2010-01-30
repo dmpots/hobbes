@@ -13,7 +13,7 @@ data GenPinData a = PinData {
     , pinData :: a
 } deriving(Show, Read)
 
-data PinTool = OpcodeMix | JumpMix | RegMix
+data PinTool = OpcodeMix | JumpMix | RegMix | BBLengthMix
   deriving(Eq, Enum, Show, Read)
 
 type PinCounter = Integer
@@ -27,15 +27,17 @@ data AnalysisData = AnalysisData {
 } deriving(Show, Read)
 
 data AnalysisLabel = 
-    OpcodeLabel  Opcode
-  | JumpLabel    Jump
-  | RegLabel     Reg
+    OpcodeLabel   Opcode
+  | JumpLabel     Jump
+  | RegLabel      Reg
+  | BBLengthLabel Int
     deriving (Eq, Show, Read, Ord)
 
 alEnum :: AnalysisLabel -> Int
-alEnum (OpcodeLabel oc) = fromEnum oc
-alEnum (JumpLabel   jl) = fromEnum jl
-alEnum (RegLabel    rl) = fromEnum rl
+alEnum (OpcodeLabel oc)   = fromEnum oc
+alEnum (JumpLabel   jl)   = fromEnum jl
+alEnum (RegLabel    rl)   = fromEnum rl
+alEnum (BBLengthLabel ll) =          ll
 
 fillMissingData :: Ord k => [GenCountData k] -> [GenCountData k]
 fillMissingData allPinData = zipWith fill allPinData mapData

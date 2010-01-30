@@ -9,7 +9,7 @@ my $Pgm = "label.pl";
 my $OPCODEMIX = "OpcodeMix";
 my $JUMPMIX   = "JumpMix";
 my $REGMIX    = "RegMix";
-my $BLOCKMIX  = "BlockMix";
+my $BLOCKMIX  = "BBLengthMix";
 my $label = shift @ARGV;
 if(not checkClass($label)) {
     print "ERROR: must specify program class as first argument\n";
