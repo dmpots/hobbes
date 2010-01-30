@@ -1,6 +1,10 @@
 #!/usr/bin/ruby
 require 'pp'
 
+ACCURACY_REGEX = /^STATS\(.*?\) = (\d+\.?\d*)\/(\d+\.?\d*)\/(\d+\.?\d*)/
+RANDINDX_REGEX = /^RANDStats\(\) *= (\d+\.?\d*)\/(\d+\.?\d*)\/(\d+\.?\d*)/
+$statRegex = ACCURACY_REGEX
+
 class Array
   def mean
     inject(0){ |sum, n| sum + n } / length.to_f
@@ -17,7 +21,7 @@ def processFiles(files)
   means = []
   files.each do |file|
     File.open(file).lines.each do |line|
-      if line =~ /^STATS\(.*?\) = (\d+\.?\d*)\/(\d+\.?\d*)\/(\d+\.?\d*)/ then
+      if line =~ $statRegex then
         n,g,x = [$1.to_f, $2.to_f, $3.to_f]
         if g != 0.0 then
           means << g
@@ -32,6 +36,11 @@ def processFiles(files)
 end
 
 if __FILE__ == $0 then
+if ARGV.first =~ /-r/ then 
+  $statRegex = RANDINDX_REGEX
+  ARGV.shift
+end
+
 files = {}
 ARGV.each do |file|
   ext = File.extname(file).gsub(/^\./, "")
