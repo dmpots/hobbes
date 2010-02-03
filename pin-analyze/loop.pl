@@ -3,8 +3,8 @@
 #
 $LoopSize   = 100;
 $Method     = "svm"; # kmeans or svm
-@Tools      = qw(opcodemix);
-#@Tools     = qw(opcodemix jumpmix regmix);
+@Tools      = qw(opcodemix bblengthmix);
+#@Tools     = qw(bblengthmix opcodemix jumpmix regmix);
 @TrainSizes = qw(02 04 06 08 10);
 @Cutoffs    = qw(0.00 0.01 0.02 0.03 0.04 0.05 0.10);
 @ProgSets   = qw( HNGS HNIS HNHT HNHP HTGS HTGT GSHP GSIS GSGT                );
