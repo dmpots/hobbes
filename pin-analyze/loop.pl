@@ -9,6 +9,7 @@ $Method     = "svm"; # kmeans or svm
 @Cutoffs    = qw(0.00 0.01 0.02 0.03 0.04 0.05 0.10);
 @ProgSets   = qw( HNGS HNIS HNHT HNHP HTGS HTGT GSHP GSIS GSGT                );
 #@ProgSets  = qw( HNGS HNIS HNHT HNHP HTGS HTGT GSHP GSIS GSGT ALL INDIVIDUAL );
+$SendMail   = 0;
 
 if($Method eq "kmeans") {
   @TrainSizes = qw(0);
@@ -53,12 +54,13 @@ for my $cutoff    (@Cutoffs)    {
         exit 1;
     }
   }
-
-  print "$mailCmd\n";
-  $rc = system($mailCmd);
-  if($rc != 0) {
-      print "ERROR: $!";
-      exit 1;
+  if($SendMail) {
+    print "$mailCmd\n";
+    $rc = system($mailCmd);
+    if($rc != 0) {
+        print "ERROR: $!";
+        exit 1;
+    }
   }
   $end = time();
   printf "Iteration $Current took %d hours %d minutes and %d seconds\n",(gmtime ($end-$start))[2,1,0];
