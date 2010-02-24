@@ -10,6 +10,7 @@ $JumpMixPinTool="$SimpleDir/jumpmix.so";
 $RegMixPinTool="$SimpleDir/regmix.so";
 $DieOnNofibFailure=1;
 $SanityCheckOnly=0;
+$SharedLibsFlag="";
 
 $FullPathPinTool = $InstMixPinTool;
 if(grep(/--opcodemix/i, @ARGV)) {
@@ -24,11 +25,14 @@ elsif(grep(/--jumpmix/i, @ARGV)) {
 elsif(grep(/--regmix/i, @ARGV)) {
   $FullPathPinTool = $RegMixPinTool;
 }
+if(grep(/--no-shared-libs/i, @ARGV)) {
+  $SharedLibsFlag="-no-shared-libs";
+}
 @ARGV = grep(!/^--/, @ARGV); #remove switches
   
 
 $Pintool=basename($FullPathPinTool);
-$PinPrefix="setarch x86_64 -R $PinDir/pin -t $FullPathPinTool";
+$PinPrefix="setarch x86_64 -R $PinDir/pin -t $FullPathPinTool $SharedLibsFlag";
 
 while(<>) {
     next if /^#/;

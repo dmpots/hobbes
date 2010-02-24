@@ -128,6 +128,8 @@
 (^|/)pin-run/RESULTS/1/.*$
 (^|/)pin-run/RESULTS/1
 (^|/)pin-run/RESULTS/2
+(^|/)pin-run/RESULTS/3
+(^|/)pin-run/RESULTS/LATEST.nodylib
 (^|/)pin-run/RESULTS/LATEST
 (^|/)pin-analyze/__PinAlyze__
 (^|/)pin-analyze/TRAIN

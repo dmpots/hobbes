@@ -1,19 +1,39 @@
 #!/usr/bin/perl
 
 
-@tools = qw(opcodemix jumpmix regmix);
+@tools = qw(opcodemix bblengthmix);
+@destDirs = qw(H C parallel.ghc);
 
 print "CLEANING OLD FILES\n";
 for $tool (@tools) {
-  $cmd = "rm H.$tool/* C.$tool/*";
-  print "$cmd\n";
-  print `$cmd`;
-}
+  for $dir (@destDirs) {
+    if( -e "$dir.$tool") {
+      $cmd = "rm -f $dir.$tool/*";
+      print "$cmd\n";
+      print `$cmd`;
 
-print "COPYING FILES\n";
+      $cmd = "rmdir $dir.$tool";
+      print "$cmd\n";
+      print `$cmd`;
+    }
+  }
+}
+print "\n\n";
+
+print "CREATING DIRECTORIES\n";
+for $tool (@tools) {
+  for $dir (@destDirs) {
+    $cmd = "mkdir $dir.$tool";
+    print "$cmd\n";
+    print `$cmd`;
+  }
+}
+print "\n\n";
+
+print "SORTING C AND HASKELL FILES\n";
 for $tool (@tools) {
   # Haskell
-  $cmd = "find nofib.$tool/ shootout.ghc.$tool/ -type f -exec cp {} H.$tool \\;";
+  $cmd = "find nofib.$tool/ shootout.ghc.$tool/ nofibpar.$tool/ dph.$tool/ -type f -exec cp {} H.$tool \\;";
   print "$cmd\n";
   print `$cmd`;
 
@@ -22,6 +42,13 @@ for $tool (@tools) {
   print "$cmd\n";
   print `$cmd`;
 }
+print "\n\n";
 
+print "COPYING PARALLEL FILES\n";
+for $tool (@tools) {
+  $cmd = "find nofibpar.$tool/ dph.$tool/ -type f -exec cp {} parallel.ghc.$tool \\;";
+  print "$cmd\n";
+  print `$cmd`;
 
-
+}
+print "\n\n";
