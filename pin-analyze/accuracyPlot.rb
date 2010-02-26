@@ -53,6 +53,8 @@ ARGV.each do |file|
         "opcodemix"
       when /regmix/    
         "regmix"
+      when /bblengthmix/    
+        "bblengthmix"
     end
 
     key = "#{ext}-#{pinTool}"
