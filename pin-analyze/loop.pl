@@ -69,4 +69,6 @@ for my $cutoff    (@Cutoffs)    {
 }
 }
 
+$mailCmd = "mail -s \"[PINALYZE] finished\" dmp\@rice.edu < /dev/null";
+system($mailCmd);
 

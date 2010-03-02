@@ -1,7 +1,9 @@
 #!/usr/bin/perl
 use File::Basename;
-$PinTool = "opcodemix"; #or "bblengthmix"
-$SharedLibs = "--no-shared-libs"; #or ""
+$PinTool = "bblengthmix"; #or "bblengthmix"
+#$PinTool = "opcodemix"; #or "bblengthmix"
+#$SharedLibs = "--no-shared-libs"; #or ""
+$SharedLibs = ""; #or ""
 
 @commands = qw(
               ../nofib-pin/nofib.commands 
