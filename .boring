@@ -140,5 +140,6 @@
 (^|/)pin-analyze/__TRAINLOG__$
 (^|/)pin-analyze/__KMEANLOG__$
 (^|/)pin-analyze/RESULTS
+(^|/)pin-analyze/PLOT
 (^|/)pin-analyze/nohup.out$
 (^|/)nohup.out$
