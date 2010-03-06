@@ -29,7 +29,7 @@ options = {}
 options[:title] = ""
 options[:statregex] = ACCURACY_REGEX 
 OptionParser.new do |opts|
-  opts.banner = "Usage: rPlot.rb [options]"
+  opts.banner = "Usage: rPlot.rb [options] FILE1 [FILE2 ...]"
 
   opts.on("-r", "--rand", "Compute summary of RandIndex") do |v|
     $statRegex = RANDINDX_REGEX
@@ -86,8 +86,8 @@ File.open('PLOTS/plot.r', 'w') do |f|
   end
   names = files.keys.map{|n| n.split("-",2)[0]}.map{|s| "\"#{s}\""}.sort.join(",")
   f.puts "names <- c(#{names})"
-  f.puts "vioplot(#{xs.join(',')}, names=names, col=\"tomato\", colMed=\"grey\", pchMed=10)"
-  f.puts "title(\"#{options[:title]}\")"
+  f.puts "vioplot(#{xs.join(',')}, names=names, col=\"tomato\", colMed=\"grey\", pchMed=10,ylim=c(0,1))"
+  f.puts "title(\"#{options[:title]}\",xlab=\"benchmarks\",ylab=\"accuracy\")"
   f.puts "xs <- list(#{xs.join(',')})"
   f.puts "names(xs) <- names"
   f.puts "stats <- t(sapply(xs, summary))"
