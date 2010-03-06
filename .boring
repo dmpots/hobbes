@@ -131,6 +131,7 @@
 (^|/)pin-run/RESULTS/3
 (^|/)pin-run/RESULTS/LATEST.nodylib
 (^|/)pin-run/RESULTS/LATEST
+(^|/)pin-run/RESULTS/PAPI
 (^|/)pin-analyze/__PinAlyze__
 (^|/)pin-analyze/TRAIN
 (^|/)pin-analyze/PREDICT

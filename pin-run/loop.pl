@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 use File::Basename;
-$PinTool = "bblengthmix"; #or "bblengthmix"
+#$PinTool = "bblengthmix"; #or "bblengthmix"
 #$PinTool = "opcodemix"; #or "bblengthmix"
 #$SharedLibs = "--no-shared-libs"; #or ""
+$PinTool = "papi-cache"; #or "bblengthmix"
 $SharedLibs = ""; #or ""
 
 @commands = qw(

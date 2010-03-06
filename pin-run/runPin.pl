@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 use Cwd;
 use File::Basename;
+use File::Copy;
+use File::Path qw(remove_tree);
 
 $PinDir="$ENV{HOME}/pin";
 $SimpleDir="$PinDir/source/tools/SimpleExamples/obj-intel64";
@@ -8,9 +10,16 @@ $InstMixPinTool="$SimpleDir/opcodemix.so";
 $BBLenMixPinTool="$SimpleDir/bblengthmix.so";
 $JumpMixPinTool="$SimpleDir/jumpmix.so";
 $RegMixPinTool="$SimpleDir/regmix.so";
+$PapiexTool="$ENV{HOME}/local/papiex/bin/papiex";
+$PapiEventSetCaches="-e PAPI_L2_ICM -e PAPI_L2_DCM";
+$PapiEventSetBranches="-e PAPI_BR_CN -e PAPI_BR_MSP";
+$PapiEventSetCPI   ="-e PAPI_L2_ICM -e PAPI_L2_DCM";
+$PapiEventSet = $PapiEventSetCaches;
+$Papitool="cache";
 $DieOnNofibFailure=1;
 $SanityCheckOnly=0;
 $SharedLibsFlag="";
+$Mode="pin";
 
 $FullPathPinTool = $InstMixPinTool;
 if(grep(/--opcodemix/i, @ARGV)) {
@@ -28,30 +37,85 @@ elsif(grep(/--regmix/i, @ARGV)) {
 if(grep(/--no-shared-libs/i, @ARGV)) {
   $SharedLibsFlag="-no-shared-libs";
 }
+if(grep(/--papi/i, @ARGV)) {
+  $Mode="papi";
+}
+if(grep(/--papi-cache/i, @ARGV)) {
+  $PapiEventSet = $PapiEventSetCaches;
+  $Papitool = "cache";
+}
+elsif(grep(/--papi-branch/i, @ARGV)) {
+  $PapiEventSet = $PapiEventSetBranches;
+  $Papitool = "branch";
+}
+elsif(grep(/--papi-cpi/i, @ARGV)) {
+  $PapiEventSet = $PapiEventSetCPI;
+  $Papitool = "cpi";
+}
 @ARGV = grep(!/^--/, @ARGV); #remove switches
   
 
 $Pintool=basename($FullPathPinTool);
 $PinPrefix="setarch x86_64 -R $PinDir/pin -t $FullPathPinTool $SharedLibsFlag";
+$PapiPrefix="$PapiexTool $PapiEventSet";
 
+print "runPin in mode: $Mode\n";
 while(<>) {
     next if /^#/;
     chomp;
     my ($name,$dir,$cmd) = split(/\|/);
-    runPin($name, $dir, $cmd);
+    if($Mode eq "pin") {
+      runPin($name, $dir, $cmd);
+    }
+    else {
+      runPapi($name, $dir, $cmd);
+    }
 }
 print "runPin finished running successfully\n";
 
 sub runPin {
     my ($name, $dir, $cmd) = @_;
-
     my $cwd = getcwd();
     my $pinCmd = "$PinPrefix -o $cwd/RESULTS/$name.$Pintool.$$.LOG -- $cmd\n";
-    print "COMMAND: $pinCmd\n";
+    runCommand($pinCmd, $dir, $cmd);
+}
+
+sub runPapi {
+    my ($name, $dir, $cmd) = @_;
+    my $cwd = getcwd();
+    my $outDir  = "$cwd/RESULTS/PAPI_RUN";
+    my $outFile = "$cwd/RESULTS/$name.$Papitool.$$.LOG";
+    my $papiCmd = "$PapiPrefix -o $outDir $cmd\n";
+    runCommand($papiCmd, $dir, $cmd);
+
+    $summaryFile = "$outDir/process_summary.txt";
+    if(-d $outDir) {
+      if(not -e "$summaryFile") {
+        print STDERR "Missing output $summaryFile. Killing myself\n";
+        exit 1;
+      }
+      copy($summaryFile, $outFile) or die "Copy failed:$!. Killing myself\n";
+    }
+    elsif(-f $outDir) {
+      copy($outDir, $outFile) or die "Copy failed:$!. Killing myself\n";
+    }
+    else {
+        print STDERR "$outDir is not a dir or file. Killing myself\n";
+        exit 1;
+    }
+    
+    remove_tree($outDir) or die "rmtree failed:$!. Killing myself\n";
+}
+
+sub runCommand {
+    my ($cmd, $dir, $bmCmd) = @_;
+
+    print "COMMAND: $cmd\n";
+    my $cwd = getcwd();
     chdir $dir or die "Can't cd to $dir: $!\n";
-    SanityCheck($cmd);
+    SanityCheck($bmCmd);
     unless ($SanityCheckOnly) {
-        system($pinCmd);
+        system($cmd);
         if($? == -1) {
             print STDERR "Failed to execute: $!\n. Killing myself";
             exit 1;
@@ -72,6 +136,7 @@ sub runPin {
     }
 
     chdir $cwd or die "Can't cd to $cwd: $!\n";
+  
 }
 
 sub SanityCheck {
