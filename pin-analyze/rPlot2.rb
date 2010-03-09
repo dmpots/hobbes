@@ -1,5 +1,5 @@
 #!/usr/bin/ruby
-# generate data and scripts for R barcharts
+# generate stacked barcharts for raw pin results
 require 'FileUtils'
 
 inputDir   = "../pin-run/RESULTS/LATEST"

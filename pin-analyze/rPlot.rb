@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# Generate violin plots of the accuracy results
 require 'pp'
 require 'optparse'
 

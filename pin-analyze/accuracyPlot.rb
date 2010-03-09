@@ -1,4 +1,5 @@
 #!/usr/bin/ruby
+# generate csv results for summarized accuracy results
 require 'pp'
 
 ACCURACY_REGEX = /^STATS\(.*?\) = (\d+\.?\d*)\/(\d+\.?\d*)\/(\d+\.?\d*)/
