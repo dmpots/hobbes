@@ -1,0 +1,88 @@
+tools=%w(opcodemix)
+#
+# nofib (LLVM Backend) only
+#
+%w(nodylib).each do |way|
+tools.each do |tool|
+cutoffs.each do |cutoff|
+sep("nofib-llvm only #{tool.upcase} #{way} > #{cutoff}%")
+sets = [
+  "NofibGhc_Llvm ../pin-run/RESULTS/LATEST/#{way}/nofib-llvm.#{tool}"
+]
+if cutoff == "0" then
+mar(20)
+labelOpts = "x=\"right\",inset=c(-0.7, -0.7),cex=0.8,ncol=3"
+else
+mar(10)
+labelOpts = "x=\"right\",inset=c(-0.2, -0.2),cex=0.9"
+end
+
+genDataAndScript(sets, "hv_#{tool}_#{way}", cutoff,
+  labelOpts,
+  "Nofib (LLVM backend) #{tool.capitalize} (> #{cutoff}% #{way})",
+  "% of total"
+)
+end
+end
+end
+
+#
+# nofib only
+#
+ways.each do |way|
+tools.each do |tool|
+cutoffs.each do |cutoff|
+sep("nofib only #{tool.upcase} #{way} > #{cutoff}%")
+sets = [
+  "HaskellProgram ../pin-run/RESULTS/LATEST/#{way}/nofib.#{tool}"
+]
+if cutoff == "0" then
+mar(20)
+labelOpts = "x=\"right\",inset=c(-0.7, -0.7),cex=0.8,ncol=3"
+else
+mar(10)
+labelOpts = "x=\"right\",inset=c(-0.2, -0.2),cex=0.9"
+end
+
+genDataAndScript(sets, "hn_#{tool}_#{way}", cutoff,
+  labelOpts,
+  "Nofib #{tool.capitalize} (> #{cutoff}% #{way})",
+  "% of total"
+)
+end
+end
+end
+
+
+#
+# SPEC only
+#
+ways.each do |way|
+tools.each do |tool|
+cutoffs.each do |cutoff|
+sep("SPEC only #{tool.upcase} #{way} > #{cutoff}%")
+sets = [
+  "CProgram ../pin-run/RESULTS/LATEST/#{way}/spec.gcc.#{tool}"
+]
+if tool == "opcodemix" then
+  if cutoff == "0" then
+    mar(20)
+    labelOpts="x=\"right\",inset=c(-0.7, -0.7),cex=0.6,ncol=4"
+  else
+    mar(10)
+    labelOpts = "x=\"right\",inset=c(-0.2, -0.2),cex=0.9"
+  end
+else
+  mar(10)
+  labelOpts="x=\"right\",inset=c(-0.2, -0.2),cex=0.6,ncol=4" 
+end
+
+genDataAndScript(sets, "gs_#{tool}_#{way}", cutoff,
+  labelOpts,
+  "SPEC #{tool.capitalize} (> #{cutoff}% #{way})",
+  "% of total"
+)
+end
+end
+end
+
