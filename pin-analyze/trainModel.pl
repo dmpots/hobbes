@@ -74,6 +74,13 @@ if($chooseTrainingSets) {
   my $shootGhc    = "ShootoutGhc ../pin-run/RESULTS/shootout.ghc.$PinTool";
   my $shootGcc    = "ShootoutGcc ../pin-run/RESULTS/shootout.gcc.$PinTool";
   my $parallelGhc = "ParallelGhc ../pin-run/RESULTS/parallel.ghc.$PinTool";
+
+  my $nofibGhc_V  = "NofibGhc_Llvm ../pin-run/RESULTS/nofib-llvm.$PinTool";
+  my $specLlvm    = "SpecLlvm      ../pin-run/RESULTS/spec.llvm.$PinTool";
+  my $shootGhc_V  = "ShootoutGhc_Llvm ../pin-run/RESULTS/shootout.ghc-llvm.$PinTool";
+  my $shootLlvm   = "ShootoutLlvm ../pin-run/RESULTS/shootout.llvm.$PinTool";
+  my $parallelGhc_V = "ParallelGhc_Llvm ../pin-run/RESULTS/parallel.ghc-llvm.$PinTool";
+
   my $setSize     = $TrainSize;
   my @classes     = ();
   if    ($ProgSets =~ /all/i) {@classes = ($Hprogs, $Cprogs);}
@@ -87,6 +94,15 @@ if($chooseTrainingSets) {
   elsif ($ProgSets =~ /GSHP/i){@classes = ($specGcc, $parallelGhc);}
   elsif ($ProgSets =~ /GSIS/i){@classes = ($specGcc,  $specIcc);}
   elsif ($ProgSets =~ /GSGT/i){@classes = ($specGcc, $shootGcc);}
+
+  # LLVM tests
+  elsif ($ProgSets =~ /VNGS/i){@classes = ($nofibGhc_V, $specGcc);}
+  elsif ($ProgSets =~ /VNLS/i){@classes = ($nofibGhc_V, $specLlvm);}
+  elsif ($ProgSets =~ /VNHN/i){@classes = ($nofibGhc_V, $nofibGhc);}
+  elsif ($ProgSets =~ /VTGS/i){@classes = ($shootGhc_V, $specGcc);}
+  elsif ($ProgSets =~ /GSVP/i){@classes = ($specGcc, $parallelGhc_V);}
+  elsif ($ProgSets =~ /GSLS/i){@classes = ($specGcc, $specLlvm);}
+
   else  {print "Unknown ProgSets: $ProgSets"; exit 1;}
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
