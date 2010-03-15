@@ -1,20 +1,35 @@
 #!/usr/bin/perl
 use File::Basename;
-#$PinTool = "bblengthmix"; #or "bblengthmix"
-#$PinTool = "opcodemix"; #or "bblengthmix"
 #$SharedLibs = "--no-shared-libs"; #or ""
-$PinTool = "papi-cache"; #or "bblengthmix"
-$SharedLibs = ""; #or ""
+#$PinTool = "papi-cache"; #or "bblengthmix"
+$SharedLibs = "--no-shared-libs"; #or "--no-shared-libs"
 
-@commands = qw(
-              ../nofib-pin/nofib.commands 
-              ../nofibpar-pin/nofibpar.commands 
-              ../spec2006-pin/spec.gcc.commands 
-              ../dph-pin/dph.commands 
-              ../shootout-pin/shootout.ghc.commands 
-              ../shootout-pin/shootout.gcc.commands 
-           );
+#@commands = qw(
+#              ../nofib-pin/nofib.commands 
+#              ../nofib-pin/nofib-llvm.commands 
+#              ../nofibpar-pin/nofibpar.commands 
+#              ../nofibpar-pin/nofibpar-llvm.commands 
+#              ../spec2006-pin/spec.gcc.commands 
+#              ../spec2006-pin/spec.llvm.commands 
+#              ../dph-pin/dph.commands 
+#              ../dph-pin/dph-llvm.commands 
+#              ../shootout-pin/shootout.ghc.commands 
+#              ../shootout-pin/shootout.ghc-llvm.commands 
+#              ../shootout-pin/shootout.gcc.commands 
+#              ../shootout-pin/shootout.llvm.commands 
+#           );
  
+@tools    = qw(opcodemix bblengthmix);
+@commands = qw(
+               ../nofib-pin/nofib-llvm.commands 
+               ../nofibpar-pin/nofibpar-llvm.commands 
+               ../spec2006-pin/spec.llvm.commands 
+               ../dph-pin/dph-llvm.commands 
+               ../shootout-pin/shootout.ghc-llvm.commands 
+               ../shootout-pin/shootout.llvm.commands 
+           );
+
+for my $PinTool (@tools)    {
 for my $cmdFile (@commands) {
   print "Running command file:          $cmdFile\n";
   if (! -e $cmdFile) {
@@ -37,4 +52,5 @@ for my $cmdFile (@commands) {
   system("mv RESULTS/*.LOG $destDir");
   if ($? != 0) {print "ERROR running pin tool\n"; exit 1;}
   print "Finished running command file: $cmdFile\n";
+}
 }

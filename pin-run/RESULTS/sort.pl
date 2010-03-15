@@ -2,7 +2,13 @@
 
 
 @tools = qw(opcodemix bblengthmix);
-@destDirs = qw(H C parallel.ghc);
+@destDirs = qw(H C parallel.ghc parallel.ghc-llvm);
+$cleanOnly = 0;
+$parallelOnly = 0;
+
+if (grep(/--clean/i, @ARGV)) {
+  $cleanOnly = 1;
+}
 
 print "CLEANING OLD FILES\n";
 for $tool (@tools) {
@@ -19,6 +25,8 @@ for $tool (@tools) {
   }
 }
 print "\n\n";
+
+if($cleanOnly) {exit 0;}
 
 print "CREATING DIRECTORIES\n";
 for $tool (@tools) {
@@ -47,6 +55,10 @@ print "\n\n";
 print "COPYING PARALLEL FILES\n";
 for $tool (@tools) {
   $cmd = "find nofibpar.$tool/ dph.$tool/ -type f -exec cp {} parallel.ghc.$tool \\;";
+  print "$cmd\n";
+  print `$cmd`;
+
+  $cmd = "find nofibpar-llvm.$tool/ dph-llvm.$tool/ -type f -exec cp {} parallel.ghc-llvm.$tool \\;";
   print "$cmd\n";
   print `$cmd`;
 

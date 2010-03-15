@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 $errors = 0
-tools = %w(bblengthmix opcodemix)
-sets  = %w(
+allTools = %w(bblengthmix opcodemix)
+stdSets  = %w(
               nofib
               nofibpar
               spec.gcc
@@ -12,16 +12,38 @@ sets  = %w(
               shootout.gcc
            )
 
+llvmSets = %w(
+              nofib-llvm
+              nofibpar-llvm
+              spec.llvm
+              dph-llvm
+              parallel.ghc-llvm
+              shootout.ghc-llvm
+              shootout.llvm
+          )
+allSets = stdSets + llvmSets
+
+# specific tools
+tools = allTools
+sets  = llvmSets
+
 expectedFiles = {
-  "nofib"        => 91,
-  "nofibpar"     => 8,
-  "dph"          => 5,
-  "spec.gcc"     => 27,
-  "spec.icc"     => 18,
-  "shootout.gcc"  => 11,
-  "shootout.ghc"  => 11
+  "nofib"              => 91,
+  "nofib-llvm"         => 91,
+  "nofibpar"           => 8,
+  "nofibpar-llvm"      => 8,
+  "dph"                => 5,
+  "dph-llvm"           => 5,
+  "spec.gcc"           => 27,
+  "spec.icc"           => 18,
+  "spec.llvm"          => 26,
+  "shootout.gcc"       => 11,
+  "shootout.llvm"      => 11,
+  "shootout.ghc"       => 11,
+  "shootout.ghc-llvm"  => 11
 }
 expectedFiles["parallel.ghc"] = expectedFiles["dph"] + expectedFiles["nofibpar"]
+expectedFiles["parallel.ghc-llvm"] = expectedFiles["dph-llvm"] + expectedFiles["nofibpar-llvm"]
 
 def testFile(file)
   fileType = "UNKNOWN"
@@ -44,6 +66,7 @@ tools.each do |tool|
     dir = File.join("RESULTS", "#{bench}.#{tool}")
     if (! File.exists?(dir) ) then
       error("#{dir} does not exist")
+      next
     end
     files = Dir["#{dir}/*"]
     expected = expectedFiles[bench]

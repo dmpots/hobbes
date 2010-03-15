@@ -2,7 +2,7 @@
 #
 #
 $LoopSize   = 100;
-$Method     = "svm"; # kmeans or svm
+$Method     = "kmeans"; # kmeans or svm
 @Tools      = qw(opcodemix bblengthmix);
 #@Tools     = qw(bblengthmix opcodemix jumpmix regmix);
 @TrainSizes = qw(02 04 06 08 10);
