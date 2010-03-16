@@ -1,9 +1,9 @@
 #!/usr/bin/ruby
 require 'pp'
-require 'FileUtils'
+require 'fileutils'
 
 $cleanOnly = false
-if(ARGV.grep(/--clean/).count > 0) then
+if(ARGV.grep(/--clean/).length > 0) then
   $cleanOnly = true
 end
 $exts = %w(opcodemix bblengthmix)
@@ -15,7 +15,7 @@ end
 
 # Clean old files
 files = expandDir(".")
-if files.count > 0 then
+if files.length > 0 then
   puts "Found current files: "
   pp files
   print "Really delete these directories? (Y/N) "
