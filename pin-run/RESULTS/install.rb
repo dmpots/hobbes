@@ -23,6 +23,7 @@ if files.length > 0 then
   if r =~ /y|yes/i then
     puts "Deleting files"
     FileUtils.rm_rf(files)
+    FileUtils.rm_f("INSTALLED.LIST")
   end
 end
 
@@ -43,6 +44,7 @@ srcDirs = srcDirs.map {|d|
 puts "Copying files from #{srcDirs.pretty_inspect}"
 FileUtils.cp_r(srcDirs, ".")
 
-
+puts "Writing INSTALLED.LIST file"
+File.open("INSTALLED.LIST", "w") {|f| f.puts srcDirs.join("\n")}
 
 
