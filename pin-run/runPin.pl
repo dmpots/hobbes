@@ -10,12 +10,6 @@ $InstMixPinTool="$SimpleDir/opcodemix.so";
 $BBLenMixPinTool="$SimpleDir/bblengthmix.so";
 $JumpMixPinTool="$SimpleDir/jumpmix.so";
 $RegMixPinTool="$SimpleDir/regmix.so";
-$PapiexTool="$ENV{HOME}/local/papiex/bin/papiex";
-$PapiEventSetCaches="-e PAPI_L2_ICM -e PAPI_L2_DCM";
-$PapiEventSetBranches="-e PAPI_BR_CN -e PAPI_BR_MSP";
-$PapiEventSetCPI   ="-e PAPI_L2_ICM -e PAPI_L2_DCM";
-$PapiEventSet = $PapiEventSetCaches;
-$Papitool="cache";
 $DieOnNofibFailure=1;
 $SanityCheckOnly=0;
 $SharedLibsFlag="";
@@ -40,24 +34,11 @@ if(grep(/--no-shared-libs/i, @ARGV)) {
 if(grep(/--papi/i, @ARGV)) {
   $Mode="papi";
 }
-if(grep(/--papi-cache/i, @ARGV)) {
-  $PapiEventSet = $PapiEventSetCaches;
-  $Papitool = "cache";
-}
-elsif(grep(/--papi-branch/i, @ARGV)) {
-  $PapiEventSet = $PapiEventSetBranches;
-  $Papitool = "branch";
-}
-elsif(grep(/--papi-cpi/i, @ARGV)) {
-  $PapiEventSet = $PapiEventSetCPI;
-  $Papitool = "cpi";
-}
 @ARGV = grep(!/^--/, @ARGV); #remove switches
   
 
 $Pintool=basename($FullPathPinTool);
 $PinPrefix="setarch x86_64 -R $PinDir/pin -t $FullPathPinTool $SharedLibsFlag";
-$PapiPrefix="$PapiexTool $PapiEventSet";
 
 print "runPin in mode: $Mode\n";
 while(<>) {
@@ -83,28 +64,8 @@ sub runPin {
 sub runPapi {
     my ($name, $dir, $cmd) = @_;
     my $cwd = getcwd();
-    my $outDir  = "$cwd/RESULTS/PAPI_RUN";
-    my $outFile = "$cwd/RESULTS/$name.$Papitool.$$.LOG";
-    my $papiCmd = "$PapiPrefix -o $outDir $cmd\n";
+    my $papiCmd = "$cwd/runPapi.rb $name $dir \"$cmd\"";
     runCommand($papiCmd, $dir, $cmd);
-
-    $summaryFile = "$outDir/process_summary.txt";
-    if(-d $outDir) {
-      if(not -e "$summaryFile") {
-        print STDERR "Missing output $summaryFile. Killing myself\n";
-        exit 1;
-      }
-      copy($summaryFile, $outFile) or die "Copy failed:$!. Killing myself\n";
-    }
-    elsif(-f $outDir) {
-      copy($outDir, $outFile) or die "Copy failed:$!. Killing myself\n";
-    }
-    else {
-        print STDERR "$outDir is not a dir or file. Killing myself\n";
-        exit 1;
-    }
-    
-    remove_tree($outDir) or die "rmtree failed:$!. Killing myself\n";
 }
 
 sub runCommand {

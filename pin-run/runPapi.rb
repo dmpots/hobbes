@@ -7,29 +7,32 @@ $outfile = $stdout
 $eventsFile = DATA
 
 PapiexTool=ENV["HOME"]+"/local/papiex/bin/papiex "
-$dir  = ARGV[0]
-$prog = ARGV[1]
+BaseDir   = File.expand_path(File.dirname(__FILE__))
+ConfFile  = File.join(BaseDir, "papi-events.conf")
+$name = ARGV[0]
+$dir  = ARGV[1]
+$prog = ARGV[2]
 
-if File.exists?("papi-events.conf") then 
-  $eventsFile = File.open("papi-events.conf", "r")
+if File.exists?(ConfFile) then 
+  $eventsFile = File.open(ConfFile, "r")
 end
 $events = $eventsFile.read.split(/\s+/).reject{|e| e =~ /^#/}
 
-$resDir  = File.join(FileUtils.pwd, "RESULTS")
+$resDir  = File.join(BaseDir, "RESULTS")
 $papiOut = File.join($resDir, "PAPI_RUN")
-$out    = File.open(File.join($resDir, "#{$prog}.papi.#{Process.pid}.LOG"), "w")
+$out     = File.open(File.join($resDir, "#{$name}.papi.#{Process.pid}.LOG"), "w")
 
-if $dir.nil? || $prog.nil? || $events.nil? || $events.empty? then
-  errorOut("usage: runPapi.rb <dir> <cmd> <events>")
+def errorOut(msg)
+  $stderr.puts("ERROR: "+msg)
+  exit 1
+end
+if $name.nil? || $dir.nil? || $prog.nil? || $events.nil? || $events.empty? then
+  errorOut("usage: runPapi.rb <name> <dir> <cmd>")
 end
 
 if not File.directory?($dir) then
   errorOut("Directory #{$dir} does not exist")
 end
-if not File.exists?($dir + "/" + $prog) then
-  errorOut("Program #{$dir}/#{$prog} does not exist")
-end
-
 
 class Array
   def mean
@@ -41,17 +44,13 @@ class Array
 end
 
 def outFileName(dir,event,seqNum)
-    outFile = File.join(dir, "#{$prog}.papi.#{event}.#{Process.pid}.#{seqNum}.LOG")
+    outFile = File.join(dir, "#{$name}.papi.#{event}.#{Process.pid}.#{seqNum}.LOG")
 end
 def runCommand(cmd)
-  log "COMMAND: #{cmd}"
+  log "PAPI: #{cmd}"
   if not system(cmd) then
     errorOut("RUNNING COMMAND: #{$?}")
   end
-end
-def errorOut(msg)
-  $stderr.puts("ERROR: "+msg)
-  exit 1
 end
 def log(msg)
   puts msg

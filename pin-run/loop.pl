@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 use File::Basename;
 $SharedLibs = ""; #or "--no-shared-libs"
-@tools    = qw(opcodemix bblengthmix);
+@tools    = qw(opcodemix bblengthmix papi);
 @commands = qw(
               ../nofib-pin/nofib.commands 
               ../nofib-pin/nofib-llvm.commands 
@@ -16,6 +16,32 @@ $SharedLibs = ""; #or "--no-shared-libs"
               ../shootout-pin/shootout.gcc.commands 
               ../shootout-pin/shootout.llvm.commands 
            );
+if( -e "tools.conf") {
+  print "USING tools.conf\n";
+  open TOOLS, "tools.conf" or die "error opening tools.conf file";
+  @tools = ();
+  while(<TOOLS>) {
+    next if /^#/;
+    chomp;
+    my ($tool) = split;
+    push @tools, $tool;
+  }
+  close TOOLS;
+}
+if( -e "commands.conf") {
+  print "USING commands.conf\n";
+  open COMMANDS, "commands.conf" or die "error opening commands.conf file";
+  @commands = ();
+  while(<COMMANDS>) {
+    next if /^#/;
+    chomp;
+    my ($commandFile) = split;
+    push @commands, $commandFile;
+  }
+  close COMMANDS;
+}
+print "Commands: @commands\n";
+print "Tools:    @tools\n";
 
 for my $PinTool (@tools)    {
 for my $cmdFile (@commands) {
