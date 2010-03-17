@@ -46,7 +46,7 @@ files = {}
 inputFiles = ARGV
 inputFiles.each do |file|
   ext = File.extname(file).gsub(/^\./, "")
-  if ext =~ /HNGS|HNIS|HNHT|HNHP|HTGS|HTGT|GSHP|GSIS|GSGT/ then
+  if ext =~ /HNGS|HNIS|HNHT|HNHP|HTGS|HTGT|GSHP|GSIS|GSGT|VNGS|VNLS|VTGS|GSVP|GSLS|VNHN/ then
     pinTool =
     case file 
       when /jumpmix/   
@@ -87,7 +87,8 @@ File.open('PLOTS/plot.r', 'w') do |f|
   end
   names = files.keys.map{|n| n.split("-",2)[0]}.map{|s| "\"#{s}\""}.sort.join(",")
   f.puts "names <- c(#{names})"
-  f.puts "vioplot(#{xs.join(',')}, names=names, col=\"tomato\", colMed=\"grey\", pchMed=10,ylim=c(0,1))"
+  f.puts "vioplot(#{xs.join(',')}, names=FALSE, col=\"tomato\", colMed=\"grey\", pchMed=10,ylim=c(0,1))"
+  f.puts "axis(1,labels=names,at=seq(1,#{xs.length}),las=2)"
   f.puts "title(\"#{options[:title]}\",xlab=\"benchmarks\",ylab=\"accuracy\")"
   f.puts "xs <- list(#{xs.join(',')})"
   f.puts "names(xs) <- names"
