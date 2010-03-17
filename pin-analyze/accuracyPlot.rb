@@ -21,7 +21,7 @@ def processFiles(files)
   max   = 0.0
   means = []
   files.each do |file|
-    File.open(file).lines.each do |line|
+    File.open(file).each do |line|
       if line =~ $statRegex then
         n,g,x = [$1.to_f, $2.to_f, $3.to_f]
         if g != 0.0 then
@@ -45,7 +45,7 @@ end
 files = {}
 ARGV.each do |file|
   ext = File.extname(file).gsub(/^\./, "")
-  if ext =~ /HNGS|HNIS|HNHT|HNHP|HTGS|HTGT|GSHP|GSIS|GSGT/ then
+  if ext =~ /HNGS|HNIS|HNHT|HNHP|HTGS|HTGT|GSHP|GSIS|GSGT|VNGS|VNLS|VTGS|GSVP|GSLS|VNHN/ then
     pinTool =
     case file 
       when /jumpmix/   
