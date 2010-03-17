@@ -25,7 +25,7 @@ allSets = stdSets + llvmSets
 
 # specific tools
 tools = allTools
-sets  = llvmSets
+sets  = allSets
 
 expectedFiles = {
   "nofib"              => 91,

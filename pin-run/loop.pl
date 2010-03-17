@@ -1,32 +1,20 @@
 #!/usr/bin/perl
 use File::Basename;
-#$SharedLibs = "--no-shared-libs"; #or ""
-#$PinTool = "papi-cache"; #or "bblengthmix"
-$SharedLibs = "--no-shared-libs"; #or "--no-shared-libs"
-
-#@commands = qw(
-#              ../nofib-pin/nofib.commands 
-#              ../nofib-pin/nofib-llvm.commands 
-#              ../nofibpar-pin/nofibpar.commands 
-#              ../nofibpar-pin/nofibpar-llvm.commands 
-#              ../spec2006-pin/spec.gcc.commands 
-#              ../spec2006-pin/spec.llvm.commands 
-#              ../dph-pin/dph.commands 
-#              ../dph-pin/dph-llvm.commands 
-#              ../shootout-pin/shootout.ghc.commands 
-#              ../shootout-pin/shootout.ghc-llvm.commands 
-#              ../shootout-pin/shootout.gcc.commands 
-#              ../shootout-pin/shootout.llvm.commands 
-#           );
- 
+$SharedLibs = ""; #or "--no-shared-libs"
 @tools    = qw(opcodemix bblengthmix);
 @commands = qw(
-               ../nofib-pin/nofib-llvm.commands 
-               ../nofibpar-pin/nofibpar-llvm.commands 
-               ../spec2006-pin/spec.llvm.commands 
-               ../dph-pin/dph-llvm.commands 
-               ../shootout-pin/shootout.ghc-llvm.commands 
-               ../shootout-pin/shootout.llvm.commands 
+              ../nofib-pin/nofib.commands 
+              ../nofib-pin/nofib-llvm.commands 
+              ../nofibpar-pin/nofibpar.commands 
+              ../nofibpar-pin/nofibpar-llvm.commands 
+              ../spec2006-pin/spec.gcc.commands 
+              ../spec2006-pin/spec.llvm.commands 
+              ../dph-pin/dph.commands 
+              ../dph-pin/dph-llvm.commands 
+              ../shootout-pin/shootout.ghc.commands 
+              ../shootout-pin/shootout.ghc-llvm.commands 
+              ../shootout-pin/shootout.gcc.commands 
+              ../shootout-pin/shootout.llvm.commands 
            );
 
 for my $PinTool (@tools)    {
