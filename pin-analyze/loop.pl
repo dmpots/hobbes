@@ -2,13 +2,14 @@
 #
 #
 $LoopSize   = 100;
-$Method     = "kmeans"; # kmeans or svm
+$Method     = "svm"; # kmeans or svm
 @Tools      = qw(opcodemix bblengthmix);
-#@Tools     = qw(bblengthmix opcodemix jumpmix regmix);
 @TrainSizes = qw(02 04 06 08 10);
 @Cutoffs    = qw(0.00 0.01 0.02 0.03 0.04 0.05 0.10);
-@ProgSets   = qw( HNGS HNIS HNHT HNHP HTGS HTGT GSHP GSIS GSGT                );
-#@ProgSets  = qw( HNGS HNIS HNHT HNHP HTGS HTGT GSHP GSIS GSGT ALL INDIVIDUAL );
+@ProgSets   = qw( VNGS VNLS           VTGS      GSVP GSLS      VNHN           );
+#@ProgSets  = qw( HNGS HNIS HNHT HNHP HTGS HTGT GSHP GSIS GSGT 
+#                 VNGS VNLS           VTGS      GSVP GSLS      VNHN
+#                 ALL INDIVIDUAL );
 $SendMail   = 0;
 
 if($Method eq "kmeans") {
