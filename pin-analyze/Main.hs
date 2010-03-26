@@ -7,6 +7,7 @@ import Data.Maybe
 import GnuPlot
 import JumpMix
 import OpcodeMix
+import PapiMix
 import PinData
 import RegMix
 import System.Console.GetOpt
@@ -115,6 +116,7 @@ main = do
       JumpMix    -> doMainWithParser options files readJumpCount   JumpLabel
       RegMix     -> doMainWithParser options files readRegCount    RegLabel
       BBLengthMix-> doMainWithParser options files readBBLengthCount BBLengthLabel
+      PapiMix    -> doMainWithParser options files readPapiCount PapiLabel 
 
 doCheckPinTools :: [PinTool] -> IO ()
 doCheckPinTools [] = return ()

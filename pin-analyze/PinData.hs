@@ -1,11 +1,13 @@
 module PinData where
 import ClusterElement
+import Data.List
 import Data.Set(Set) 
 import qualified Data.Set as Set
 import qualified Data.Map as Map
 import Opcodes
 import Jumpcodes
 import Regcodes
+import Papicodes
 
 data GenPinData a = PinData { 
       bmName  :: String
@@ -13,7 +15,7 @@ data GenPinData a = PinData {
     , pinData :: a
 } deriving(Show, Read)
 
-data PinTool = OpcodeMix | JumpMix | RegMix | BBLengthMix
+data PinTool = OpcodeMix | JumpMix | RegMix | BBLengthMix | PapiMix
   deriving(Eq, Enum, Show, Read)
 
 type PinCounter = Integer
@@ -31,6 +33,7 @@ data AnalysisLabel =
   | JumpLabel     Jump
   | RegLabel      Reg
   | BBLengthLabel Int
+  | PapiLabel     PapiEvent
     deriving (Eq, Show, Read, Ord)
 
 alEnum :: AnalysisLabel -> Int
@@ -38,6 +41,55 @@ alEnum (OpcodeLabel oc)   = fromEnum oc
 alEnum (JumpLabel   jl)   = fromEnum jl
 alEnum (RegLabel    rl)   = fromEnum rl
 alEnum (BBLengthLabel ll) =          ll
+alEnum (PapiLabel     pl) = fromEnum pl
+
+convertToAnalysisData :: 
+     [GenCountData k] 
+  -> (k -> AnalysisLabel)
+  -> [PinAnalysisData]
+convertToAnalysisData counts mkLabel =
+  zipWith3 PinData bmNames bmLabels analysisData
+  where
+  analysisData  = zipWith (zipWith convert) bmOpCounts percentCounts 
+                                                :: [[AnalysisData]]
+  bmNames       = map bmName  counts            :: [String]
+  bmLabels      = map bmLabel counts            :: [ProgramClass]
+  percentCounts = map percents bmOpCounts       :: [[Double]]
+  bmOpCounts    = map pinData counts            -- :: [[(k,PinCounter)]]
+  percents      = computePercents mkLabel
+  convert (code, count) percent = 
+      AnalysisData { 
+          label        = mkLabel code
+        , rawCount     = count
+        , percentTotal = percent
+      }
+
+
+computePercents :: (k -> AnalysisLabel) -> [(k, PinCounter)] -> [Double]
+computePercents _mkLabel []   = []
+computePercents  mkLabel bmOpCount@(x:_) = 
+  ifPapiThen x 
+    (\_ -> papiPercents papiData) 
+    (percentsOfTotal (map snd bmOpCount))
+  where
+  ifPapiThen cnt papiCont nonPapiCont =
+    case mkLabel (fst cnt) of 
+      PapiLabel pl -> papiCont (pl, snd cnt)
+      _            -> nonPapiCont 
+  papiData = map extractPapiData bmOpCount
+  extractPapiData cnt = ifPapiThen cnt id (error "Expected Papi label")
+
+papiPercents :: [(PapiEvent, PinCounter)] -> [Double]
+papiPercents counts = map percent counts
+  where 
+  percent (event, count) =
+    case find (\x -> papiNormalizer event == fst x) counts of
+      Just (_,norm) -> (fromIntegral count) / (fromIntegral norm)
+      Nothing       -> 0.0
+
+percentsOfTotal :: [PinCounter] -> [Double]
+percentsOfTotal counts = map ((/total).fromIntegral) counts
+    where total = fromIntegral (sum counts)
 
 fillMissingData :: Ord k => [GenCountData k] -> [GenCountData k]
 fillMissingData allPinData = zipWith fill allPinData mapData
@@ -54,30 +106,6 @@ collectAllKeys :: Ord k => [GenCountData k] -> [k]
 collectAllKeys allPinData = Set.toList . Set.fromList $ allOpCodes
     where 
     allOpCodes = map fst (concatMap pinData allPinData)
-
-convertToAnalysisData :: [GenCountData k] 
-  -> (k -> AnalysisLabel)
-  -> [PinAnalysisData]
-convertToAnalysisData counts mkLabel =
-  zipWith3 PinData bmNames bmLabels analysisData
-  where
-  analysisData  = zipWith (zipWith convert) bmOpCounts percentCounts 
-                                                :: [[AnalysisData]]
-  bmNames       = map bmName  counts            :: [String]
-  bmLabels      = map bmLabel counts            :: [ProgramClass]
-  percentCounts = map percentsOfTotal rawCounts :: [[Double]]
-  rawCounts     = map (map snd) bmOpCounts      :: [[PinCounter]]
-  bmOpCounts    = map pinData counts            -- :: [[(k,PinCounter)]]
-  convert (code, count) percent = 
-      AnalysisData { 
-          label        = mkLabel code
-        , rawCount     = count
-        , percentTotal = percent
-      }
-
-percentsOfTotal :: [PinCounter] -> [Double]
-percentsOfTotal counts = map ((/total).fromIntegral) counts
-    where total = fromIntegral (sum counts)
 
 dropUnimportantData :: Double -> [PinAnalysisData] ->  [PinAnalysisData] 
 dropUnimportantData threshold analysisData = 
