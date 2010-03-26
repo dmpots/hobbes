@@ -82,10 +82,17 @@ computePercents  mkLabel bmOpCount@(x:_) =
 papiPercents :: [(PapiEvent, PinCounter)] -> [Double]
 papiPercents counts = map percent counts
   where 
+  percent (PAPI_L2_DCH, _count) = papiL2DchPercent
   percent (event, count) =
     case find (\x -> papiNormalizer event == fst x) counts of
       Just (_,norm) -> (fromIntegral count) / (fromIntegral norm)
       Nothing       -> 0.0
+  papiL2DchPercent = 1.0 - papiL2DcmPercent
+  papiL2DcmPercent = 
+    case find (\(e,_) -> e == PAPI_L2_DCM) counts of
+      Just dcm -> percent dcm
+      Nothing  -> 0.0
+    
 
 percentsOfTotal :: [PinCounter] -> [Double]
 percentsOfTotal counts = map ((/total).fromIntegral) counts
@@ -117,8 +124,9 @@ dropUnimportantData threshold analysisData =
         pinData = filter opcodeFilter (pinData opcodeData)
     }
     
-  sets = map (chooseImportantOpCodes threshold) analysisData
-  chosenOnes = foldr Set.union Set.empty sets :: Set AnalysisLabel
+  sets       = map (chooseImportantOpCodes threshold) analysisData
+  threshSet  = foldr Set.union Set.empty sets :: Set AnalysisLabel
+  chosenOnes = applyExtraFilters threshSet
 
 
 chooseImportantOpCodes :: Double -> PinAnalysisData -> Set AnalysisLabel
@@ -130,3 +138,10 @@ chooseImportantOpCodes threshold  d =
     then Set.insert (label aData) set 
     else set
 
+applyExtraFilters :: Set AnalysisLabel -> Set AnalysisLabel
+applyExtraFilters set = Set.filter filterFun set
+  where 
+  filterFun (PapiLabel pl) = papiOutputFilter pl
+  filterFun  _             = True
+
+  

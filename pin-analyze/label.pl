@@ -224,6 +224,9 @@ sub parsePapiMix {
   do {
     next if (/^#.*$/);
     print FH_DYNAMIC;
+    if(/\(PAPI_L2_DCM,/) { # add a dummy placeholder for L2_DCH
+      print FH_DYNAMIC "(PAPI_L2_DCH, 0)\n";
+    }
   } while(<FH>);
 
   close FH_DYNAMIC;
