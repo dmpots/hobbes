@@ -102,6 +102,7 @@ formatOpLabels (JumpLabel     jl) = show jl
 formatOpLabels (RegLabel      rl) = show rl
 formatOpLabels (BBLengthLabel bl) = show bl
 formatOpLabels (PapiLabel     pl) = show pl
+formatOpLabels (OpcodeTypeLabel ol) = show ol
 
 generateColumnLabels :: [GenPinData a] -> [DataColumn]
 generateColumnLabels counts = opcodeLabel ++ columnLabels

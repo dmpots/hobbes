@@ -8,6 +8,7 @@ import Opcodes
 import Jumpcodes
 import Regcodes
 import Papicodes
+import OpcodeType
 
 data GenPinData a = PinData { 
       bmName  :: String
@@ -34,6 +35,7 @@ data AnalysisLabel =
   | RegLabel      Reg
   | BBLengthLabel Int
   | PapiLabel     PapiEvent
+  | OpcodeTypeLabel OpcodeType
     deriving (Eq, Show, Read, Ord)
 
 alEnum :: AnalysisLabel -> Int
@@ -42,6 +44,7 @@ alEnum (JumpLabel   jl)   = fromEnum jl
 alEnum (RegLabel    rl)   = fromEnum rl
 alEnum (BBLengthLabel ll) =          ll
 alEnum (PapiLabel     pl) = fromEnum pl
+alEnum (OpcodeTypeLabel oc) = fromEnum oc
 
 convertToAnalysisData :: 
      [GenCountData k] 
@@ -102,7 +105,7 @@ fillMissingData :: Ord k => [GenCountData k] -> [GenCountData k]
 fillMissingData allPinData = zipWith fill allPinData mapData
     where
     opcodes = collectAllKeys allPinData
-    mapData = map (\d -> Map.fromList (pinData d)) allPinData
+    mapData = map (\d -> Map.fromListWith (+) (pinData d)) allPinData
     fill d md = d {pinData = map (countOrZero md) opcodes}
     countOrZero opMap opcode = 
         case Map.lookup opcode opMap of

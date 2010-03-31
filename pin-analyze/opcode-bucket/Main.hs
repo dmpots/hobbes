@@ -24,6 +24,9 @@ main
       putStrLn "import OpcodeType"
       putStrLn "opcodeGroup :: Opcode -> OpcodeType"
       putStrLn (unlines $ mapMaybe mkAssignCase groups)
+      putStrLn "opcodeGroup MOV_MR = DataMovement"
+      putStrLn "opcodeGroup MOV_RM = DataMovement"
+      putStrLn "opcodeGroup MOV_RR = DataMovement"
       putStrLn "opcodeGroup _ = Other"
  
 -- | the dummy for the boring stuff of option evaluation,

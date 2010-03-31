@@ -7,6 +7,7 @@ import Data.Maybe
 import GnuPlot
 import JumpMix
 import OpcodeMix
+import OpcodeTypeMix
 import PapiMix
 import PinData
 import RegMix
@@ -32,6 +33,7 @@ data Options = Options {
   , optSvmModel     :: Maybe String
   , optWriteRawData :: Bool
   , optReadRawData  :: Maybe String
+  , optGroupOpcodes :: Bool
 }
 
 defaultOptions :: Options
@@ -49,6 +51,7 @@ defaultOptions = Options {
   , optSvmModel     = Nothing
   , optWriteRawData = False
   , optReadRawData  = Nothing
+  , optGroupOpcodes = False
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -104,6 +107,10 @@ cmdLineOptions = [
     , Option ['r'] ["read-raw"]
       (ReqArg (\t opts -> opts { optReadRawData = Just t }) "RAW_FILE")
       "Read raw formatted data files (using read)"
+
+    , Option ['b'] ["group-opcodes"]
+      (NoArg (\opts -> opts { optGroupOpcodes = not (optGroupOpcodes opts)}) )
+      "Group opcodes according to OpcodeType"
   ] 
 
 main :: IO ()
@@ -112,7 +119,11 @@ main = do
     pinTools        <- mapM parseTool files
     doCheckPinTools pinTools
     case (head pinTools) of
-      OpcodeMix  -> doMainWithParser options files readOpcodeCount OpcodeLabel
+      OpcodeMix  -> 
+        if optGroupOpcodes options then
+          doMainWithParser options files readOpcodeTypeCount OpcodeTypeLabel
+        else
+          doMainWithParser options files readOpcodeCount OpcodeLabel
       JumpMix    -> doMainWithParser options files readJumpCount   JumpLabel
       RegMix     -> doMainWithParser options files readRegCount    RegLabel
       BBLengthMix-> doMainWithParser options files readBBLengthCount BBLengthLabel

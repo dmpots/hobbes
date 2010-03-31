@@ -581,4 +581,7 @@ opcodeGroup XRSTOR = Other
 opcodeGroup XSAVE = Other
 opcodeGroup XSETBV = Other
 
+opcodeGroup MOV_MR = DataMovement
+opcodeGroup MOV_RM = DataMovement
+opcodeGroup MOV_RR = DataMovement
 opcodeGroup _ = Other
