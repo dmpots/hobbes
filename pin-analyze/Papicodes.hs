@@ -22,8 +22,8 @@ data PapiEvent =
   | PAPI_L2_TCM
   | PAPI_L2_TCH
   | PAPI_L2_TCA
-  | PAPI_L2_TCR
   | PAPI_L2_TCW
+  | PAPI_L2_TCR
   | PAPI_L2_LDM
   | PAPI_L2_STM
   | PAPI_TLB_DM
@@ -79,13 +79,13 @@ papiOutputFilter PAPI_L1_DCM  = True
 papiOutputFilter PAPI_L1_DCH  = True
 papiOutputFilter PAPI_L1_ICM  = True
 papiOutputFilter PAPI_L1_ICH  = True
---papiOutputFilter PAPI_L1_TCM  = True
 
 papiOutputFilter PAPI_L2_DCM  = True
 papiOutputFilter PAPI_L2_DCH  = True
 papiOutputFilter PAPI_L2_ICM  = True
 papiOutputFilter PAPI_L2_ICH  = True
---papiOutputFilter PAPI_L2_TCM  = True
+papiOutputFilter PAPI_L2_TCR  = True
+papiOutputFilter PAPI_L2_TCW  = True
 
 papiOutputFilter PAPI_BR_MSP  = True
 papiOutputFilter PAPI_BR_PRC  = True
