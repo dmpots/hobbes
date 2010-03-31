@@ -112,6 +112,7 @@
 # mac os finder
 (^|/)\.DS_Store$
 (^|/)pin-analyze/pinalyze
+(^|/)pin-analyze/opcode-bucket/mkBuckets
 (^|/)pin-analyze/.*\.eps$
 (^|/)pin-analyze/.*\.gnuplot$
 (^|/)pin-analyze/.*\.dat$
