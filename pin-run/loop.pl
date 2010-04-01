@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 use File::Basename;
+$EnableMail = 1;
 $SharedLibs = ""; #or "--no-shared-libs"
 @tools    = qw(opcodemix bblengthmix papi);
 @commands = qw(
@@ -68,3 +69,10 @@ for my $cmdFile (@commands) {
   print "Finished running command file: $cmdFile\n";
 }
 }
+
+print "Pin loop all done\n";
+if($EnableMail) {
+  $mailCmd = "mail -s \"[PIN-RUN] finished\" dmp\@rice.edu < /dev/null";
+  system($mailCmd);
+}
+
