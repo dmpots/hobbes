@@ -44,7 +44,8 @@ class Array
 end
 
 def outFileName(dir,event,seqNum)
-    outFile = File.join(dir, "#{$name}.papi.#{event}.#{Process.pid}.#{seqNum}.LOG")
+    sn = if seqNum == "*" then "*" else sprintf "%03d", seqNum end
+    outFile = File.join(dir, "#{$name}.papi.#{event}.#{Process.pid}.#{sn}.LOG")
 end
 def runCommand(cmd)
   log "PAPI: #{cmd}"
