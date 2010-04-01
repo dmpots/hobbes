@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 $errors = 0
-allTools = %w(bblengthmix opcodemix)
+allTools = %w(bblengthmix opcodemix papi)
 stdSets  = %w(
               nofib
               nofibpar
@@ -52,6 +52,7 @@ def testFile(file)
     if (line =~ /^#(\s)*JUMPMIX/)     then fileType = "jumpmix"     end
     if (line =~ /^#(\s)*num(\s)+reg/) then fileType = "regmix"      end
     if (line =~ /^#(\s)*block-length/)then fileType = "bblengthmix" end
+    if (line =~ /^\(PAPI_TOT_CYC/)    then fileType = "papi"        end
   end
   fileType
 end
