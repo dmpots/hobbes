@@ -175,6 +175,8 @@ summarizeData pdata =
       , percentTotal = (percentTotal adataSum) + (percentTotal adata)
     }
   logIt adata = 
+    -- change percent value to log space
+    -- setting anything <= 0 to a small number before hand
     let p = percentTotal adata 
         pValue = if p <= 0.0 then 1e-12 else p
     in
