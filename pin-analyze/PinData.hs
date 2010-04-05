@@ -1,5 +1,6 @@
 module PinData where
 import ClusterElement
+import Data.Function
 import Data.List
 import Data.Set(Set) 
 import qualified Data.Set as Set
@@ -148,3 +149,55 @@ applyExtraFilters set = Set.filter filterFun set
   filterFun  _             = True
 
   
+-- |Summarize the data, first grouping by 'ProgramClass'.
+-- the summarized data is returned as pin data with a single entry for each
+-- program class
+summarizeData :: [PinAnalysisData] -> [PinAnalysisData]
+summarizeData pdata = 
+  zipWith zipFun byProgramClass summedData 
+  where
+  zipFun pd ad = repr { bmName  = show (bmLabel repr)
+                      , bmLabel = bmLabel repr
+                      , pinData = (map (divide (length pd)) ad) }
+                     where repr = head pd
+  divide n ad = ad {  rawCount = (rawCount ad) `div` (fromIntegral n)
+                    , percentTotal = (exp divided)}
+                    where divided  = ((percentTotal ad) / (fromIntegral n))
+  summedData = map -- for each program class
+              (map -- for each analysis label
+              (foldl1' total . map logIt ))
+              byAnalysisLabel           :: [[AnalysisData]]
+  byAnalysisLabel = map groupByAnalysisLabel byProgramClass 
+  byProgramClass  = groupByProgramClass pdata :: [[PinAnalysisData]]
+  total adata adataSum =
+    adataSum {
+        rawCount     = (rawCount adataSum)     + (rawCount adata)
+      , percentTotal = (percentTotal adataSum) + (percentTotal adata)
+    }
+  logIt adata = 
+    let p = percentTotal adata 
+        pValue = if p <= 0.0 then 1e-12 else p
+    in
+    adata { percentTotal = log pValue }
+
+
+-- |Group the pin data by its program class
+groupByProgramClass :: [PinAnalysisData] -> [[PinAnalysisData]]
+groupByProgramClass = partitionListBy compareLabels
+  where
+  compareLabels = compare `on` bmLabel
+
+-- |Group analysis data with a list for each different analysis label
+groupByAnalysisLabel :: [PinAnalysisData]  -- one entry for each benchmark
+                     -> [[AnalysisData]]   -- one entry for each ALabel
+groupByAnalysisLabel = 
+  (partitionListBy (compare `on` label)) . (concatMap pinData)
+
+partitionListBy :: (a -> a -> Ordering) -> [a] -> [[a]]
+partitionListBy compareFun list = 
+  groupBy sameData (sortBy compareFun list)
+  where
+  sameData a b = EQ == (compareFun a b)
+
+
+

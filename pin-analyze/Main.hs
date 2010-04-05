@@ -34,6 +34,7 @@ data Options = Options {
   , optWriteRawData :: Bool
   , optReadRawData  :: Maybe String
   , optGroupOpcodes :: Bool
+  , optWriteSummary :: Bool
 }
 
 defaultOptions :: Options
@@ -52,6 +53,7 @@ defaultOptions = Options {
   , optWriteRawData = False
   , optReadRawData  = Nothing
   , optGroupOpcodes = False
+  , optWriteSummary = True
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -68,7 +70,7 @@ cmdLineOptions = [
       (NoArg (\opts -> opts { optNormalize = not (optNormalize opts)}))
       "Normalize counts as a percentage of total"
 
-    , Option ['s'] ["stacked"]
+    , Option ['t'] ["stacked"]
       (NoArg (\opts -> opts { optStacked = not (optStacked opts)}))
       "Generate a stacked histogram"
 
@@ -111,6 +113,10 @@ cmdLineOptions = [
     , Option ['b'] ["group-opcodes"]
       (NoArg (\opts -> opts { optGroupOpcodes = not (optGroupOpcodes opts)}) )
       "Group opcodes according to OpcodeType"
+
+    , Option ['s'] ["summary"]
+      (NoArg (\opts -> opts {optWriteSummary = not (optWriteSummary opts)}))
+      "Generate summary data"
   ] 
 
 main :: IO ()
@@ -196,6 +202,7 @@ processResults options filteredResults =
      writeSvmIf options filteredResults
      writeSvmPredictionIf options clusterElements
      writeRawDataIf options filteredResults
+     writeSummaryDataIf options filteredResults
 
 plotInfo :: Options -> PlotInfo
 plotInfo options = PlotInfo {
@@ -203,6 +210,7 @@ plotInfo options = PlotInfo {
         , scriptFileName = outPrefix ++ ".gnuplot"
         , dataFileName   = outPrefix ++ ".dat"
         , excelFileName  = outPrefix ++ ".txt"
+        , summaryFileName= outPrefix ++ ".summary"
         , normalizeGraph = optNormalize options
         , stackGraph     = optStacked options
     }
@@ -218,7 +226,12 @@ writeGnuPlotGraphIf options graph
 
 writeExcelIf :: Options -> GnuPlotGraph -> IO ()
 writeExcelIf options graph
-  | optExcelData options = writeExcelData graph 
+  | optExcelData options = do
+    let fName = (excelFileName $ plotInfo options)
+    putStrLn ("Writing Excel Data to '" ++ fName ++ "'") 
+    h <- openFile fName WriteMode
+    writeExcelData h graph 
+    hClose h
   | otherwise            = return ()
 
 writeClustersIf :: Options -> [PinAnalysisData] -> IO ()
@@ -265,6 +278,19 @@ writeRawDataIf options filteredResults
        hClose h
   | otherwise            = return ()
   where fileName = (optOutPrefix options) ++ ".raw"
+
+writeSummaryDataIf :: Options -> [PinAnalysisData] -> IO ()
+writeSummaryDataIf options filteredResults
+  | optWriteSummary options = do
+       let summaryData = summarizeData filteredResults
+       putStrLn ("Writing Summary Data to " ++ fileName)
+       h <- openFile fileName WriteMode 
+       writeSummaryData h      plotOpts summaryData
+       writeSummaryData stdout plotOpts summaryData
+       hClose h
+  | otherwise            = return ()
+  where fileName = summaryFileName plotOpts
+        plotOpts = plotInfo options
 
 parseTool :: FilePath -> IO PinTool
 parseTool fileName = do

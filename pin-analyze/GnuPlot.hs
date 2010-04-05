@@ -11,6 +11,7 @@ data PlotInfo = PlotInfo {
     , dataFileName   :: FilePath
     , scriptFileName :: FilePath
     , excelFileName  :: FilePath
+    , summaryFileName:: FilePath
     , normalizeGraph :: Bool
     , stackGraph     :: Bool
 }
@@ -139,13 +140,15 @@ formatDataRow dataRow = format dataRow
     extract (S s) = show s
     extract (F f) = (showFFloat (Just 4) f) ""
      
-writeExcelData :: GnuPlotGraph -> IO ()
-writeExcelData graph = do
+writeExcelData :: Handle -> GnuPlotGraph -> IO ()
+writeExcelData h graph = do
   let (info, _, dataFile) = graph 
       selectFun = if (normalizeGraph info) then oddPositions 
         else (\l -> (head l) : evenPositions l)
-  putStrLn ("Writing Excel Data to '" ++ (excelFileName info) ++ "'") 
-  h <- openFile (excelFileName info) WriteMode
   mapM_ (hPutStrLn h . formatDataRow . selectFun) dataFile 
-  hClose h
+
+writeSummaryData :: Handle -> PlotInfo -> [PinAnalysisData] -> IO ()
+writeSummaryData h info d = 
+  let g = mkGnuPlotGraph info d in
+  writeExcelData h g
 
