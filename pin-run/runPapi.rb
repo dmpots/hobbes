@@ -2,7 +2,7 @@
 require 'pp'
 require 'fileutils'
 
-$iters = 100
+$iters = 10
 $outfile = $stdout
 $eventsFile = DATA
 

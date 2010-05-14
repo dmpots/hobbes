@@ -21,11 +21,12 @@ llvmSets = %w(
               shootout.ghc-llvm
               shootout.llvm
           )
-allSets = stdSets + llvmSets
+allSets  = stdSets + llvmSets
+papiSets = (stdSets - ["spec.icc"]) + llvmSets
 
 # specific tools
-tools = allTools
-sets  = allSets
+tools = %w(papi)
+sets  = papiSets
 
 expectedFiles = {
   "nofib"              => 91,

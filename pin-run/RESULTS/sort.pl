@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 
 
-@tools = qw(opcodemix bblengthmix);
+#@tools = qw(opcodemix bblengthmix papi);
+@tools = qw(papi);
 @destDirs = qw(H C parallel.ghc parallel.ghc-llvm);
 $cleanOnly = 0;
 $parallelOnly = 0;
