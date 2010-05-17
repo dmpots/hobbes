@@ -63,5 +63,9 @@ for $tool (@tools) {
   print "$cmd\n";
   print `$cmd`;
 
+  $cmd = "find nofibpar-viaC.$tool/ dph-viaC.$tool/ -type f -exec cp {} parallel.ghc-viaC.$tool \\;";
+  print "$cmd\n";
+  print `$cmd`;
+
 }
 print "\n\n";

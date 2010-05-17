@@ -6,7 +6,7 @@ $cleanOnly = false
 if(ARGV.grep(/--clean/).length > 0) then
   $cleanOnly = true
 end
-$exts = %w(opcodemix bblengthmix)
+$exts = %w(opcodemix bblengthmix papi)
 $extsRE = $exts.join("|")
 
 def expandDir(d) 

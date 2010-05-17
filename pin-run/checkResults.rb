@@ -21,30 +21,43 @@ llvmSets = %w(
               shootout.ghc-llvm
               shootout.llvm
           )
-allSets  = stdSets + llvmSets
+viaCSets = %w(
+              nofib-viaC
+              nofibpar-viaC
+              dph-viaC
+              parallel.ghc-viaC
+              shootout.ghc-viaC
+          )
+allSets  = stdSets + llvmSets + viaCSets
 papiSets = (stdSets - ["spec.icc"]) + llvmSets
 
 # specific tools
 tools = %w(papi)
-sets  = papiSets
+#sets  = papiSets
+sets  = viaCSets
 
 expectedFiles = {
   "nofib"              => 91,
   "nofib-llvm"         => 91,
+  "nofib-viaC"         => 91,
   "nofibpar"           => 8,
   "nofibpar-llvm"      => 8,
+  "nofibpar-viaC"      => 8,
   "dph"                => 5,
   "dph-llvm"           => 5,
+  "dph-viaC"           => 5,
   "spec.gcc"           => 27,
   "spec.icc"           => 18,
   "spec.llvm"          => 26,
   "shootout.gcc"       => 11,
   "shootout.llvm"      => 11,
   "shootout.ghc"       => 11,
-  "shootout.ghc-llvm"  => 11
+  "shootout.ghc-llvm"  => 11,
+  "shootout.ghc-viaC"  => 11
 }
 expectedFiles["parallel.ghc"] = expectedFiles["dph"] + expectedFiles["nofibpar"]
 expectedFiles["parallel.ghc-llvm"] = expectedFiles["dph-llvm"] + expectedFiles["nofibpar-llvm"]
+expectedFiles["parallel.ghc-viaC"] = expectedFiles["dph-viaC"] + expectedFiles["nofibpar-viaC"]
 
 def testFile(file)
   fileType = "UNKNOWN"
