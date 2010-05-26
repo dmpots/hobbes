@@ -6,22 +6,22 @@ data ProgramClass =
   | HaskellProgram
   | CProgram
   | NofibGhc
+  | NofibGhc_Llvm
+  | NofibGhc_viaC
   | SpecGcc
   | SpecIcc
+  | SpecLlvm
   | ShootoutGhc
+  | ShootoutGhc_Llvm
+  | ShootoutGhc_viaC
   | ShootoutGcc
+  | ShootoutLlvm
   | NofibparGhc
   | DphGhc
   | ParallelGhc
-  | SpecLlvm
-  | NofibGhc_Llvm
-  | ShootoutGhc_Llvm
-  | ShootoutLlvm
   | NofibparGhc_Llvm
   | DphGhc_Llvm
   | ParallelGhc_Llvm
-  | ShootoutGhc_viaC
-  | NofibGhc_viaC
   deriving (Enum, Ord, Eq, Show, Read)
 
 data GenClusterElement a b = CE { 

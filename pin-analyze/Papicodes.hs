@@ -76,19 +76,12 @@ papiNormalizer PAPI_TOT_CYC = PAPI_TOT_INS -- to calculate CPI
 
 papiOutputFilter :: PapiEvent -> Bool
 papiOutputFilter PAPI_L1_DCM  = True
-papiOutputFilter PAPI_L1_DCH  = True
 papiOutputFilter PAPI_L1_ICM  = True
-papiOutputFilter PAPI_L1_ICH  = True
 
 papiOutputFilter PAPI_L2_DCM  = True
-papiOutputFilter PAPI_L2_DCH  = True
 papiOutputFilter PAPI_L2_ICM  = True
-papiOutputFilter PAPI_L2_ICH  = True
-papiOutputFilter PAPI_L2_TCR  = True
-papiOutputFilter PAPI_L2_TCW  = True
 
 papiOutputFilter PAPI_BR_MSP  = True
-papiOutputFilter PAPI_BR_PRC  = True
 papiOutputFilter PAPI_TOT_CYC = True
 papiOutputFilter _            = False
 
