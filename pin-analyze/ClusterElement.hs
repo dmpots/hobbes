@@ -20,6 +20,8 @@ data ProgramClass =
   | NofibparGhc_Llvm
   | DphGhc_Llvm
   | ParallelGhc_Llvm
+  | ShootoutGhc_viaC
+  | NofibGhc_viaC
   deriving (Enum, Ord, Eq, Show, Read)
 
 data GenClusterElement a b = CE { 
