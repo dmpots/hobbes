@@ -120,6 +120,8 @@
 (^|/)nofib-pin/RESULTS
 (^|/)pin-run/RESULTS/dph.*$
 (^|/)pin-run/RESULTS/nofib.*$
+(^|/)pin-run/RESULTS/nofib-llvm.*$
+(^|/)pin-run/RESULTS/nofib-viaC.*$
 (^|/)pin-run/RESULTS/nofibpar.*$
 (^|/)pin-run/RESULTS/spec.*$
 (^|/)pin-run/RESULTS/shootout.*$
@@ -130,6 +132,7 @@
 (^|/)pin-run/RESULTS/1
 (^|/)pin-run/RESULTS/2
 (^|/)pin-run/RESULTS/3
+(^|/)pin-run/RESULTS/OLD
 (^|/)pin-run/RESULTS/LATEST.nodylib
 (^|/)pin-run/RESULTS/LATEST
 (^|/)pin-run/RESULTS/PAPI
