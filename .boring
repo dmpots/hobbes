@@ -148,3 +148,4 @@
 (^|/)pin-analyze/PLOT
 (^|/)pin-analyze/nohup.out$
 (^|/)nohup.out$
+(^|/)INSTALLED.LIST$

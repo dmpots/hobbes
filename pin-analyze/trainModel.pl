@@ -57,7 +57,8 @@ if (@ARGV > 0) {
   elsif ($t =~ /jump/i) {$PinTool = "jumpmix";}
   elsif ($t =~ /reg/i)  {$PinTool = "regmix";}
   elsif ($t =~ /bbl/i)  {$PinTool = "bblengthmix";}
-  else {print "BAD PinTool: $t"; exit 1;}
+  elsif ($t =~ /papi/i) {$PinTool = "papi";}
+  else {print "BAD PinTool: $t\n"; exit 1;}
 }
 
 print "USING TrainSize = $TrainSize, Threshold = $Threshold, ProgSets = $ProgSets PinTool = $PinTool\n";
@@ -75,35 +76,72 @@ if($chooseTrainingSets) {
   my $shootGcc    = "ShootoutGcc ../pin-run/RESULTS/shootout.gcc.$PinTool";
   my $parallelGhc = "ParallelGhc ../pin-run/RESULTS/parallel.ghc.$PinTool";
 
-  my $nofibGhc_V  = "NofibGhc_Llvm ../pin-run/RESULTS/nofib-llvm.$PinTool";
+  my $nofibGhc_M  = "NofibGhc_Llvm ../pin-run/RESULTS/nofib-llvm.$PinTool";
   my $specLlvm    = "SpecLlvm      ../pin-run/RESULTS/spec.llvm.$PinTool";
-  my $shootGhc_V  = "ShootoutGhc_Llvm ../pin-run/RESULTS/shootout.ghc-llvm.$PinTool";
+  my $shootGhc_M  = "ShootoutGhc_Llvm ../pin-run/RESULTS/shootout.ghc-llvm.$PinTool";
   my $shootLlvm   = "ShootoutLlvm ../pin-run/RESULTS/shootout.llvm.$PinTool";
-  my $parallelGhc_V = "ParallelGhc_Llvm ../pin-run/RESULTS/parallel.ghc-llvm.$PinTool";
+  my $parallelGhc_M = "ParallelGhc_Llvm ../pin-run/RESULTS/parallel.ghc-llvm.$PinTool";
+
+  my $nofibGhc_V  = "NofibGhc_viaC ../pin-run/RESULTS/nofib-viaC.$PinTool";
+  my $shootGhc_V  = "ShootoutGhc_viaC ../pin-run/RESULTS/shootout.ghc-viaC.$PinTool";
 
   my $setSize     = $TrainSize;
   my @classes     = ();
-  if    ($ProgSets =~ /all/i) {@classes = ($Hprogs, $Cprogs);}
-  elsif ($ProgSets =~ /indi/i){@classes = ($nofibGhc, $specGcc, $specIcc);}
-  elsif ($ProgSets =~ /HNGS/i){@classes = ($nofibGhc, $specGcc);}
-  elsif ($ProgSets =~ /HNIS/i){@classes = ($nofibGhc, $specIcc);}
-  elsif ($ProgSets =~ /HNHT/i){@classes = ($nofibGhc, $shootGhc);}
-  elsif ($ProgSets =~ /HNHP/i){@classes = ($nofibGhc, $parallelGhc);}
-  elsif ($ProgSets =~ /HTGS/i){@classes = ($shootGhc, $specGcc);}
-  elsif ($ProgSets =~ /HTGT/i){@classes = ($shootGhc, $shootGcc);}
-  elsif ($ProgSets =~ /GSHP/i){@classes = ($specGcc, $parallelGhc);}
-  elsif ($ProgSets =~ /GSIS/i){@classes = ($specGcc,  $specIcc);}
-  elsif ($ProgSets =~ /GSGT/i){@classes = ($specGcc, $shootGcc);}
-
-  # LLVM tests
-  elsif ($ProgSets =~ /VNGS/i){@classes = ($nofibGhc_V, $specGcc);}
-  elsif ($ProgSets =~ /VNLS/i){@classes = ($nofibGhc_V, $specLlvm);}
-  elsif ($ProgSets =~ /VNHN/i){@classes = ($nofibGhc_V, $nofibGhc);}
-  elsif ($ProgSets =~ /VTGS/i){@classes = ($shootGhc_V, $specGcc);}
-  elsif ($ProgSets =~ /GSVP/i){@classes = ($specGcc, $parallelGhc_V);}
-  elsif ($ProgSets =~ /GSLS/i){@classes = ($specGcc, $specLlvm);}
-
-  else  {print "Unknown ProgSets: $ProgSets"; exit 1;}
+  {
+    my @sets = split(/:/, $ProgSets);
+    for my $set (@sets) {
+      $set = uc $set;
+      if($set eq "AH"){
+        push @classes, ($Hprogs);
+      }
+      elsif($set eq "AC"){
+        push @classes, ($Cprogs);
+      }
+      elsif($set eq "NH"){
+        push @classes, ($nofibGhc);
+      }
+      elsif($set eq "SG"){
+        push @classes, ($specGcc);
+      }
+      elsif($set eq "SI"){
+        push @classes, ($specIcc);
+      }
+      elsif($set eq "TH"){
+        push @classes, ($shootGhc);
+      }
+      elsif($set eq "TG"){
+        push @classes, ($shootGcc);
+      }
+      elsif($set eq "PH"){
+        push @classes, ($parallelGhc);
+      }
+      elsif($set eq "NM"){
+        push @classes, ($nofibGhc_M);
+      }
+      elsif($set eq "SL"){
+        push @classes, ($specLlvm);
+      }
+      elsif($set eq "TM"){
+        push @classes, ($shootGhc_M);
+      }
+      elsif($set eq "TL"){
+        push @classes, ($shootLlvm);
+      }
+      elsif($set eq "PM"){
+        push @classes, ($parallelGhc_M);
+      }
+      elsif($set eq "NV"){
+        push @classes, ($nofibGhc_V);
+      }
+      elsif($set eq "TV"){
+        push @classes, ($shootGhc_V);
+      }
+      else {
+        print "Unknown ProgSet: $set\n"; exit 1;
+      }
+    }
+      
+  }
 
   $rc = system("./chooseTrainingSets.pl $setSize @classes");
   check($rc, "Error choosing training sets");

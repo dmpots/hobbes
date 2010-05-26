@@ -8,6 +8,7 @@ if (@ARGV != 4) {
 }
 ($Iters, $Cutoff, $ProgSet, $Tool) = @ARGV;
 $TmpFile = "__KMEANLOG__";
+$Clusters = scalar(split /:/, $ProgSet); #get the length
 
 # setup files
 $cmd = "./trainModel.pl 0 $Cutoff $ProgSet $Tool --KMEANS";
@@ -17,8 +18,8 @@ if (system("$cmd > $TmpFile") != 0) {
 }
 
 # run kmeans
-print "USING Iters = $Iters, Threshold = $Cutoff, ProgSets = $ProgSet PinTool = $Tool\n";
-$cmd = "./pinalyze -k 2 -i $Iters PREDICT/*";
+print "USING Iters = $Iters, Threshold = $Cutoff, ProgSets = $ProgSet Clusters = $Clusters PinTool = $Tool\n";
+$cmd = "./pinalyze -k $Clusters -i $Iters PREDICT/*";
 @results = ();
 open LOG, '>', $TmpFile;
 open(TRAIN, "$cmd |") || die "Error executing kmeans: $!\n";

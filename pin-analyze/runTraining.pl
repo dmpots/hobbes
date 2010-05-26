@@ -6,7 +6,7 @@ BEGIN {$| = 1;} #autoflush
 $argCount = $#ARGV + 1;
 $iters = shift @ARGV;
 if ($iters !~ /^\d+$/) {
-  print "usage: runTraining.pl <iters>\n";
+  print "usage: runTraining.pl <iters> <trainsize> <threshold> <progsets> <tool>\n";
   exit 1;
 }
 
@@ -60,6 +60,9 @@ for(my $i = 0; $i < $iters; $i++) {
     }
   }
   close TRAIN;
+  if($? != 0) {
+    print "Error running training\n"; exit $?;
+  }
 }
 close LOG;
 
