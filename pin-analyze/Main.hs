@@ -35,6 +35,7 @@ data Options = Options {
   , optReadRawData  :: Maybe String
   , optGroupOpcodes :: Bool
   , optWriteSummary :: Bool
+  , optTransposeOutput :: Bool
 }
 
 defaultOptions :: Options
@@ -54,6 +55,7 @@ defaultOptions = Options {
   , optReadRawData  = Nothing
   , optGroupOpcodes = False
   , optWriteSummary = True
+  , optTransposeOutput = False
 }
 
 cmdLineOptions :: [OptDescr (Options -> Options)]
@@ -70,7 +72,7 @@ cmdLineOptions = [
       (NoArg (\opts -> opts { optNormalize = not (optNormalize opts)}))
       "Normalize counts as a percentage of total"
 
-    , Option ['t'] ["stacked"]
+    , Option ['d'] ["stacked"]
       (NoArg (\opts -> opts { optStacked = not (optStacked opts)}))
       "Generate a stacked histogram"
 
@@ -117,6 +119,10 @@ cmdLineOptions = [
     , Option ['s'] ["summary"]
       (NoArg (\opts -> opts {optWriteSummary = not (optWriteSummary opts)}))
       "Generate summary data"
+
+    , Option ['p'] ["transpose"]
+      (NoArg (\opts -> opts {optTransposeOutput = not (optTransposeOutput opts)}))
+      "Transpose rows/columns in output data"
   ] 
 
 main :: IO ()
@@ -213,6 +219,7 @@ plotInfo options = PlotInfo {
         , summaryFileName= outPrefix ++ ".summary"
         , normalizeGraph = optNormalize options
         , stackGraph     = optStacked options
+        , transposeOut   = optTransposeOutput options
     }
     where
     outPrefix       = optOutPrefix options

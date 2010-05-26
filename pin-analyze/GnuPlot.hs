@@ -14,6 +14,7 @@ data PlotInfo = PlotInfo {
     , summaryFileName:: FilePath
     , normalizeGraph :: Bool
     , stackGraph     :: Bool
+    , transposeOut   :: Bool
 }
 
 data DataColumn = I Integer | S String | F Double
@@ -129,7 +130,7 @@ writeGraphScript info script = do
 writeGraphData :: PlotInfo -> GraphData -> IO ()
 writeGraphData info fileData = do
       h <- openFile (dataFileName info) WriteMode
-      mapM_ (hPutStrLn h . formatDataRow) fileData
+      writeOutputData h info fileData
       hClose h
 
 formatDataRow :: [DataColumn] -> String
@@ -139,13 +140,20 @@ formatDataRow dataRow = format dataRow
     extract (I i) = show i
     extract (S s) = show s
     extract (F f) = (showFFloat (Just 4) f) ""
+
+writeOutputData :: Handle -> PlotInfo -> [[DataColumn]] -> IO()
+writeOutputData h info fileData =
+  mapM_ (hPutStrLn h . formatDataRow) (mbTranspose fileData)
+  where 
+  mbTranspose = if (transposeOut info) then transpose else id
+
      
 writeExcelData :: Handle -> GnuPlotGraph -> IO ()
 writeExcelData h graph = do
   let (info, _, dataFile) = graph 
       selectFun = if (normalizeGraph info) then oddPositions 
-        else (\l -> (head l) : evenPositions l)
-  mapM_ (hPutStrLn h . formatDataRow . selectFun) dataFile 
+                  else (\l -> (head l) : evenPositions l) in
+      writeOutputData h info (map selectFun dataFile)
 
 writeSummaryData :: Handle -> PlotInfo -> [PinAnalysisData] -> IO ()
 writeSummaryData h info d = 
