@@ -30,6 +30,10 @@ if (grep(/--KMEANS/i, @ARGV) ) {
   $svm_predict        = 0;
   print "--KMEANS detected. Only running chooseTrainingSets.pl\n";
 }
+if(@ARGV < 4) {
+  print "usage: $Pgm <trainsize> <threshold> <progsets> <tool>\n";
+  exit 1;
+}
 
 # params
 $TrainSize = 5;
