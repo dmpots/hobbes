@@ -8,11 +8,11 @@ data OpcodeType =
   | ShiftRotate
   | Bit
   | Branch
+  | SSE
+  | Other
   | X87FPU
   | SIMDFp
   | SIMDInt
-  | SSE
-  | Other
   deriving (Show, Read, Eq, Enum, Ord)
 
 
