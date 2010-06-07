@@ -5,6 +5,7 @@ LIBSVMDIR:=libsvm-2.9
 LIBSVMSRCS:=$(wildcard $LIBSVMDIR/*.cpp $LIBSVMDIR/*.c)
 LIBSVMPROGS:=$(LIBSVMDIR)/svm-train $(LIBSVMDIR)/svm-predict
 MKGRPDIR:=opcode-bucket
+GHC=ghc
 
 DEFAULT: pinalyze $(LIBSVMPROGS)
 
@@ -15,7 +16,7 @@ OpcodeGroup.hs: $(MKGRPDIR)/x86reference.xml $(MKGRPDIR)/*.hs
 	make -C $(MKGRPDIR) OpcodeGroup > $@
 
 pinalyze: $(SOURCES) $(GENERATED_SOURCES)
-	ghc -Wall -O --make -o $(EXE) $(SOURCES) 
+	$(GHC) -Wall -O --make -o $(EXE) $(SOURCES) 
 
 $(LIBSVMPROGS): $(LIBSVMSRCS)
 	make -C $(LIBSVMDIR)
