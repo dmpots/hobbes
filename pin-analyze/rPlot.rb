@@ -46,7 +46,7 @@ files = {}
 inputFiles = ARGV
 inputFiles.each do |file|
   ext = File.extname(file).gsub(/^\./, "")
-  if ext =~ /HNGS|HNIS|HNHT|HNHP|HTGS|HTGT|GSHP|GSIS|GSGT|VNGS|VNLS|VTGS|GSVP|GSLS|VNHN/ then
+  #if ext =~ /HNGS|HNIS|HNHT|HNHP|HTGS|HTGT|GSHP|GSIS|GSGT|VNGS|VNLS|VTGS|GSVP|GSLS|VNHN/ then
     pinTool =
     case file 
       when /jumpmix/   
@@ -57,17 +57,19 @@ inputFiles.each do |file|
         "regmix"
       when /bblengthmix/    
         "bblengthmix"
+      when /papi/    
+        "papi"
     end
 
     key = "#{ext}-#{pinTool}"
     files[key] ||= []
     files[key] << file
-  end
+  #end
 end
 
 # Dump Data
 files.sort_by{|n,_|n.split("-",1)[0]}.each do |name,resultFiles|
-  outfileName = "PLOTS/#{name}.dat"
+  outfileName = "PLOT/#{name}.dat"
   puts "Writing data to #{outfileName}"
   means = processFiles(resultFiles, options)
   File.open(outfileName, 'w') do |f|
@@ -76,20 +78,22 @@ files.sort_by{|n,_|n.split("-",1)[0]}.each do |name,resultFiles|
 end
 
 # Dump Script
-File.open('PLOTS/plot.r', 'w') do |f|
+File.open('PLOT/plot.r', 'w') do |f|
   xs = []
   i = 0
   files.sort_by{|n,_|n.split("-",2)[0]}.each do |name,resultFiles|
     outfileName = "#{name}.dat"
     x = "x#{i}"; i += 1
-    f.puts "#{x} <- scan(\"#{outfileName}\") / 100"
+    f.puts "#{x} <- scan(\"#{outfileName}\") "
     xs << x
   end
-  names = files.keys.map{|n| n.split("-",2)[0]}.map{|s| "\"#{s}\""}.sort.join(",")
+  names = files.keys.map{|n| n.split("-",2)[0]}.map{|s| "\"#{s}\""}.map{|s| s.gsub("_",":")}.sort.join(",")
+  f.puts "require(vioplot)"
+  f.puts "require(quantreg)"
   f.puts "names <- c(#{names})"
-  f.puts "vioplot(#{xs.join(',')}, names=FALSE, col=\"tomato\", colMed=\"grey\", pchMed=10,ylim=c(0,1))"
-  f.puts "axis(1,labels=names,at=seq(1,#{xs.length}),las=2)"
-  f.puts "title(\"#{options[:title]}\",xlab=\"benchmarks\",ylab=\"accuracy\")"
+  f.puts "vioplot(#{xs.join(',')}, names=FALSE, col=\"tomato\", colMed=\"grey\", pchMed=10,ylim=c(0,100))"
+  f.puts "axis(1,labels=names,at=seq(1,#{xs.length}),las=1)"
+  f.puts "title(\"#{options[:title]}\",xlab=\"benchmarks\",ylab=\"accuracy (%)\")"
   f.puts "xs <- list(#{xs.join(',')})"
   f.puts "names(xs) <- names"
   f.puts "stats <- t(sapply(xs, summary))"
