@@ -1,40 +1,53 @@
 #!/usr/bin/ruby
+require 'pp'
+
 $errors = 0
 allTools = %w(bblengthmix opcodemix papi)
 stdSets  = %w(
               nofib
-              nofibpar
               spec.gcc
               spec.icc
-              dph
-              parallel.ghc
               shootout.ghc
               shootout.gcc
            )
+outOfFavorSets = %w(
+              nofibpar
+              dph
+              parallel.ghc
+
+              nofibpar-llvm
+              dph-llvm
+              parallel.ghc-llvm
+
+              nofibpar-viaC
+              dph-viaC
+              parallel.ghc-viaC
+)
 
 llvmSets = %w(
               nofib-llvm
-              nofibpar-llvm
               spec.llvm
-              dph-llvm
-              parallel.ghc-llvm
               shootout.ghc-llvm
               shootout.llvm
           )
 viaCSets = %w(
               nofib-viaC
-              nofibpar-viaC
-              dph-viaC
-              parallel.ghc-viaC
               shootout.ghc-viaC
           )
-allSets  = stdSets + llvmSets + viaCSets
+specSets = %w(
+              spec.int.gcc
+              spec.int.icc
+              spec.int.llvm
+              spec.fp.gcc
+              spec.fp.icc
+              spec.fp.llvm
+          )
+allSets  = stdSets + llvmSets + viaCSets + specSets
 papiSets = (stdSets - ["spec.icc"]) + llvmSets
 
 # specific tools
-tools = %w(papi)
-#sets  = papiSets
-sets  = viaCSets
+tools = allTools
+sets  = allSets
 
 expectedFiles = {
   "nofib"              => 91,
@@ -49,12 +62,19 @@ expectedFiles = {
   "spec.gcc"           => 27,
   "spec.icc"           => 18,
   "spec.llvm"          => 26,
+  "spec.int.gcc"       => 11,
+  "spec.int.icc"       => 11,
+  "spec.int.llvm"      => 11,
+  "spec.fp.gcc"        => 16,
+  "spec.fp.icc"        =>  7,
+  "spec.fp.llvm"       => 15,
   "shootout.gcc"       => 11,
   "shootout.llvm"      => 11,
   "shootout.ghc"       => 11,
   "shootout.ghc-llvm"  => 11,
   "shootout.ghc-viaC"  => 11
 }
+
 expectedFiles["parallel.ghc"] = expectedFiles["dph"] + expectedFiles["nofibpar"]
 expectedFiles["parallel.ghc-llvm"] = expectedFiles["dph-llvm"] + expectedFiles["nofibpar-llvm"]
 expectedFiles["parallel.ghc-viaC"] = expectedFiles["dph-viaC"] + expectedFiles["nofibpar-viaC"]
@@ -77,14 +97,24 @@ def error(msg)
 end
 
 tools.each do |tool|
-  sets.each do |bench|
+  toolSets, expectedCount = 
+  if tool == "papi" then
+    newExpected = expectedFiles.clone
+    expectedFiles.each {|k,v| if k =~ /shootout\.ghc/ then newExpected[k] = v - 1 end}
+    #pp newExpected
+    [sets - ["spec.icc", "spec.int.icc", "spec.fp.icc"], newExpected]
+  else
+    [sets, expectedFiles]
+  end
+
+  toolSets.each do |bench|
     dir = File.join("RESULTS", "#{bench}.#{tool}")
     if (! File.exists?(dir) ) then
       error("#{dir} does not exist")
       next
     end
     files = Dir["#{dir}/*"]
-    expected = expectedFiles[bench]
+    expected = expectedCount[bench]
     if files.length !=  expected then
       error("#{dir} missing files. Has #{files.length}. Expected #{expected}.")
     end

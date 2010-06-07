@@ -89,13 +89,20 @@ if($chooseTrainingSets) {
   my $nofibGhc_V  = "NofibGhc_viaC ../pin-run/RESULTS/nofib-viaC.$PinTool";
   my $shootGhc_V  = "ShootoutGhc_viaC ../pin-run/RESULTS/shootout.ghc-viaC.$PinTool";
 
+  my $specIntGcc  = "SpecGcc     ../pin-run/RESULTS/spec.int.gcc.$PinTool";
+  my $specFpGcc   = "SpecGcc     ../pin-run/RESULTS/spec.fp.gcc.$PinTool";
+  my $specIntIcc  = "SpecIcc     ../pin-run/RESULTS/spec.int.icc.$PinTool";
+  my $specFpIcc   = "SpecIcc     ../pin-run/RESULTS/spec.fp.icc.$PinTool";
+  my $specIntLlvm = "SpecLlvm    ../pin-run/RESULTS/spec.int.llvm.$PinTool";
+  my $specFpLlvm  = "SpecLlvm    ../pin-run/RESULTS/spec.fp.llvm.$PinTool";
+
   my $setSize     = $TrainSize;
   my @classes     = ();
   {
     my @sets = split(/:/, $ProgSets);
     for my $set (@sets) {
       $set = uc $set;
-      if($set eq "AH"){
+      if($set eq "AK"){
         push @classes, ($Hprogs);
       }
       elsif($set eq "AC"){
@@ -140,6 +147,26 @@ if($chooseTrainingSets) {
       elsif($set eq "TV"){
         push @classes, ($shootGhc_V);
       }
+
+      elsif($set eq "IG"){
+        push @classes, ($specIntGcc);
+      }
+      elsif($set eq "FG"){
+        push @classes, ($specFpGcc);
+      }
+      elsif($set eq "II"){
+        push @classes, ($specIntIcc);
+      }
+      elsif($set eq "FI"){
+        push @classes, ($specFpIcc);
+      }
+      elsif($set eq "IL"){
+        push @classes, ($specIntLlvm);
+      }
+      elsif($set eq "FL"){
+        push @classes, ($specFpLlvm);
+      }
+
       else {
         print "Unknown ProgSet: $set\n"; exit 1;
       }
