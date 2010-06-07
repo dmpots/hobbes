@@ -68,7 +68,7 @@ cmdLineOptions = [
       (ReqArg (\t opts -> opts { optOutPrefix = t }) "PREFIX")
       "Output prefix for .dat and .gnuplot files"
 
-    , Option ['n'] ["normalize counts"]
+    , Option ['n'] ["normalize-counts"]
       (NoArg (\opts -> opts { optNormalize = not (optNormalize opts)}))
       "Normalize counts as a percentage of total"
 
