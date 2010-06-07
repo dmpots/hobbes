@@ -61,8 +61,10 @@ for my $cmdFile (@commands) {
   $destDir =~ s/\.commands//;
   $destDir.= ".$PinTool";
   $destDir = "RESULTS/$destDir";
-  print "Creating dest dir     $destDir\n";
-  system("mkdir $destDir");
+  if(! -e $destDir) {
+    print "Creating dest dir     $destDir\n";
+    system("mkdir $destDir");
+  }
   print "Moving results to dir $destDir\n";
   system("mv RESULTS/*.LOG $destDir");
   if ($? != 0) {print "ERROR running pin tool\n"; exit 1;}
