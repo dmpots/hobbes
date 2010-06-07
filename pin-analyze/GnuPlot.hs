@@ -136,7 +136,7 @@ writeGraphData info fileData = do
 formatDataRow :: [DataColumn] -> String
 formatDataRow dataRow = format dataRow 
     where
-    format = concat . (intersperse "\t") . (map extract)
+    format = concat . (intersperse " ") . (map extract)
     extract (I i) = show i
     extract (S s) = show s
     extract (F f) = (showFFloat (Just 4) f) ""
