@@ -10,6 +10,7 @@ import Jumpcodes
 import Regcodes
 import Papicodes
 import OpcodeType
+import OpcodeGroup
 
 data GenPinData a = PinData { 
       bmName  :: String
@@ -146,8 +147,11 @@ applyExtraFilters :: Set AnalysisLabel -> Set AnalysisLabel
 applyExtraFilters set = Set.filter filterFun set
   where 
   filterFun (PapiLabel pl) = papiOutputFilter pl
+  --filterFun (OpcodeLabel ol) = opcodeOutputFilter ol
   filterFun  _             = True
 
+opcodeOutputFilter :: Opcode -> Bool
+opcodeOutputFilter = opcodeFilterForGroup Other
   
 -- |Summarize the data, first grouping by 'ProgramClass'.
 -- the summarized data is returned as pin data with a single entry for each

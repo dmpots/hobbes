@@ -631,3 +631,6 @@ opcodeGroup RET_NEAR = Stack
 opcodeGroup CALL_NEAR = Stack
 opcodeGroup CALL_FAR = Stack
 opcodeGroup _ = Other
+
+opcodeFilterForGroup :: OpcodeType -> Opcode -> Bool
+opcodeFilterForGroup grp op = opcodeGroup op == grp
