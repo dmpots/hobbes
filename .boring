@@ -149,3 +149,6 @@
 (^|/)pin-analyze/nohup.out$
 (^|/)nohup.out$
 (^|/)INSTALLED.LIST$
+(^|/)commands.conf$
+(^|/)tools.conf$
+(^|/)papi-events.conf$
