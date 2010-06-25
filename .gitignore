@@ -111,3 +111,5 @@ TAGS/
 *.dump
 *.beam
 
+#papi-ghc
+dist/
