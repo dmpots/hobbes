@@ -9,9 +9,8 @@ import System.Exit
 import System.Directory
 import System.FilePath
 import System.Posix.Process
-import System.Posix.Types
 import System.Console.GetOpt
-import Text.Printf
+import StatsFile
 
 main :: IO ()
 main = do
@@ -103,16 +102,6 @@ cleanFile ("":rest)      = cleanFile rest
 cleanFile (('#':_):rest) = cleanFile rest
 cleanFile (line:rest)    = line : cleanFile rest
 
-statsFile :: FilePath   -- ^ The path to the base file name
-          -> ProcessID  -- ^ Unique pid to avoid name conflicts
-          -> String     -- ^ File extension
-          -> Int        -- ^ Event set number
-          -> Int        -- ^ Sequence number
-          -> FilePath
-statsFile baseName pid ext setNum seqNum = fileName
-  where fileName = printf "%s.%d.%03d.%03d.%s" baseName intPid setNum seqNum ext
-        intPid   = toInteger pid
-
 rtsStatsArg :: FilePath -> String
 rtsStatsArg file = "+RTS -s" ++ file ++ " -RTS"
 
@@ -121,15 +110,16 @@ runAll config commands eventSets = do
   mapM_ (\command ->
     mapM_ (\(events, num) -> run command events num) numberedEvents) commands
   where
-  numberedEvents = zip eventSets [1..]
+  numberedEvents = zip eventSets [0..]
   run = runNTimes config
 
 runNTimes :: Config -> Command -> [PapiEvent] -> Int -> IO ()
 runNTimes config command events setNum = do
-  pid <- getProcessID
-  let baseName   = (optOutDir config) </> ("__PAPI."++(name command))
-  let outFile n  = statsFile baseName pid "stats" setNum n
-  let count      = optNumRuns config
+  pid <- getProcessID >>= return . toInteger 
+  let base      = (optOutDir config) </> "__PAPI"
+  let pName     = name command
+  let outFile n = toFilePath $ StatsFile base pName pid "stats" setNum n
+  let count     = optNumRuns config
   mapM_ (\n -> runChecked command events (outFile n)) [1 .. count]
 
 runChecked :: Command -> [PapiEvent] -> FilePath -> IO ()
