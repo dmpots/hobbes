@@ -103,9 +103,14 @@ cleanFile ("":rest)      = cleanFile rest
 cleanFile (('#':_):rest) = cleanFile rest
 cleanFile (line:rest)    = line : cleanFile rest
 
-statsFile :: FilePath -> ProcessID -> String -> Int -> FilePath
-statsFile baseName pid ext seqNum = fileName
-  where fileName = printf "%s.%d.%03d.%s" baseName intPid seqNum ext
+statsFile :: FilePath   -- ^ The path to the base file name
+          -> ProcessID  -- ^ Unique pid to avoid name conflicts
+          -> String     -- ^ File extension
+          -> Int        -- ^ Event set number
+          -> Int        -- ^ Sequence number
+          -> FilePath
+statsFile baseName pid ext setNum seqNum = fileName
+  where fileName = printf "%s.%d.%03d.%03d.%s" baseName intPid setNum seqNum ext
         intPid   = toInteger pid
 
 rtsStatsArg :: FilePath -> String
@@ -114,20 +119,22 @@ rtsStatsArg file = "+RTS -s" ++ file ++ " -RTS"
 runAll :: Config -> [Command] -> [[PapiEvent]] -> IO ()
 runAll config commands eventSets = do
   mapM_ (\command ->
-    mapM_ (\events -> runNTimes config command events) eventSets) commands
+    mapM_ (\(events, num) -> run command events num) numberedEvents) commands
+  where
+  numberedEvents = zip eventSets [1..]
+  run = runNTimes config
 
-runNTimes :: Config -> Command -> [PapiEvent] -> IO ()
-runNTimes config command events = do 
+runNTimes :: Config -> Command -> [PapiEvent] -> Int -> IO ()
+runNTimes config command events setNum = do
   pid <- getProcessID
-  let outDirPath = optOutDir config
-  let progName   = name command
-  let outFile n  = statsFile (outDirPath</>"__PAPI."++progName) pid "stats" n
+  let baseName   = (optOutDir config) </> ("__PAPI."++(name command))
+  let outFile n  = statsFile baseName pid "stats" setNum n
   let count      = optNumRuns config
   mapM_ (\n -> runChecked command events (outFile n)) [1 .. count]
 
 runChecked :: Command -> [PapiEvent] -> FilePath -> IO ()
 runChecked command events outFile = do
-  rc <- runCommand commandWithArgs
+  rc <- Command.runCommand commandWithArgs
   case rc of
     ExitSuccess   -> return ()
     ExitFailure _ -> 
