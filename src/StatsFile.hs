@@ -6,6 +6,7 @@ module StatsFile (
 where
 import Text.Printf
 import Text.Regex
+import Debug.Trace
 
 data StatsFile = StatsFile {
       baseName   :: FilePath   -- ^ The path to the base file name
@@ -14,7 +15,7 @@ data StatsFile = StatsFile {
     , ext        :: String     -- ^ File extension
     , eventSetId :: Int        -- ^ Event set number
     , seqNum     :: Int        -- ^ Sequence number
-  }
+  } deriving (Show, Read)
 
 
 toFilePath :: StatsFile -> FilePath
@@ -33,7 +34,7 @@ fromFilePath path =
   case splitBase path of
     [base, file] -> 
       case splitFile file of
-        [prog, pid, ex, setN, seqN] -> 
+        [prog, pid, setN, seqN, ex] -> 
           mbMakeStatsFile base prog pid ex setN seqN
         _ -> Nothing
     _ -> Nothing
@@ -45,9 +46,9 @@ mbMakeStatsFile base prog pid ex setN seqN = do
   pr <- return prog
   pd <- safeParse pid
   e  <- return ex
-  tN <- safeParse setN
-  qN <- safeParse seqN
-  return (StatsFile bn pr pd e tN qN)
+  tN <- return setN
+  qN <- safeParse seqN 
+  return (StatsFile bn pr pd e (decodeEventSet tN) qN)
   
 safeParse :: Read a => String -> Maybe a
 safeParse s =
@@ -74,9 +75,12 @@ encodeEventSet n | otherwise =
 
 decodeEventSet :: String -> Int
 decodeEventSet []     = 0
-decodeEventSet (c:cs) = (fromEnum c) + decodeEventSet cs
+decodeEventSet (c:cs) = (fromChar c) + decodeEventSet cs
 
 toChar :: Int -> Char
 toChar n = toEnum (n + (fromEnum 'A')) :: Char
+
+fromChar :: Char -> Int
+fromChar c = (fromEnum c) - (fromEnum 'A')  
 
 

@@ -1,24 +1,36 @@
 module GhcStatsParser (
     PapiResult(..)
+  , GhcPhaseData(..)
+  , GhcPapiPhaseData 
   , parse
 )
 where
 import Data.List
 import Data.Char
+import StatsFile
+
+data (Show a) => GhcPhaseData a = GhcPhaseData {
+    mutator :: a
+  , gc0     :: a
+  , gc1     :: a
+  } deriving (Show)
+
+type GhcPapiPhaseData = GhcPhaseData [(String, Integer)]
 
 data PapiResult = PapiResult {
-      mutator :: [(String, Integer)]
-    , gc0     :: [(String, Integer)]
-    , gc1     :: [(String, Integer)]
-  }
-  deriving (Show, Read)
+      statsFile    :: StatsFile
+    , phaseResults :: GhcPapiPhaseData
+  } deriving (Show)
 
-parse :: [String] -> PapiResult
-parse stats = 
+parse :: StatsFile -> [String] -> PapiResult
+parse sf stats = 
   PapiResult {
-      mutator = map parseLine mutatorLines
-    , gc0     = map parseLine gc0Lines 
-    , gc1     = map parseLine gc1Lines 
+      statsFile = sf
+    , phaseResults = GhcPhaseData {
+          mutator   = map parseLine mutatorLines
+        , gc0       = map parseLine gc0Lines 
+        , gc1       = map parseLine gc1Lines 
+      }
   }
   where
   mutatorLines = mutatorSpan stats
