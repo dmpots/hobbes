@@ -2,12 +2,15 @@ module Analysis (
     collect
   , dump
   , addSummaryData
+  , addFormulaData
 )
 where
 
 import Data.Function
 import Data.List
+import qualified Data.Map as Map
 import Data.Maybe
+import Formula
 import GhcStatsParser
 import StatsFile
 
@@ -31,6 +34,7 @@ data SummaryFun =
 data AnalysisResult = AnalysisResult {
       program        :: String
     , eventSet       :: [String]
+    , formulasUsed   :: [Formula]
     , fullResults    :: GhcPhaseData [[Result]]
     , summaryResults :: GhcPhaseData [Result]
   } deriving (Show)
@@ -55,11 +59,12 @@ collectEventSet :: [PapiResult] -> AnalysisResult
 collectEventSet [] = error "Unexpected empty [PapiResult]"
 collectEventSet papiResults@(r:_) = result
   where
-  result  = AnalysisResult prog events full summary
+  result  = AnalysisResult prog events formula full summary
   prog    = (progName . statsFile) r
   events  = map fst $ (mutator . phaseResults) r
   full    = GhcPhaseData (gather mutator) (gather gc0) (gather gc1)
   summary = GhcPhaseData [] [] []
+  formula = []
   gather  p = map (\pr -> collectRawForPhase (phaseResults pr) p) papiResults
 
 collectRawForPhase 
@@ -148,6 +153,60 @@ getSummaryFunction sumMap eventName =
     Just f  -> f
     Nothing -> defaultSummaryFun
 
+{----------------------------------------------------------
+ - Computing Formulas
+ ---------------------------------------------------------}
+addFormulaData :: [Formula] -> [AnalysisResult] -> [AnalysisResult]
+addFormulaData formulas analysisResults = 
+  map (addFormulaToResult formulas) analysisResults
+
+addFormulaToResult :: [Formula] -> AnalysisResult -> AnalysisResult
+addFormulaToResult [] analysisResult = analysisResult
+addFormulaToResult fs analysisResult = 
+  analysisResult { 
+      eventSet     = events ++ formulaEvents
+    , fullResults  = withFormulaResults
+    , formulasUsed = (formulasUsed analysisResult) ++ computableFs
+  }
+  where
+  withFormulaResults = addFormulas computableFs analysisResult
+  computableFs       = findComputableFormulas fs events
+  events             = eventSet analysisResult
+  formulaEvents      = map (\(Formula f _) -> f) computableFs
+
+addFormulas :: [Formula] -> AnalysisResult -> GhcPhaseData [[Result]]
+addFormulas []       analysisResult = fullResults analysisResult
+addFormulas formulas analysisResult = 
+    GhcPhaseData {
+        mutator = formulize mutator
+      , gc0     = formulize gc0
+      , gc1     = formulize gc1
+    }
+  where
+  formulize :: Selector [[Result]] -> [[Result]]
+  formulize sel = zipWith (++) curResults newResults
+    where
+    newResults = transpose $ map (computeFormula curResults) formulas
+    curResults = (sel . fullResults) analysisResult
+
+  computeFormula :: [[Result]] -> Formula -> [Result]
+  computeFormula results formula = map (compute formula) results
+
+  compute :: Formula -> [Result] -> Result
+  compute (Formula f x) results = ComputedResult f (Formula.eval env x)
+    where
+    env = foldr createEnv (Map.empty) results
+    createEnv (RawResult n i)      = Map.insert n (fromInteger i)
+    createEnv (ComputedResult n d) = Map.insert n d
+  
+
+
+findComputableFormulas :: [Formula] -> [EventName] -> [Formula]
+findComputableFormulas formulas events = computable
+  where 
+  computable = filter (canEval env) formulas
+  env        = Map.fromList (zip events zeros)
+  zeros      = repeat 0.0
 
 
 {----------------------------------------------------------
@@ -161,18 +220,21 @@ dumpIt :: AnalysisResult -> IO ()
 dumpIt d = do
   putStrLn   "#"
   putStrLn $ "# "++(show $ program d) ++" " ++(show events)
+  mapM_ (\f  -> putStr "# " >> (putStrLn . show) f) (formulasUsed d)
   putStrLn   "#"
   putStrLn $ "n "++unwords events
   mapM_ printLine mutatorLines
   putStrLn $ "#" ++ (take 67 $ repeat '-')
-  --putStrLn $ (show mutatorSummary)
-  printLine mutatorSummary
+  putStrLn $ "# " ++ show summaryFuns
+  putStr "# " >> printLine mutatorSummary
   putStrLn ""
   where 
   events = eventSet d
-  printLine :: Show header => ([Result], header) -> IO ()
+  printLine :: Show h => ([Result], Maybe h) -> IO ()
   printLine (line, header) = do
-    putStr $ (show header) ++ " "
+    case header of 
+      Just s  -> do {putStr $ (show s) ++ " "}
+      Nothing -> return ()
     let out = map (\eventName -> outputForEvent eventName line) events
     mapM_ putStr (intersperse " " out)
     putStrLn ""
@@ -183,11 +245,13 @@ dumpIt d = do
       Just c  -> showCount c
       Nothing -> "--"
 
+  summaryFuns = map (getSummaryFunction []) events
+
   showCount (RawResult      _ cnt) = show cnt
   showCount (ComputedResult _ cnt) = show cnt
 
-  mutatorLines   = zip ((mutator . fullResults) d) [(1::Int)..]
-  mutatorSummary = (((mutator . summaryResults) d), 0 :: Int)
+  mutatorLines   = zip ((mutator . fullResults) d) (map Just [(1::Int)..])
+  mutatorSummary = (((mutator . summaryResults) d), Nothing :: Maybe Int)
 
 findEvent :: EventName -> [Result] -> Maybe Result
 findEvent e = find (matchEvent e)
@@ -199,7 +263,3 @@ matchEvent e (ComputedResult e' _) = e == e'
 countAsDouble :: Result -> Double
 countAsDouble (RawResult      _ cnt) = fromInteger cnt
 countAsDouble (ComputedResult _ cnt) = cnt
---dumpReports :: [AnalysisData] -> IO ()
---dumpReports analysisData =
-  
-

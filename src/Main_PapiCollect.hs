@@ -3,6 +3,7 @@ module Main (
 )
 where
 import Command
+import InputFile
 import PapiEvent
 import System.Environment
 import System.Exit
@@ -17,8 +18,8 @@ main = do
   config <- parseOpts
   eContent <- readFile (optEventsFile config)
   cContent <- readFile (optProgramsFile config)
-  let events    = PapiEvent.parseEvents (cleanFile $ lines eContent)
-  let commands  = Command.parseCommands (cleanFile $ lines cContent)
+  let events    = PapiEvent.parseEvents (InputFile.clean $ lines eContent)
+  let commands  = Command.parseCommands (InputFile.clean $ lines cContent)
   runAll config commands events
 
 data Config = Config {
@@ -96,11 +97,6 @@ checkConfig config = do
   notThere f = "ERROR: "++(f)++ " does not exist"
 
 
-cleanFile :: [String] -> [String]
-cleanFile []             = []
-cleanFile ("":rest)      = cleanFile rest
-cleanFile (('#':_):rest) = cleanFile rest
-cleanFile (line:rest)    = line : cleanFile rest
 
 rtsStatsArg :: FilePath -> String
 rtsStatsArg file = "+RTS -s" ++ file ++ " -RTS"

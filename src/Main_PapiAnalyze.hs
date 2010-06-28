@@ -2,27 +2,35 @@ module Main where
 
 import Analysis
 import Control.Monad
-import FormulaParser
+import FormulaParser as F
 import Formula
 import GhcStatsParser
+import InputFile
 import StatsFile
 import System.Directory
 import System.Environment
+import System.Exit
 import System.FilePath
 import System.Posix.Files
 
 main :: IO ()
 main = do
-  (_config, files) <- parseOpts
+  (config, files) <- parseOpts
+  formulas    <- parseFormulas config
   papiResults <- mapM parseFile files
   let rawResults   = collect papiResults
-  let finalResults = addSummaryData [] rawResults
-  dump finalResults
-  --putStrLn (show analysisResults)
+  let withFormula  = addFormulaData formulas rawResults
+  let withSummary  = addSummaryData [] withFormula
+  dump withSummary
 
-data Config = Config 
+data Config = Config {
+    formulaFile :: Maybe FilePath
+  }
+
 defaultConfig :: Config
-defaultConfig = Config
+defaultConfig = Config {
+    formulaFile = Just "3.formula"
+  }
 
 parseOpts :: IO (Config, [StatsFile])
 parseOpts = do
@@ -53,6 +61,21 @@ parseFile :: StatsFile -> IO PapiResult
 parseFile statFile = do
   contents <- readFile (toFilePath statFile) >>= (return . lines)
   return $ GhcStatsParser.parse statFile contents
+
+parseFormulas :: Config -> IO [Formula]
+parseFormulas (Config {formulaFile = Nothing}) = return []
+parseFormulas (Config {formulaFile = Just  f}) = do
+  fs <- readFile f
+  mapM parseOrDie (InputFile.clean $ lines fs) 
+  where
+  parseOrDie :: String -> IO Formula
+  parseOrDie line =
+    case F.parse f line of
+      Left err -> do {
+          putStr "parse error in formula "; 
+          print err; 
+          exitFailure } 
+      Right x -> return x
 
 {-
 PAPI_TOT_CYC BLAH DEE  F1
