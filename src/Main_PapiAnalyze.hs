@@ -2,6 +2,8 @@ module Main where
 
 import Analysis
 import Control.Monad
+import FormulaParser
+import Formula
 import GhcStatsParser
 import StatsFile
 import System.Directory
@@ -11,7 +13,7 @@ import System.Posix.Files
 
 main :: IO ()
 main = do
-  (config, files) <- parseOpts
+  (_config, files) <- parseOpts
   papiResults <- mapM parseFile files
   let rawResults   = collect papiResults
   let finalResults = addSummaryData [] rawResults

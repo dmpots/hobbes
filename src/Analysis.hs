@@ -1,4 +1,9 @@
-module Analysis where
+module Analysis (
+    collect
+  , dump
+  , addSummaryData
+)
+where
 
 import Data.Function
 import Data.List
@@ -33,7 +38,7 @@ type Selector a = GhcPhaseData a -> a
 
 
 {----------------------------------------------------------
- - Data Munging
+ - Data Consolidation
  ---------------------------------------------------------}
 collect :: [PapiResult] -> [AnalysisResult]
 collect papiResults = concatMap collectProgram programResults
