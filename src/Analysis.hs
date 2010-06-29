@@ -4,6 +4,7 @@ module Analysis (
   , addSummaryData
   , addFormulaData
   , groupByEvents
+  , groupByProgram
 )
 where
 
@@ -86,22 +87,62 @@ groupByEvents :: [AnalysisResult] -> [AnalysisResult]
 groupByEvents analysisResults = map merge byEventSet
   where
   byEventSet :: [[AnalysisResult]]
-  byEventSet = groupBy eq (sortBy ord analysisResults)
-  eq      = ((==)    `on` eventSet)
-  ord     = (compare `on` eventSet)
+  byEventSet = groupResultsBy eventSet analysisResults
 
   merge :: [AnalysisResult] -> AnalysisResult
   merge []       = error "Unexpected empty list in merge"
   merge rs@(r:_) =  final
     where
     final   = r { program        = "Summary"
-                , fullResults    = results
+                , fullResults    = aggregatePhaseData (map summaryResults rs)
                 , summaryResults = GhcPhaseData [] [] []
                 , resultLabels   = map program rs}
-    results = GhcPhaseData {   mutator = map mutator phases
-                             , gc0     = map gc0 phases
-                             , gc1     = map gc0 phases}
-    phases  = foldr (:) [] (map summaryResults rs)
+
+groupByProgram :: [AnalysisResult] -> [AnalysisResult]
+groupByProgram analysisResults = map merge byProgram
+  where
+  byProgram = groupResultsBy program analysisResults
+
+  merge :: [AnalysisResult] -> AnalysisResult
+  merge []       = error "unexpected empty list in program merge"
+  merge rs@(r:_) = final
+    where
+    final = AnalysisResult {
+                program        = (program r)
+              , eventSet       = concatMap eventSet rs
+              , formulasUsed   = concatMap formulasUsed rs
+              , fullResults    = mergeFullData (map fullResults rs)
+              , summaryResults = mergeSummaryData (map summaryResults rs)
+              , resultLabels   = concatMap resultLabels rs
+            }
+
+groupResultsBy :: Ord a => Eq a =>
+                  (AnalysisResult -> a)
+               -> [AnalysisResult]
+               -> [[AnalysisResult]]
+groupResultsBy f analysisResults = groupBy eq (sortBy ord analysisResults)
+  where
+  eq  = ((==)    `on` f)
+  ord = (compare `on` f)
+
+aggregatePhaseData :: [GhcPhaseData  [Result]] -> GhcPhaseData [[Result]]
+aggregatePhaseData = combinePhaseDataWith map
+
+mergeFullData :: [GhcPhaseData [[Result]]] -> GhcPhaseData [[Result]]
+mergeFullData = combinePhaseDataWith merge
+  where
+  merge sel d = ((map concat) . transpose) (map sel d)
+
+mergeSummaryData :: [GhcPhaseData [Result]] -> GhcPhaseData [Result]
+mergeSummaryData = combinePhaseDataWith concatMap
+
+combinePhaseDataWith :: Show a => Show b => (Selector a -> t -> b) -> t -> GhcPhaseData b
+combinePhaseDataWith combine phaseData =
+  GhcPhaseData {
+      mutator = combine mutator phaseData
+    , gc0     = combine gc0     phaseData
+    , gc1     = combine gc1     phaseData
+  }
 
 {----------------------------------------------------------
  - Summarizing Data

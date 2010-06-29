@@ -22,8 +22,11 @@ main = do
       withFormula  = addFormulaData formulas rawResults
       withSummary  = addSummaryData [] withFormula
       byEvents     = groupByEvents withSummary
+      byProgram    = groupByProgram withSummary
   dump withSummary
   dump (addSummaryData [] byEvents)
+  dump (byProgram)
+  dump (groupByEvents byProgram)
 
 data Config = Config {
     formulaFile :: Maybe FilePath
