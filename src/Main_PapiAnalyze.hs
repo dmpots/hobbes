@@ -19,9 +19,11 @@ main = do
   formulas    <- parseFormulas config
   papiResults <- mapM parseFile files
   let rawResults   = collect papiResults
-  let withFormula  = addFormulaData formulas rawResults
-  let withSummary  = addSummaryData [] withFormula
+      withFormula  = addFormulaData formulas rawResults
+      withSummary  = addSummaryData [] withFormula
+      byEvents     = groupByEvents withSummary
   dump withSummary
+  dump (addSummaryData [] byEvents)
 
 data Config = Config {
     formulaFile :: Maybe FilePath

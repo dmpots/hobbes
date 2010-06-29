@@ -6,7 +6,6 @@ module StatsFile (
 where
 import Text.Printf
 import Text.Regex
-import Debug.Trace
 
 data StatsFile = StatsFile {
       baseName   :: FilePath   -- ^ The path to the base file name

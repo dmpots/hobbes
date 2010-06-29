@@ -3,6 +3,7 @@ module Analysis (
   , dump
   , addSummaryData
   , addFormulaData
+  , groupByEvents
 )
 where
 
@@ -37,6 +38,7 @@ data AnalysisResult = AnalysisResult {
     , formulasUsed   :: [Formula]
     , fullResults    :: GhcPhaseData [[Result]]
     , summaryResults :: GhcPhaseData [Result]
+    , resultLabels   :: [String]
   } deriving (Show)
 type Selector a = GhcPhaseData a -> a
 
@@ -59,12 +61,13 @@ collectEventSet :: [PapiResult] -> AnalysisResult
 collectEventSet [] = error "Unexpected empty [PapiResult]"
 collectEventSet papiResults@(r:_) = result
   where
-  result  = AnalysisResult prog events formula full summary
+  result  = AnalysisResult prog events formula full summary labels
   prog    = (progName . statsFile) r
   events  = map fst $ (mutator . phaseResults) r
   full    = GhcPhaseData (gather mutator) (gather gc0) (gather gc1)
   summary = GhcPhaseData [] [] []
   formula = []
+  labels  = map show ([1 .. (length (mutator full))])
   gather  p = map (\pr -> collectRawForPhase (phaseResults pr) p) papiResults
 
 collectRawForPhase 
@@ -76,6 +79,29 @@ collectRawForPhase phases phase = collectRaw (phase phases)
 collectRaw :: [(String, Integer)] -> [Result]
 collectRaw = map (uncurry RawResult)
 
+{----------------------------------------------------------
+ - Data Grouping
+ ---------------------------------------------------------}
+groupByEvents :: [AnalysisResult] -> [AnalysisResult]
+groupByEvents analysisResults = map merge byEventSet
+  where
+  byEventSet :: [[AnalysisResult]]
+  byEventSet = groupBy eq (sortBy ord analysisResults)
+  eq      = ((==)    `on` eventSet)
+  ord     = (compare `on` eventSet)
+
+  merge :: [AnalysisResult] -> AnalysisResult
+  merge []       = error "Unexpected empty list in merge"
+  merge rs@(r:_) =  final
+    where
+    final   = r { program        = "Summary"
+                , fullResults    = results
+                , summaryResults = GhcPhaseData [] [] []
+                , resultLabels   = map program rs}
+    results = GhcPhaseData {   mutator = map mutator phases
+                             , gc0     = map gc0 phases
+                             , gc1     = map gc0 phases}
+    phases  = foldr (:) [] (map summaryResults rs)
 
 {----------------------------------------------------------
  - Summarizing Data
@@ -250,7 +276,7 @@ dumpIt d = do
   showCount (RawResult      _ cnt) = show cnt
   showCount (ComputedResult _ cnt) = show cnt
 
-  mutatorLines   = zip ((mutator . fullResults) d) (map Just [(1::Int)..])
+  mutatorLines   = zip ((mutator . fullResults) d) (map Just (resultLabels d))
   mutatorSummary = (((mutator . summaryResults) d), Nothing :: Maybe Int)
 
 findEvent :: EventName -> [Result] -> Maybe Result
