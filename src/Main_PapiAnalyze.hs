@@ -19,43 +19,42 @@ main = do
   (config, files) <- parseOpts
   formulas    <- parseFormulas config
   papiResults <- mapM parseFile files
-  let sf           = []
-      summarize    = addSummaryData sf
-      formulize    = addFormulaData formulas
+  let
       rawResults   = collect papiResults
+      summarize    = addSummaryData []
+      formulize    = addFormulaData formulas
+      filterize    = if (optFilterRaw config) then dropRawData else id
+      finalResults = (summarize . filterize) dumpTarget
       dumpTarget   =
         case (optMerge config) of
           MergeEventsAndPrograms ->
-              ( summarize
-              . mergeProgramsForEvents
+              ( mergeProgramsForEvents
               . summarize
               . formulize
               . mergeEventsForProgram
               ) rawResults
           MergeEventsOnly        ->
-              ( summarize
-              . formulize
+              ( formulize
               . mergeEventsForProgram
               ) rawResults
           MergeProgramsOnly      ->
-              ( summarize
-              . mergeProgramsForEvents
+              ( mergeProgramsForEvents
               . summarize
               . formulize
               ) rawResults
           DoNotMerge             ->
-              ( summarize
-              . formulize
+              ( formulize
               ) rawResults
-  dump dumpTarget
+  dump finalResults
 
-data Merge  = 
+data Merge  =
   MergeEventsAndPrograms | MergeEventsOnly | MergeProgramsOnly | DoNotMerge
 data Config = Config {
       optFormulaFile :: Maybe FilePath
     , optMergeProgs  :: Bool
     , optMergeEvents :: Bool
     , optMerge       :: Merge
+    , optFilterRaw   :: Bool
   }
 
 defaultConfig :: Config
@@ -64,6 +63,7 @@ defaultConfig = Config {
     , optMergeProgs  = True
     , optMergeEvents = True
     , optMerge       = MergeEventsAndPrograms
+    , optFilterRaw   = False
   }
 
 options :: [OptDescr (Config -> Config)]
@@ -86,9 +86,11 @@ options =
   , Option ['f']     ["formula"]
       (ReqArg ((\f opts -> opts { optFormulaFile = Just f})) "FILE")
       "read formula from file"
+
+  , Option ['r']     ["drop-raw"]
+      (NoArg ((\opts -> opts { optFilterRaw = True })))
+      "drop raw event data"
   ]
-
-
 
 parseOpts :: IO (Config, [StatsFile])
 parseOpts = do

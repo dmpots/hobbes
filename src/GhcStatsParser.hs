@@ -9,11 +9,18 @@ import Data.List
 import Data.Char
 import StatsFile
 
-data (Show a) => GhcPhaseData a = GhcPhaseData {
+data GhcPhaseData a = GhcPhaseData {
     mutator :: a
   , gc0     :: a
   , gc1     :: a
   } deriving (Show)
+
+instance Functor GhcPhaseData where
+  fmap f p = GhcPhaseData {
+                  mutator = (f . mutator) p
+                , gc0     = (f . gc0)     p
+                , gc1     = (f . gc1)     p
+             }
 
 type GhcPapiPhaseData = GhcPhaseData [(String, Integer)]
 

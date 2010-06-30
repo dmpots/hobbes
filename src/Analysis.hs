@@ -6,6 +6,7 @@ module Analysis (
   , addFormulaData
   , mergeProgramsForEvents
   , mergeEventsForProgram
+  , dropRawData
 )
 where
 
@@ -276,6 +277,45 @@ findComputableFormulas formulas events = computable
   env        = Map.fromList (zip events zeros)
   zeros      = repeat 0.0
 
+
+{----------------------------------------------------------
+ - Filtering Functions
+ ---------------------------------------------------------}
+dropRawData :: [AnalysisResult] -> [AnalysisResult]
+dropRawData analysisResults = map keepFormulaEvents analysisResults
+
+keepFormulaEvents :: AnalysisResult -> AnalysisResult
+keepFormulaEvents analysisResult = keepEventsIn formulaEvents analysisResult
+  where
+  formulaEvents = map (\(Formula n _) -> n) (formulasUsed analysisResult)
+
+keepEventsIn :: [EventName] -> AnalysisResult -> AnalysisResult
+keepEventsIn eventsToKeep r =
+  r {
+        eventSet       = filter keepEvent (eventSet r)
+      , fullResults    = filterFullPhaseData    keepResult (fullResults r)
+      , summaryResults = filterSummaryPhaseData keepResult (summaryResults r)
+  }
+  where
+  keepEvent  = (\n -> n `elem` eventsToKeep)
+  keepResult = (\result -> keepEvent (resultEvent result))
+
+filterFullPhaseData :: (Result -> Bool)
+                    -> GhcPhaseData [[Result]]
+                    -> GhcPhaseData [[Result]]
+filterFullPhaseData f = filterPhaseData (map (filter f))
+
+filterSummaryPhaseData :: (Result -> Bool)
+                       -> GhcPhaseData [Result]
+                       -> GhcPhaseData [Result]
+filterSummaryPhaseData f = filterPhaseData (filter f)
+
+filterPhaseData :: (a -> a) -> GhcPhaseData a -> GhcPhaseData a
+filterPhaseData = fmap
+
+resultEvent :: Result -> EventName
+resultEvent (RawResult      n _) = n
+resultEvent (ComputedResult n _) = n
 
 {----------------------------------------------------------
  - Printing Functions
