@@ -1,10 +1,11 @@
 module Analysis (
-    collect
+    AnalysisResult
+  , collect
   , dump
   , addSummaryData
   , addFormulaData
-  , groupByEvents
-  , groupByProgram
+  , groupProgramsByEvents
+  , groupEventsByProgram
 )
 where
 
@@ -83,8 +84,8 @@ collectRaw = map (uncurry RawResult)
 {----------------------------------------------------------
  - Data Grouping
  ---------------------------------------------------------}
-groupByEvents :: [AnalysisResult] -> [AnalysisResult]
-groupByEvents analysisResults = map merge byEventSet
+groupProgramsByEvents :: [AnalysisResult] -> [AnalysisResult]
+groupProgramsByEvents analysisResults = map merge byEventSet
   where
   byEventSet :: [[AnalysisResult]]
   byEventSet = groupResultsBy eventSet analysisResults
@@ -98,8 +99,8 @@ groupByEvents analysisResults = map merge byEventSet
                 , summaryResults = GhcPhaseData [] [] []
                 , resultLabels   = map program rs}
 
-groupByProgram :: [AnalysisResult] -> [AnalysisResult]
-groupByProgram analysisResults = map merge byProgram
+groupEventsByProgram :: [AnalysisResult] -> [AnalysisResult]
+groupEventsByProgram analysisResults = map merge byProgram
   where
   byProgram = groupResultsBy program analysisResults
 
@@ -148,7 +149,7 @@ combinePhaseDataWith combine phaseData =
  - Summarizing Data
  ---------------------------------------------------------}
 defaultSummaryFun :: SummaryFun 
-defaultSummaryFun = Median
+defaultSummaryFun = ArithMean
 
 addSummaryData :: SummaryFunMap     -- ^ Map events to summary type
                -> [AnalysisResult]  -- ^ Current Results

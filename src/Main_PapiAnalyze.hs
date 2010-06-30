@@ -7,6 +7,7 @@ import Formula
 import GhcStatsParser
 import InputFile
 import StatsFile
+import System.Console.GetOpt
 import System.Directory
 import System.Environment
 import System.Exit
@@ -18,31 +19,87 @@ main = do
   (config, files) <- parseOpts
   formulas    <- parseFormulas config
   papiResults <- mapM parseFile files
-  let rawResults   = collect papiResults
+  let sf           = []
+      rawResults   = collect papiResults
       withFormula  = addFormulaData formulas rawResults
-      withSummary  = addSummaryData [] withFormula
-      byEvents     = groupByEvents withSummary
-      byProgram    = groupByProgram withSummary
-  dump withSummary
-  dump (addSummaryData [] byEvents)
-  dump (byProgram)
-  dump (groupByEvents byProgram)
+      withSummary  = addSummaryData sf withFormula
+      mergedPs     = (addSummaryData sf . groupProgramsByEvents) withSummary
+      mergedEs     = groupEventsByProgram withSummary
+      mergedEAndP  = (addSummaryData sf . groupProgramsByEvents) mergedEs
+      dumpTarget   = case (optMerge config) of
+                        EventsAndPrograms -> mergedEAndP
+                        EventsOnly        -> mergedEs
+                        ProgramsOnly      -> mergedPs
+                        Individual        -> withSummary
+  dump dumpTarget
 
+data Merge  = EventsAndPrograms | EventsOnly | ProgramsOnly | Individual
 data Config = Config {
-    formulaFile :: Maybe FilePath
+      optFormulaFile :: Maybe FilePath
+    , optMergeProgs  :: Bool
+    , optMergeEvents :: Bool
+    , optMerge       :: Merge
   }
 
 defaultConfig :: Config
 defaultConfig = Config {
-    formulaFile = Just "3.formula"
+      optFormulaFile = Nothing
+    , optMergeProgs  = True
+    , optMergeEvents = True
+    , optMerge       = EventsAndPrograms
   }
+
+options :: [OptDescr (Config -> Config)]
+options =
+  [
+    Option ['i']     ["individual"]
+      (NoArg ((\opts -> opts {
+          optMergeProgs = False, optMergeEvents = False
+        })))
+      "show full counts for each event set"
+
+  , Option ['p']     ["no-merge-progs"]
+      (NoArg ((\opts -> opts { optMergeProgs = False })))
+      "do not merge programs into single table"
+
+  , Option ['e']     ["no-merge-events"]
+      (NoArg ((\opts -> opts { optMergeEvents = False })))
+      "do not merge events into single table"
+
+  , Option ['f']     ["formula"]
+      (ReqArg ((\f opts -> opts { optFormulaFile = Just f})) "FILE")
+      "read formula from file"
+  ]
+
+
 
 parseOpts :: IO (Config, [StatsFile])
 parseOpts = do
   argv  <- getArgs
-  files <- expandFiles argv
-  let stats = map checkFileNameFormat files
-  return (defaultConfig, stats)
+  case getOpt Permute options argv of
+    (o,inputFiles,[]  ) -> do
+      files <- expandFiles inputFiles
+      let config = setMergeFlag $ foldl (flip id) defaultConfig o
+      let stats  = map checkFileNameFormat files
+      checkConfig config
+      return (config, stats)
+    (_,_,errs)  -> do
+      putStrLn (concat errs ++ usageInfo header options)
+      exitFailure
+  where header = "Usage: papi-analyze [OPTION...] FILE [FILE...]"
+
+checkConfig :: Config -> IO ()
+checkConfig _ = return ()
+
+setMergeFlag :: Config -> Config
+setMergeFlag  c | (optMergeProgs c && optMergeEvents c)
+  = c { optMerge = EventsAndPrograms }
+setMergeFlag c | ((not . optMergeProgs) c && optMergeEvents c)
+  = c { optMerge = EventsOnly }
+setMergeFlag c | (optMergeProgs c && (not . optMergeEvents ) c)
+  = c { optMerge = ProgramsOnly }
+setMergeFlag c | otherwise
+  = c { optMerge = Individual}
 
 expandFiles :: [FilePath] -> IO [FilePath]
 expandFiles files = liftM concat $ mapM expandDir files
@@ -68,8 +125,8 @@ parseFile statFile = do
   return $ GhcStatsParser.parse statFile contents
 
 parseFormulas :: Config -> IO [Formula]
-parseFormulas (Config {formulaFile = Nothing}) = return []
-parseFormulas (Config {formulaFile = Just  f}) = do
+parseFormulas (Config {optFormulaFile = Nothing}) = return []
+parseFormulas (Config {optFormulaFile = Just  f}) = do
   fs <- readFile f
   mapM parseOrDie (InputFile.clean $ lines fs) 
   where
@@ -82,21 +139,3 @@ parseFormulas (Config {formulaFile = Just  f}) = do
           exitFailure } 
       Right x -> return x
 
-{-
-PAPI_TOT_CYC BLAH DEE  F1
-1000          1000 100
-------------------------
-AVG mean1 mean2 mean3 geomean
-
-  case getOpt Permute options argv of
-    (o,[p,e],[]  ) -> do
-      let userConfig = foldl (flip id) defaultConfig o
-      let fullConfig = userConfig {optProgramsFile = p, optEventsFile = e}
-      config <- expandDirs fullConfig
-      checkConfig config
-      return config 
-    (_,_,errs)  -> do 
-      putStrLn (concat errs ++ usageInfo header options)
-      exitFailure
-  where header = "Usage: papi-collect [OPTION...] programFile eventsFile"
--}
