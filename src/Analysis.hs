@@ -4,8 +4,8 @@ module Analysis (
   , dump
   , addSummaryData
   , addFormulaData
-  , groupProgramsByEvents
-  , groupEventsByProgram
+  , mergeProgramsForEvents
+  , mergeEventsForProgram
 )
 where
 
@@ -84,8 +84,8 @@ collectRaw = map (uncurry RawResult)
 {----------------------------------------------------------
  - Data Grouping
  ---------------------------------------------------------}
-groupProgramsByEvents :: [AnalysisResult] -> [AnalysisResult]
-groupProgramsByEvents analysisResults = map merge byEventSet
+mergeProgramsForEvents :: [AnalysisResult] -> [AnalysisResult]
+mergeProgramsForEvents analysisResults = map merge byEventSet
   where
   byEventSet :: [[AnalysisResult]]
   byEventSet = groupResultsBy eventSet analysisResults
@@ -99,8 +99,8 @@ groupProgramsByEvents analysisResults = map merge byEventSet
                 , summaryResults = GhcPhaseData [] [] []
                 , resultLabels   = map program rs}
 
-groupEventsByProgram :: [AnalysisResult] -> [AnalysisResult]
-groupEventsByProgram analysisResults = map merge byProgram
+mergeEventsForProgram :: [AnalysisResult] -> [AnalysisResult]
+mergeEventsForProgram analysisResults = map merge byProgram
   where
   byProgram = groupResultsBy program analysisResults
 

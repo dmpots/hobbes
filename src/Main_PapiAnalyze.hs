@@ -20,20 +20,37 @@ main = do
   formulas    <- parseFormulas config
   papiResults <- mapM parseFile files
   let sf           = []
+      summarize    = addSummaryData sf
+      formulize    = addFormulaData formulas
       rawResults   = collect papiResults
-      withFormula  = addFormulaData formulas rawResults
-      withSummary  = addSummaryData sf withFormula
-      mergedPs     = (addSummaryData sf . groupProgramsByEvents) withSummary
-      mergedEs     = groupEventsByProgram withSummary
-      mergedEAndP  = (addSummaryData sf . groupProgramsByEvents) mergedEs
-      dumpTarget   = case (optMerge config) of
-                        EventsAndPrograms -> mergedEAndP
-                        EventsOnly        -> mergedEs
-                        ProgramsOnly      -> mergedPs
-                        Individual        -> withSummary
+      dumpTarget   =
+        case (optMerge config) of
+          MergeEventsAndPrograms ->
+              ( summarize
+              . mergeProgramsForEvents
+              . summarize
+              . formulize
+              . mergeEventsForProgram
+              ) rawResults
+          MergeEventsOnly        ->
+              ( summarize
+              . formulize
+              . mergeEventsForProgram
+              ) rawResults
+          MergeProgramsOnly      ->
+              ( summarize
+              . mergeProgramsForEvents
+              . summarize
+              . formulize
+              ) rawResults
+          DoNotMerge             ->
+              ( summarize
+              . formulize
+              ) rawResults
   dump dumpTarget
 
-data Merge  = EventsAndPrograms | EventsOnly | ProgramsOnly | Individual
+data Merge  = 
+  MergeEventsAndPrograms | MergeEventsOnly | MergeProgramsOnly | DoNotMerge
 data Config = Config {
       optFormulaFile :: Maybe FilePath
     , optMergeProgs  :: Bool
@@ -46,7 +63,7 @@ defaultConfig = Config {
       optFormulaFile = Nothing
     , optMergeProgs  = True
     , optMergeEvents = True
-    , optMerge       = EventsAndPrograms
+    , optMerge       = MergeEventsAndPrograms
   }
 
 options :: [OptDescr (Config -> Config)]
@@ -93,13 +110,13 @@ checkConfig _ = return ()
 
 setMergeFlag :: Config -> Config
 setMergeFlag  c | (optMergeProgs c && optMergeEvents c)
-  = c { optMerge = EventsAndPrograms }
+  = c { optMerge = MergeEventsAndPrograms }
 setMergeFlag c | ((not . optMergeProgs) c && optMergeEvents c)
-  = c { optMerge = EventsOnly }
+  = c { optMerge = MergeEventsOnly }
 setMergeFlag c | (optMergeProgs c && (not . optMergeEvents ) c)
-  = c { optMerge = ProgramsOnly }
+  = c { optMerge = MergeProgramsOnly }
 setMergeFlag c | otherwise
-  = c { optMerge = Individual}
+  = c { optMerge = DoNotMerge}
 
 expandFiles :: [FilePath] -> IO [FilePath]
 expandFiles files = liftM concat $ mapM expandDir files
