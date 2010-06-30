@@ -50,13 +50,13 @@ type Selector a = GhcPhaseData a -> a
 collect :: [PapiResult] -> [AnalysisResult]
 collect papiResults = concatMap collectProgram programResults
   where
-  programResults = groupBy ((==) `on` (progName . statsFile)) papiResults
+  programResults = groupResultsBy (progName . statsFile) papiResults
 
 
 collectProgram :: [PapiResult] -> [AnalysisResult]
 collectProgram papiResults = map collectEventSet byEventSet
   where
-  byEventSet = groupBy ((==) `on` (eventSetId . statsFile)) papiResults
+  byEventSet = groupResultsBy (eventSetId . statsFile) papiResults
 
 collectEventSet :: [PapiResult] -> AnalysisResult
 collectEventSet [] = error "Unexpected empty [PapiResult]"
@@ -116,10 +116,10 @@ groupByProgram analysisResults = map merge byProgram
               , resultLabels   = concatMap resultLabels rs
             }
 
-groupResultsBy :: Ord a => Eq a =>
-                  (AnalysisResult -> a)
-               -> [AnalysisResult]
-               -> [[AnalysisResult]]
+groupResultsBy :: Ord k => Eq k =>
+                  (a -> k)
+               -> [a]
+               -> [[a]]
 groupResultsBy f analysisResults = groupBy eq (sortBy ord analysisResults)
   where
   eq  = ((==)    `on` f)
