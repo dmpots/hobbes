@@ -330,7 +330,7 @@ dumpIt d = do
   putStrLn $ "# "++(show $ program d) ++" " ++(show events)
   mapM_ (\f  -> putStr "# " >> (putStrLn . show) f) (formulasUsed d)
   putStrLn   "#"
-  putStrLn $ "n "++unwords events
+  putStrLn $ "n\t"++(concat $ intersperse "\t" events)
   mapM_ printLine mutatorLines
   putStrLn $ "#" ++ (take 67 $ repeat '-')
   putStrLn $ "# "++unwords events
@@ -342,10 +342,10 @@ dumpIt d = do
   printLine :: Show h => ([Result], Maybe h) -> IO ()
   printLine (line, header) = do
     case header of 
-      Just s  -> do {putStr $ (show s) ++ " "}
+      Just s  -> do {putStr $ (show s) ++ "\t"}
       Nothing -> return ()
     let out = map (\eventName -> outputForEvent eventName line) events
-    mapM_ putStr (intersperse " " out)
+    mapM_ putStr (intersperse "\t" out)
     putStrLn ""
 
   outputForEvent :: EventName -> [Result] -> String
