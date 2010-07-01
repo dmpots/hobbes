@@ -1,0 +1,34 @@
+# Fraction of execution wasted (due to mispredictions)
+ExecutionWasted = 1.0 - (UOPS_RETIRED:ANY / RS_UOPS_DISPATCHED)
+#0x40000008 0x4000806a
+
+# Instruction Starvation
+Starvation = (RS_UOPS_DISPATCHED_NONE - RESOURCE_STALLS:ANY) / UNHALTED_CORE_CYCLES
+#0x40000009 0x4000807c 0x40000000
+
+# Resource Stalls
+#BranchMispredictStall = RESOURCE_STALLS:BR_MISS_CLEAR / RESOURCE_STALLS:ANY
+#0x4000407c 0x4000807c
+
+# Resource Stalls (Percent Wasted on Misprediction)
+BranchStallPercent = RESOURCE_STALLS:BR_MISS_CLEAR / UNHALTED_CORE_CYCLES
+#0x4000407c 0x4000807c
+
+# ICache stall penalty rate
+ICacheStallPercent = CYCLES_L1I_MEM_STALLED / UNHALTED_CORE_CYCLES
+
+# Branch misprediction rate
+BranchMispredictionRate = (BR_MISSP_EXEC / BR_INST_EXEC)
+#0x40000055 0x40000054
+
+# ICache stall penalty rate
+AvgICacheMissPenalty = CYCLES_L1I_MEM_STALLED / L1I_MISSES
+#0x40000052 0x4000004f
+
+# Branch misprediction to ICache miss correlation
+ICacheMispredictionCorrelation = BR_MISSP_EXEC / L1I_MISSES
+#0x40000055 0x4000004f
+
+# ICache miss rate
+ICacheMissRate = L1I_MISSES / L1I_READS
+#0x40000052 0x4000004f
