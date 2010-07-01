@@ -88,7 +88,7 @@ options =
       (ReqArg ((\f opts -> opts { optFormulaFile = Just f})) "FILE")
       "read formula from file"
 
-  , Option ['r']     ["drop-raw"]
+  , Option ['d']     ["drop-raw"]
       (NoArg ((\opts -> opts { optFilterRaw = True })))
       "drop raw event data"
   ]
