@@ -39,7 +39,7 @@ freeVars e = vars e
 
 
 canEval :: Env -> Formula -> Bool
-canEval env (Formula f x) = 
+canEval env (Formula _ x) = 
   (freeVars x) Set.\\ (Map.keysSet env) == Set.empty
 
 
