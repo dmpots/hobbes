@@ -75,6 +75,7 @@ Executable papi-analyze
                  , regex-compat
                  , parsec
                  , containers
+                 , strict
 
   -- Modules not exported by this package.
   -- Other-modules:

@@ -333,6 +333,7 @@ dumpIt d = do
   putStrLn $ "n "++unwords events
   mapM_ printLine mutatorLines
   putStrLn $ "#" ++ (take 67 $ repeat '-')
+  putStrLn $ "# "++unwords events
   putStrLn $ "# " ++ show summaryFuns
   putStr "# " >> printLine mutatorSummary
   putStrLn ""

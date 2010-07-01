@@ -13,6 +13,7 @@ import System.Environment
 import System.Exit
 import System.FilePath
 import System.Posix.Files
+import System.IO.Strict as Strict
 
 main :: IO ()
 main = do
@@ -140,13 +141,13 @@ checkFileNameFormat file =
 
 parseFile :: StatsFile -> IO PapiResult 
 parseFile statFile = do
-  contents <- readFile (toFilePath statFile) >>= (return . lines)
+  contents <- Strict.readFile (toFilePath statFile) >>= (return . lines)
   return $ GhcStatsParser.parse statFile contents
 
 parseFormulas :: Config -> IO [Formula]
 parseFormulas (Config {optFormulaFile = Nothing}) = return []
 parseFormulas (Config {optFormulaFile = Just  f}) = do
-  fs <- readFile f
+  fs <- Strict.readFile f
   mapM parseOrDie (InputFile.clean $ lines fs) 
   where
   parseOrDie :: String -> IO Formula
