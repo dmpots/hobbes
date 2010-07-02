@@ -76,6 +76,8 @@ Executable papi-analyze
                  , parsec
                  , containers
                  , strict
+                 , directory
+                 , filepath
 
   -- Modules not exported by this package.
   -- Other-modules:

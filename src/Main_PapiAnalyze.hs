@@ -12,7 +12,6 @@ import System.Directory
 import System.Environment
 import System.Exit
 import System.FilePath
-import System.Posix.Files
 import System.IO.Strict as Strict
 
 main :: IO ()
@@ -126,10 +125,10 @@ expandFiles files = liftM concat $ mapM expandDir files
   where
   expandDir :: FilePath -> IO [FilePath]
   expandDir f = do
-    fs  <- getFileStatus f
-    dirs <- if isDirectory fs then getDirectoryContents f else return [f]
+    isDir <- doesDirectoryExist f
+    dirs <- if isDir then getDirectoryContents f else return [f]
     let noDirs = filter (\d -> d /= "." && d /= "..") dirs
-    let withParent = if isDirectory fs then (\ff -> f </> ff) else id
+    let withParent = if isDir then (\ff -> f </> ff) else id
     return $ map withParent noDirs
 
 checkFileNameFormat :: FilePath -> StatsFile
