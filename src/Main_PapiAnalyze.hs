@@ -45,7 +45,7 @@ main = do
           DoNotMerge             ->
               ( formulize
               ) rawResults
-  dump finalResults
+  dumpOnlyPhase "mutator" finalResults
 
 data Merge  =
   MergeEventsAndPrograms | MergeEventsOnly | MergeProgramsOnly | DoNotMerge

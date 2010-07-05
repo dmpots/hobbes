@@ -1,48 +1,35 @@
 module GhcStatsParser (
     PapiResult(..)
-  , GhcPhaseData(..)
-  , GhcPapiPhaseData 
   , parse
 )
 where
-import Data.List
 import Data.Char
+import Data.List
+import PhaseData
 import StatsFile
 
-data GhcPhaseData a = GhcPhaseData {
-    mutator :: a
-  , gc0     :: a
-  , gc1     :: a
-  } deriving (Show)
-
-instance Functor GhcPhaseData where
-  fmap f p = GhcPhaseData {
-                  mutator = (f . mutator) p
-                , gc0     = (f . gc0)     p
-                , gc1     = (f . gc1)     p
-             }
-
-type GhcPapiPhaseData = GhcPhaseData [(String, Integer)]
+type EventName  = String
+type EventCount = Integer
 
 data PapiResult = PapiResult {
       statsFile    :: StatsFile
-    , phaseResults :: GhcPapiPhaseData
+    , phaseResults :: PhaseData [(EventName, EventCount)]
   } deriving (Show)
 
 parse :: StatsFile -> [String] -> PapiResult
 parse sf stats = 
   PapiResult {
       statsFile = sf
-    , phaseResults = GhcPhaseData {
-          mutator   = map parseLine mutatorLines
-        , gc0       = map parseLine gc0Lines 
-        , gc1       = map parseLine gc1Lines 
-      }
+    , phaseResults =
+          addPhase "mutator" mutatorLines $
+          addPhase "gc0" gc0Lines $
+          addPhase "gc1" gc1Lines $
+          emptyPhaseData
   }
   where
-  mutatorLines = mutatorSpan stats
-  gc0Lines     = gc0Span stats
-  gc1Lines     = gc1Span stats
+  mutatorLines = map parseLine $ mutatorSpan stats
+  gc0Lines     = map parseLine $ gc0Span stats
+  gc1Lines     = map parseLine $ gc1Span stats
 
 parseLine :: String -> (String, Integer)
 parseLine line =

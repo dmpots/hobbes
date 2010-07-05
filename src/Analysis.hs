@@ -7,6 +7,7 @@ module Analysis (
   , mergeProgramsForEvents
   , mergeEventsForProgram
   , dropRawData
+  , dumpOnlyPhase
 )
 where
 
@@ -14,8 +15,10 @@ import Data.Function
 import Data.List
 import qualified Data.Map as Map
 import Data.Maybe
+import qualified Data.Set as Set
 import Formula
 import GhcStatsParser
+import PhaseData
 import StatsFile
 
 {----------------------------------------------------------
@@ -39,12 +42,10 @@ data AnalysisResult = AnalysisResult {
       program        :: String
     , eventSet       :: [String]
     , formulasUsed   :: [Formula]
-    , fullResults    :: GhcPhaseData [[Result]]
-    , summaryResults :: GhcPhaseData [Result]
+    , fullResults    :: PhaseData [[Result]]
+    , summaryResults :: PhaseData [Result]
     , resultLabels   :: [String]
   } deriving (Show)
-type Selector a = GhcPhaseData a -> a
-
 
 {----------------------------------------------------------
  - Data Consolidation
@@ -66,21 +67,17 @@ collectEventSet papiResults@(r:_) = result
   where
   result  = AnalysisResult prog events formula full summary labels
   prog    = (progName . statsFile) r
-  events  = map fst $ (mutator . phaseResults) r
-  full    = GhcPhaseData (gather mutator) (gather gc0) (gather gc1)
-  summary = GhcPhaseData [] [] []
+  full    = aggregatePhaseData $ map (collectRaw . phaseResults) papiResults
+  summary = PhaseData.emptyPhaseData
   formula = []
-  labels  = map show ([1 .. (length (mutator full))])
-  gather  p = map (\pr -> collectRawForPhase (phaseResults pr) p) papiResults
+  labels  = map show ([1 .. (length papiResults)])
+  events  = case phaseNames phaseR of
+                  []    -> []
+                  (p:_) -> map fst (fromMaybe [] (lookupPhase p phaseR))
+  phaseR  = phaseResults r
 
-collectRawForPhase 
-  ::  GhcPapiPhaseData 
-  -> (GhcPapiPhaseData -> [(String, Integer)]) 
-  ->  [Result]
-collectRawForPhase phases phase = collectRaw (phase phases) 
-
-collectRaw :: [(String, Integer)] -> [Result]
-collectRaw = map (uncurry RawResult)
+collectRaw :: PhaseData [(String, Integer)] -> PhaseData [Result]
+collectRaw = fmap (map (uncurry RawResult))
 
 {----------------------------------------------------------
  - Data Grouping
@@ -97,7 +94,7 @@ mergeProgramsForEvents analysisResults = map merge byEventSet
     where
     final   = r { program        = "Summary"
                 , fullResults    = aggregatePhaseData (map summaryResults rs)
-                , summaryResults = GhcPhaseData [] [] []
+                , summaryResults = PhaseData.emptyPhaseData
                 , resultLabels   = map program rs}
 
 mergeEventsForProgram :: [AnalysisResult] -> [AnalysisResult]
@@ -127,24 +124,31 @@ groupResultsBy f analysisResults = groupBy eq (sortBy ord analysisResults)
   eq  = ((==)    `on` f)
   ord = (compare `on` f)
 
-aggregatePhaseData :: [GhcPhaseData  [Result]] -> GhcPhaseData [[Result]]
-aggregatePhaseData = combinePhaseDataWith map
+aggregatePhaseData :: [PhaseData  [Result]] -> PhaseData [[Result]]
+aggregatePhaseData = combinePhaseDataWith combine
+  where
+  combine :: PhaseData [Result] -> PhaseData [[Result]] -> PhaseData[[Result]]
+  combine phaseData res = PhaseData $
+    Map.unionWith (++) (Map.map (\e->[e]) $ toMap phaseData) (toMap res)
 
-mergeFullData :: [GhcPhaseData [[Result]]] -> GhcPhaseData [[Result]]
+mergeFullData :: [PhaseData [[Result]]] -> PhaseData [[Result]]
 mergeFullData = combinePhaseDataWith merge
   where
-  merge sel d = ((map concat) . transpose) (map sel d)
+  merge :: PhaseData[[Result]] -> PhaseData[[Result]] -> PhaseData[[Result]]
+  merge phaseData res = PhaseData $
+    Map.unionWith (zipWith (++)) (toMap phaseData) (toMap res)
 
-mergeSummaryData :: [GhcPhaseData [Result]] -> GhcPhaseData [Result]
-mergeSummaryData = combinePhaseDataWith concatMap
+mergeSummaryData :: [PhaseData [Result]] -> PhaseData [Result]
+mergeSummaryData = combinePhaseDataWith merge
+  where
+  merge :: PhaseData[Result] -> PhaseData[Result] -> PhaseData[Result]
+  merge phaseData res = PhaseData $
+    Map.unionWith (++) (toMap phaseData) (toMap res)
 
-combinePhaseDataWith :: Show a => Show b => (Selector a -> t -> b) -> t -> GhcPhaseData b
-combinePhaseDataWith combine phaseData =
-  GhcPhaseData {
-      mutator = combine mutator phaseData
-    , gc0     = combine gc0     phaseData
-    , gc1     = combine gc1     phaseData
-  }
+combinePhaseDataWith :: (PhaseData a -> PhaseData b -> PhaseData b)
+                     -> [PhaseData a]
+                     ->  PhaseData b
+combinePhaseDataWith combine = foldr combine emptyPhaseData
 
 {----------------------------------------------------------
  - Summarizing Data
@@ -165,29 +169,23 @@ addSummary sumMap analysisResult =
   sumResults = summaryForEvents sumMap events analysisResult
   events     = eventSet analysisResult
 
-summaryForEvents :: SummaryFunMap -> [EventName] -> AnalysisResult -> GhcPhaseData [Result]
+summaryForEvents :: SummaryFunMap -> [EventName] -> AnalysisResult -> PhaseData [Result]
 summaryForEvents sumMap eventNames analysisResult =
-    GhcPhaseData {
-        mutator = summarize mutator
-      , gc0     = summarize gc0
-      , gc1     = summarize gc1
-    }
+    PhaseData (Map.map summarize (toMap.fullResults $ analysisResult))
     where 
-    summarize :: Selector [[Result]] -> [Result]
-    summarize sel = map (getSummary sel) eventNames
+    summarize :: [[Result]] -> [Result]
+    summarize res = map (getSummary res) eventNames
 
-    getSummary :: Selector [[Result]] -> EventName -> Result
-    getSummary sel eventName = ComputedResult eventName (f datas)
-     where datas = dataForEvent sel eventName
+    getSummary :: [[Result]] -> EventName -> Result
+    getSummary res eventName = ComputedResult eventName (f datas)
+     where datas = dataForEvent res eventName
            f     = funForSummaryFun (getSummaryFunction sumMap eventName)
 
-    dataForEvent :: Selector [[Result]] -> EventName -> [Double]
-    dataForEvent selector e = map countAsDouble results
+    dataForEvent :: [[Result]] -> EventName -> [Double]
+    dataForEvent res e = map countAsDouble results
       where
       results = catMaybes events
-      events = map (findEvent e) datas
-      datas  = (selector . fullResults) analysisResult
-  
+      events = map (findEvent e) res
   
 funForSummaryFun:: SummaryFun -> ([Double] -> Double)
 funForSummaryFun ArithMean = mean
@@ -243,20 +241,15 @@ addFormulaToResult fs analysisResult =
   events             = eventSet analysisResult
   formulaEvents      = map (\(Formula f _) -> f) computableFs
 
-addFormulas :: [Formula] -> AnalysisResult -> GhcPhaseData [[Result]]
+addFormulas :: [Formula] -> AnalysisResult -> PhaseData [[Result]]
 addFormulas []       analysisResult = fullResults analysisResult
 addFormulas formulas analysisResult = 
-    GhcPhaseData {
-        mutator = formulize mutator
-      , gc0     = formulize gc0
-      , gc1     = formulize gc1
-    }
+    PhaseData $ Map.map formulize ((toMap . fullResults) analysisResult)
   where
-  formulize :: Selector [[Result]] -> [[Result]]
-  formulize sel = zipWith (++) curResults newResults
+  formulize :: [[Result]] -> [[Result]]
+  formulize res = zipWith (++) res newResults
     where
-    newResults = transpose $ map (computeFormula curResults) formulas
-    curResults = (sel . fullResults) analysisResult
+    newResults = transpose $ map (computeFormula res) formulas
 
   computeFormula :: [[Result]] -> Formula -> [Result]
   computeFormula results formula = map (compute formula) results
@@ -301,16 +294,16 @@ keepEventsIn eventsToKeep r =
   keepResult = (\result -> keepEvent (resultEvent result))
 
 filterFullPhaseData :: (Result -> Bool)
-                    -> GhcPhaseData [[Result]]
-                    -> GhcPhaseData [[Result]]
+                    -> PhaseData [[Result]]
+                    -> PhaseData [[Result]]
 filterFullPhaseData f = filterPhaseData (map (filter f))
 
 filterSummaryPhaseData :: (Result -> Bool)
-                       -> GhcPhaseData [Result]
-                       -> GhcPhaseData [Result]
+                       -> PhaseData [Result]
+                       -> PhaseData [Result]
 filterSummaryPhaseData f = filterPhaseData (filter f)
 
-filterPhaseData :: (a -> a) -> GhcPhaseData a -> GhcPhaseData a
+filterPhaseData :: (a -> a) -> PhaseData a -> PhaseData a
 filterPhaseData = fmap
 
 resultEvent :: Result -> EventName
@@ -322,20 +315,38 @@ resultEvent (ComputedResult n _) = n
  ---------------------------------------------------------}
 dump :: [AnalysisResult] -> IO ()
 dump analysisData =
-  mapM_ dumpIt analysisData
+  mapM_ dumpPhases analysisData
 
-dumpIt :: AnalysisResult -> IO ()
-dumpIt d = do
+dumpOnlyPhase :: PhaseName -> [AnalysisResult] -> IO ()
+dumpOnlyPhase n = mapM_ (flip dumpPhase n)
+
+dumpPhases :: AnalysisResult -> IO ()
+dumpPhases analysisResult = mapM_ (dumpPhase analysisResult) phases
+  where
+  phases      = Set.toList $ Set.union fullKeys summKeys
+  fullKeys    = keysSet fullResults
+  summKeys    = keysSet summaryResults
+  keysSet sel = Map.keysSet ((toMap.sel) analysisResult)
+
+dumpPhase :: AnalysisResult -> PhaseName -> IO ()
+dumpPhase analysisResult phase = dumpIt full summ analysisResult
+  where
+  full      = case findP fullResults    of Just f -> f; Nothing -> [[]]
+  summ      = case findP summaryResults of Just s -> s; Nothing ->  []
+  findP sel = Map.lookup phase ((toMap . sel) analysisResult)
+
+dumpIt :: [[Result]] -> [Result] -> AnalysisResult -> IO ()
+dumpIt full summ d = do
   putStrLn   "#"
   putStrLn $ "# "++(show $ program d) ++" " ++(show events)
   mapM_ (\f  -> putStr "# " >> (putStrLn . show) f) (formulasUsed d)
   putStrLn   "#"
   putStrLn $ "n\t"++(concat $ intersperse "\t" events)
-  mapM_ printLine mutatorLines
+  mapM_ printLine fullLines
   putStrLn $ "#" ++ (take 67 $ repeat '-')
   putStrLn $ "# "++unwords events
   putStrLn $ "# " ++ show summaryFuns
-  putStr "# " >> printLine mutatorSummary
+  putStr "# " >> printLine summLines
   putStrLn ""
   where 
   events = eventSet d
@@ -359,8 +370,8 @@ dumpIt d = do
   showCount (RawResult      _ cnt) = show cnt
   showCount (ComputedResult _ cnt) = show cnt
 
-  mutatorLines   = zip ((mutator . fullResults) d) (map Just (resultLabels d))
-  mutatorSummary = (((mutator . summaryResults) d), Nothing :: Maybe Int)
+  fullLines = zip full (map Just (resultLabels d))
+  summLines = (summ, Nothing :: Maybe Int)
 
 findEvent :: EventName -> [Result] -> Maybe Result
 findEvent e = find (matchEvent e)
