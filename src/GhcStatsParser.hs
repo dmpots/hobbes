@@ -1,25 +1,19 @@
 module GhcStatsParser (
-    PapiResult(..)
-  , parse
+    parse
 )
 where
 import Data.Char
 import Data.List
+import qualified Data.Set as Set
+import PapiResult
 import PhaseData
 import StatsFile
 
-type EventName  = String
-type EventCount = Integer
-
-data PapiResult = PapiResult {
-      statsFile    :: StatsFile
-    , phaseResults :: PhaseData [(EventName, EventCount)]
-  } deriving (Show)
-
-parse :: StatsFile -> [String] -> PapiResult
+parse :: StatsFile -> [String] -> PapiResult EventSetId
 parse sf stats = 
   PapiResult {
-      statsFile = sf
+      programName  = progName sf
+    , papiEvents   = Set.singleton (eventSetId sf)
     , phaseResults =
           addPhase "mutator" mutatorLines $
           addPhase "gc0" gc0Lines $

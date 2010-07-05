@@ -6,6 +6,7 @@ import FormulaParser as F
 import Formula
 import GhcStatsParser
 import InputFile
+import PapiResult
 import StatsFile
 import System.Console.GetOpt
 import System.Directory
@@ -138,7 +139,7 @@ checkFileNameFormat file =
     Nothing -> 
       error ("Unable to parse stat file name: "++file)
 
-parseFile :: StatsFile -> IO PapiResult 
+parseFile :: StatsFile -> IO (PapiResult EventSetId)
 parseFile statFile = do
   contents <- Strict.readFile (toFilePath statFile) >>= (return . lines)
   return $ GhcStatsParser.parse statFile contents

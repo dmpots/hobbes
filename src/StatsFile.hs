@@ -2,6 +2,7 @@ module StatsFile (
     StatsFile(..)
   , toFilePath
   , fromFilePath
+  , EventSetId
 )
 where
 import Text.Printf
@@ -12,10 +13,11 @@ data StatsFile = StatsFile {
     , progName   :: String     -- ^ The program name for the stats file
     , uniqueId   :: Integer    -- ^ Unique id to avoid name conflicts
     , ext        :: String     -- ^ File extension
-    , eventSetId :: Int        -- ^ Event set number
+    , eventSetId :: EventSetId -- ^ Event set number
     , seqNum     :: Int        -- ^ Sequence number
   } deriving (Show, Read)
 
+type EventSetId = Int
 
 toFilePath :: StatsFile -> FilePath
 toFilePath sf =

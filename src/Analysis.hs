@@ -17,14 +17,12 @@ import qualified Data.Map as Map
 import Data.Maybe
 import qualified Data.Set as Set
 import Formula
-import GhcStatsParser
 import PhaseData
-import StatsFile
+import PapiResult
 
 {----------------------------------------------------------
  - Types
  ---------------------------------------------------------}
-type EventName         = String
 type ComputedEventName = String
 type SummaryFunMap     = [(String, SummaryFun)]
 data Result = 
@@ -50,23 +48,23 @@ data AnalysisResult = AnalysisResult {
 {----------------------------------------------------------
  - Data Consolidation
  ---------------------------------------------------------}
-collect :: [PapiResult] -> [AnalysisResult]
+collect :: Ord a => [PapiResult a] -> [AnalysisResult]
 collect papiResults = concatMap collectProgram programResults
   where
-  programResults = groupResultsBy (progName . statsFile) papiResults
+  programResults = groupResultsBy programName papiResults
 
 
-collectProgram :: [PapiResult] -> [AnalysisResult]
+collectProgram :: Ord a => [PapiResult a] -> [AnalysisResult]
 collectProgram papiResults = map collectEventSet byEventSet
   where
-  byEventSet = groupResultsBy (eventSetId . statsFile) papiResults
+  byEventSet = groupResultsBy papiEvents papiResults
 
-collectEventSet :: [PapiResult] -> AnalysisResult
+collectEventSet :: Ord a => [PapiResult a] -> AnalysisResult
 collectEventSet [] = error "Unexpected empty [PapiResult]"
 collectEventSet papiResults@(r:_) = result
   where
   result  = AnalysisResult prog events formula full summary labels
-  prog    = (progName . statsFile) r
+  prog    = programName r
   full    = aggregatePhaseData $ map (collectRaw . phaseResults) papiResults
   summary = PhaseData.emptyPhaseData
   formula = []
