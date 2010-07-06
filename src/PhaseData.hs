@@ -5,6 +5,8 @@ module PhaseData (
   , addPhase
   , lookupPhase
   , phaseNames
+  , createPhaseData
+  , createPhaseDataWithPhases
 )
 where
 
@@ -29,3 +31,9 @@ emptyPhaseData = PhaseData (Map.empty)
 phaseNames :: PhaseData a -> [PhaseName]
 phaseNames = (Map.keys . toMap)
 
+createPhaseData :: PhaseName -> a -> PhaseData a
+createPhaseData n a = createPhaseDataWithPhases [(n,a)]
+
+createPhaseDataWithPhases :: [(PhaseName, a)] -> PhaseData a
+createPhaseDataWithPhases =
+  foldr (\(pn, a) pd -> addPhase pn a pd) emptyPhaseData

@@ -14,14 +14,16 @@ import System.Environment
 import System.Exit
 import System.FilePath
 import System.IO.Strict as Strict
+import XmlStatsParser
 
 main :: IO ()
 main = do
-  (config, files) <- parseOpts
-  formulas    <- parseFormulas config
-  papiResults <- mapM parseFile files
+  (config, statsFiles, xmlFiles) <- parseOpts
+  formulas     <- parseFormulas config
+  statsResults <- mapM parseGhcResultFile statsFiles
+  xmlResults   <- liftM concat $ mapM parseXmlResultFile xmlFiles
   let
-      rawResults   = collect papiResults
+      rawResults   = (collect statsResults) ++ (collect xmlResults)
       summarize    = addSummaryData []
       formulize    = addFormulaData formulas
       filterize    = if (optFilterRaw config) then dropRawData else id
@@ -93,16 +95,16 @@ options =
       "drop raw event data"
   ]
 
-parseOpts :: IO (Config, [StatsFile])
+parseOpts :: IO (Config, [StatsFile], [FilePath])
 parseOpts = do
   argv  <- getArgs
   case getOpt Permute options argv of
     (o,inputFiles,[]  ) -> do
       files <- expandFiles inputFiles
       let config = setMergeFlag $ foldl (flip id) defaultConfig o
-      let stats  = map checkFileNameFormat files
+      let (stats, xmls) = findStatsFiles files
       checkConfig config
-      return (config, stats)
+      return (config, stats, xmls)
     (_,_,errs)  -> do
       putStrLn (concat errs ++ usageInfo header options)
       exitFailure
@@ -132,17 +134,23 @@ expandFiles files = liftM concat $ mapM expandDir files
     let withParent = if isDir then (\ff -> f </> ff) else id
     return $ map withParent noDirs
 
-checkFileNameFormat :: FilePath -> StatsFile
-checkFileNameFormat file =
-  case StatsFile.fromFilePath file of
-    Just s  -> s
-    Nothing -> 
-      error ("Unable to parse stat file name: "++file)
+findStatsFiles :: [FilePath] -> ([StatsFile], [FilePath])
+findStatsFiles files = go files [] []--fmap reverse (go files [] [])
+  where
+  go [] sf xf = (sf, xf)
+  go (f:fs) sf xf =
+    case StatsFile.fromFilePath f of
+      Just s  -> go fs (s:sf)   xf
+      Nothing -> go fs    sf (f:xf)
 
-parseFile :: StatsFile -> IO (PapiResult EventSetId)
-parseFile statFile = do
+
+parseGhcResultFile :: StatsFile -> IO (PapiResult EventSetId)
+parseGhcResultFile statFile = do
   contents <- Strict.readFile (toFilePath statFile) >>= (return . lines)
   return $ GhcStatsParser.parse statFile contents
+
+parseXmlResultFile :: FilePath -> IO ([PapiResult EventName])
+parseXmlResultFile = XmlStatsParser.parseFile
 
 parseFormulas :: Config -> IO [Formula]
 parseFormulas (Config {optFormulaFile = Nothing}) = return []

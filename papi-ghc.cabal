@@ -78,6 +78,7 @@ Executable papi-analyze
                  , strict
                  , directory
                  , filepath
+                 , hxt >= 8.5.2
 
   -- Modules not exported by this package.
   -- Other-modules:
