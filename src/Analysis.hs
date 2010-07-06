@@ -1,5 +1,6 @@
 module Analysis (
-    AnalysisResult
+    AnalysisResult(..)
+  , Result(..)
   , collect
   , dump
   , addSummaryData
@@ -8,6 +9,7 @@ module Analysis (
   , mergeEventsForProgram
   , dropRawData
   , dumpOnlyPhase
+  , isComputedEvent
 )
 where
 
@@ -272,6 +274,10 @@ findComputableFormulas formulas events = computable
 {----------------------------------------------------------
  - Filtering Functions
  ---------------------------------------------------------}
+isComputedEvent ::  AnalysisResult -> EventName -> Bool
+isComputedEvent analysisResults eventName =
+  any (\(Formula n _) -> n == eventName) (formulasUsed analysisResults)
+
 dropRawData :: [AnalysisResult] -> [AnalysisResult]
 dropRawData analysisResults = map keepFormulaEvents analysisResults
 

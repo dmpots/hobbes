@@ -15,6 +15,7 @@ import System.Exit
 import System.FilePath
 import System.IO.Strict as Strict
 import XmlStatsParser
+import XmlStatsWriter
 
 main :: IO ()
 main = do
@@ -48,16 +49,22 @@ main = do
           DoNotMerge             ->
               ( formulize
               ) rawResults
-  dumpOnlyPhase "mutator" finalResults
+  case optOutputFormat config of
+    Tab -> do dumpOnlyPhase "mutator" finalResults
+    Xml -> do XmlStatsWriter.printResults finalResults
 
 data Merge  =
   MergeEventsAndPrograms | MergeEventsOnly | MergeProgramsOnly | DoNotMerge
+
+data OutputFormat = Tab | Xml
+
 data Config = Config {
       optFormulaFile :: Maybe FilePath
     , optMergeProgs  :: Bool
     , optMergeEvents :: Bool
     , optMerge       :: Merge
     , optFilterRaw   :: Bool
+    , optOutputFormat:: OutputFormat
   }
 
 defaultConfig :: Config
@@ -67,6 +74,7 @@ defaultConfig = Config {
     , optMergeEvents = True
     , optMerge       = MergeEventsAndPrograms
     , optFilterRaw   = False
+    , optOutputFormat= Tab
   }
 
 options :: [OptDescr (Config -> Config)]
@@ -93,6 +101,10 @@ options =
   , Option ['d']     ["drop-raw"]
       (NoArg ((\opts -> opts { optFilterRaw = True })))
       "drop raw event data"
+
+  , Option ['x']     ["xml-output"]
+      (NoArg ((\opts -> opts { optOutputFormat = Xml})))
+      "output xml results"
   ]
 
 parseOpts :: IO (Config, [StatsFile], [FilePath])
@@ -135,7 +147,7 @@ expandFiles files = liftM concat $ mapM expandDir files
     return $ map withParent noDirs
 
 findStatsFiles :: [FilePath] -> ([StatsFile], [FilePath])
-findStatsFiles files = go files [] []--fmap reverse (go files [] [])
+findStatsFiles files = go files [] []
   where
   go [] sf xf = (sf, xf)
   go (f:fs) sf xf =
