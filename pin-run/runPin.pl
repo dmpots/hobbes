@@ -64,7 +64,7 @@ sub runPin {
 sub runPapi {
     my ($name, $dir, $cmd) = @_;
     my $cwd = getcwd();
-    my $papiCmd = "$cwd/runPapi.rb $name $dir \"$cmd\"";
+    my $papiCmd = "$cwd/runPapi.rb $name $dir \"$cmd\" xml";
     runCommand($papiCmd, $dir, $cmd);
 }
 

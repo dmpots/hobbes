@@ -12,6 +12,7 @@ ConfFile  = File.join(BaseDir, "papi-events.conf")
 $name = ARGV[0]
 $dir  = ARGV[1]
 $prog = ARGV[2]
+$format = ARGV[3]
 
 if File.exists?(ConfFile) then 
   $eventsFile = File.open(ConfFile, "r")
@@ -29,6 +30,7 @@ end
 if $name.nil? || $dir.nil? || $prog.nil? || $events.nil? || $events.empty? then
   errorOut("usage: runPapi.rb <name> <dir> <cmd>")
 end
+$events = $events.map {|e| if e.include?("|") then e.split("|",2) else [e,e] end }
 
 if not File.directory?($dir) then
   errorOut("Directory #{$dir} does not exist")
@@ -59,9 +61,40 @@ end
 def out(msg)
   $out.puts(msg)
 end
+def outputXml?
+  $format == "xml"
+end
+
+def xmlForProgramEvent(event)
+  if outputXml? then
+    out("  <program name=\"#{$name}\">")
+    out("    <eventSet>")
+    out("      <eventName>#{event}</eventName>")
+    out("    </eventSet>")
+  end
+end
+def xmlForMeasurement(event, count)
+  if outputXml? then
+    out("    <measurement>")
+    out("      <phase name=\"mutator\">")
+    out("        <event name=\"#{event}\">#{count}</event>")
+    out("      </phase>")
+    out("    </measurement>")
+  end
+end
+def xmlForProgramEventClose
+  if outputXml? then
+    out("  </program>")
+  end
+end
+
+if outputXml? then
+  out("<results>")
+end
 
 FileUtils.cd($dir) do 
-  $events.each do |event|
+  $events.each do |event,display|
+    xmlForProgramEvent(display) if outputXml?
     results = []
     cmd = PapiexTool + " -q -w -e #{event} -o #{$papiOut} #{$prog}"
     (1..$iters).each do |seqNum|
@@ -91,14 +124,24 @@ FileUtils.cd($dir) do
         end
       end
 
+      xmlForMeasurement(display, results.last.to_i)  if outputXml?
+
      # clean up
      FileUtils.rm_rf($papiOut)
     end
 
-    out "(#{event}, #{results.mean.round})"
+    if outputXml? then
+      xmlForProgramEventClose
+    else
+      out "(#{display}, #{results.mean.round})"
+    end
     killFiles = Dir[outFileName($resDir, event, "*")]
     FileUtils.rm(killFiles)
   end
+end
+
+if outputXml? then
+  out("</results>")
 end
 
 __END__
