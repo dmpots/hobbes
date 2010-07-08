@@ -21,6 +21,7 @@ main = do
   let events    = PapiEvent.parseEvents (InputFile.clean $ lines eContent)
   let commands  = Command.parseCommands (InputFile.clean $ lines cContent)
   runAll config commands events
+  putStrLn "papi-collect: Run Complete"
 
 data Config = Config {
       optProgramsFile :: FilePath
