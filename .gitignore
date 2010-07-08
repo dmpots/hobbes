@@ -113,4 +113,5 @@ TAGS/
 
 #papi-ghc
 dist/
-RESULTS
+RAW
+nohup.out

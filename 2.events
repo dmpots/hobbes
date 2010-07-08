@@ -1,36 +1,66 @@
+####################################################################
+#                     INDIVIDUAL EVENTS                            #
+####################################################################
+#|UNHALTED_CORE_CYCLES
+0x40000000
+#|RS_UOPS_DISPATCHED
+0x40000008
+#|RS_UOPS_DISPATCHED_NONE
+0x40000009
+#|L1I_MISSES
+0x4000004f
+#|L1I_READS
+0x4000004e
+#|CYCLES_L1I_MEM_STALLED
+0x40000052
+#|BR_INST_EXEC
+0x40000054
+#|BR_MISSP_EXEC
+0x40000055
+#|UOPS_RETIRED:ANY
+0x4000806a
+#|RESOURCE_STALLS:ANY
+0x4000807c
+#|RESOURCE_STALLS:BR_MISS_CLEAR
+0x4000407c
+
+
+####################################################################
+#           EVENTS GROUPED BY FORMULA CALCULATION                  #
+####################################################################
 # Fraction of execution wasted (due to mispredictions)
 # RS_UOPS_DISPATCHED / UOPS_RETIRED.ANY
-0x40000008 0x4000806a
+#0x40000008 0x4000806a
 
 # Instruction Starvation
 # (RS_UOPS_DISPATCHED_NONE - RESOURCE_STALLS.ANY) / UNHALTED_CORE_CYCLES
-0x40000009 0x4000807c 0x40000000
+#0x40000009 0x4000807c 0x40000000
 
 # Resource Stalls
 # RESOURCE_STALLS.BR_MISS_CLEAR / RESOURCE_STALLS.ANY
-0x4000407c 0x4000807c
+#0x4000407c 0x4000807c
 
 # Branch stall percent of execution
 # RESOURCE_STALLS.BR_MISS_CLEAR / UNHALTED_CORE_CYCLES
-0x4000407c 0x40000000
+#0x4000407c 0x40000000
 
 # ICache stall penalty rate
 # ICacheStallPercent = CYCLES_L1I_MEM_STALLED / UNHALTED_CORE_CYCLES
-0x40000052 0x40000000
+#0x40000052 0x40000000
 
 # Branch misprediction rate
 # (BR_MISSP_EXEC / BR_INST_EXEC) * 100
-0x40000055 0x40000054
+#0x40000055 0x40000054
 
 # ICache stall penalty rate
 # CYCLES_L1I_MEM_STALLED / L1I_MISSES
-0x40000052 0x4000004f
+#0x40000052 0x4000004f
 
 # Branch misprediction to ICache miss correlation
 # BR_MISSP_EXEC / L1I_MISSES
-0x40000055 0x4000004f
+#0x40000055 0x4000004f
 
 # ICache miss rate
 # L1I_MISSES / L1I_READS
-0x4000004f 0x4000004e
+#0x4000004f 0x4000004e
 
