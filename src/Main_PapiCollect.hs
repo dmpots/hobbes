@@ -33,7 +33,7 @@ data Config = Config {
 defaultConfig :: Config
 defaultConfig = Config {
       optOutDir       = "."
-    , optNumRuns      = 3
+    , optNumRuns      = 10
     , optProgramsFile = ""
     , optEventsFile   = ""
   }
