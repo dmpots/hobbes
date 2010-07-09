@@ -1,0 +1,21 @@
+####################################################################
+#                     INDIVIDUAL EVENTS                            #
+####################################################################
+#0x40000024   CPU_CLK_UNHALTED  | CPU Clocks not Halted
+0x40000024
+#0x40000028   INSTRUCTION_CACHE_FETCHES  | Instruction Cache Fetches  
+0x40000028
+#0x40000029   INSTRUCTION_CACHE_MISSES  | Instruction Cache Misses
+0x40000029
+#0x4000002f   INSTRUCTION_FETCH_STALL  | Instruction Fetch Stall
+0x4000002f
+#0x40000037   RETIRED_UOPS  | Retired uops
+0x40000037
+#0x40000038   RETIRED_BRANCH_INSTRUCTIONS  | Retired Branch Instructions 
+0x40000038
+#0x40000039   RETIRED_MISPREDICTED_BRANCH_INSTRUCTIONS  | Retired Mispredicted Branch Instructions    
+0x40000039
+#0x40000047   DISPATCH_STALLS  | Dispatch Stalls
+0x40000047
+#0x40000048   DISPATCH_STALL_FOR_BRANCH_ABORT  | Dispatch Stall for Branch Abort to Retire     
+0x40000048
