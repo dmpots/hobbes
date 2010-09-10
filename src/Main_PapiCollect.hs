@@ -104,7 +104,8 @@ rtsStatsArg file = "+RTS -s" ++ file ++ " -RTS"
 
 runAll :: Config -> [Command] -> [[PapiEvent]] -> IO ()
 runAll config commands eventSets = do
-  mapM_ (\command ->
+  mapM_ (\command -> do
+    putStrLn $ "Running Command: "++(name command)
     mapM_ (\(events, num) -> run command events num) numberedEvents) commands
   where
   numberedEvents = zip eventSets [0..]
@@ -118,9 +119,11 @@ runNTimes config command events setNum = do
   let outFile n = toFilePath $ StatsFile base pName pid "stats" setNum n
   let count     = optNumRuns config
   mapM_ (\n -> runChecked command events (outFile n)) [1 .. count]
+  putStrLn ""
 
 runChecked :: Command -> [PapiEvent] -> FilePath -> IO ()
 runChecked command events outFile = do
+  putStr "."
   rc <- Command.runCommand commandWithArgs
   case rc of
     ExitSuccess   -> return ()
