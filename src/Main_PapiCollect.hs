@@ -9,6 +9,7 @@ import System.Environment
 import System.Exit
 import System.Directory
 import System.FilePath
+import System.IO
 import System.Posix.Process
 import System.Console.GetOpt
 import StatsFile
@@ -119,11 +120,11 @@ runNTimes config command events setNum = do
   let outFile n = toFilePath $ StatsFile base pName pid "stats" setNum n
   let count     = optNumRuns config
   mapM_ (\n -> runChecked command events (outFile n)) [1 .. count]
-  putStrLn ""
+  putStrLn "" >> hFlush stdout
 
 runChecked :: Command -> [PapiEvent] -> FilePath -> IO ()
 runChecked command events outFile = do
-  putStr "."
+  putStr "." >> hFlush stdout
   rc <- Command.runCommand commandWithArgs
   case rc of
     ExitSuccess   -> return ()
