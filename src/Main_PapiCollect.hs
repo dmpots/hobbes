@@ -3,6 +3,7 @@ module Main (
 )
 where
 import Command
+import Control.Monad
 import InputFile
 import PapiEvent
 import System.Environment
@@ -129,7 +130,9 @@ runChecked command events outFile = do
   case rc of
     ExitSuccess   -> return ()
     ExitFailure _ -> 
-      putStrLn  ("Command: "++(name command)++" failed") >> exitFailure
+      when
+        (checked command)
+        (putStrLn  ("Command: "++(name command)++" failed") >> exitFailure)
   where
     commandWithArgs = command {cmd = (cmd command) ++ papiArgs ++ outArgs}
     papiArgs = papiRtsArgs events
