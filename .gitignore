@@ -115,3 +115,5 @@ TAGS/
 dist/
 RAW
 nohup.out
+_T
+~*.xlsx
