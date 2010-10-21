@@ -42,7 +42,7 @@ print "\n\n";
 print "SORTING C AND HASKELL FILES\n";
 for $tool (@tools) {
   # Haskell
-  $cmd = "find nofib.$tool/ shootout.ghc.$tool/ nofibpar.$tool/ dph.$tool/ -type f -exec cp {} H.$tool \\;";
+  $cmd = "find nofib.$tool/ shootout.ghc.$tool/ nofibpar.$tool/ dph.$tool/ fibon.$tool -type f -exec cp {} H.$tool \\;";
   print "$cmd\n";
   print `$cmd`;
 

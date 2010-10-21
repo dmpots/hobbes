@@ -3,9 +3,9 @@
 require 'FileUtils'
 
 inputDir   = "../pin-run/RESULTS/LATEST"
-$commonOptions = "col=cc,legend.text=TRUE,las=2,ylim=c(0,1.0),axisnames=FALSE"
+$commonOptions = "col=rainbow(10),legend.text=TRUE,las=2,ylim=c(0,1.0),axisnames=FALSE"
 stdCutoffs = %w(0 10)
-$out = File.open('PLOTS/plot2.r', 'w')
+$out = File.open('PLOT/plot2.r', 'w')
 $log = $stdout 
 
 def rCmds(baseName, n, legendOptions, title, ylab, xlab)
@@ -33,7 +33,7 @@ end
 
 def cp(baseName, cutoff)
   src="__Pinalyze__.dat"
-  dest="PLOTS/#{baseName}#{cutoff}.dat"
+  dest="PLOT/#{baseName}#{cutoff}.dat"
   $log.puts "copying #{src} to #{dest}"
   FileUtils.cp(src, dest)
 end
@@ -79,5 +79,5 @@ end
 # END
 #
 $out.flush()
-puts `cat PLOTS/plot2.r`
+puts `cat PLOT/plot2.r`
 

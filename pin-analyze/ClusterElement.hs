@@ -22,6 +22,8 @@ data ProgramClass =
   | NofibparGhc_Llvm
   | DphGhc_Llvm
   | ParallelGhc_Llvm
+  | FibonGhc
+  | FibonGhc_Llvm
   deriving (Enum, Ord, Eq, Show, Read)
 
 data GenClusterElement a b = CE { 

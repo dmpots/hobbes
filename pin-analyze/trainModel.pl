@@ -74,6 +74,7 @@ if($chooseTrainingSets) {
   my $Cprogs   = "CProgram       ../pin-run/RESULTS/C.$PinTool";
 
   my $nofibGhc    = "NofibGhc    ../pin-run/RESULTS/nofib.$PinTool";
+  my $fibonGhc    = "FibonGhc    ../pin-run/RESULTS/fibon.$PinTool";
   my $specGcc     = "SpecGcc     ../pin-run/RESULTS/spec.gcc.$PinTool";
   my $specIcc     = "SpecIcc     ../pin-run/RESULTS/spec.icc.$PinTool";
   my $shootGhc    = "ShootoutGhc ../pin-run/RESULTS/shootout.ghc.$PinTool";
@@ -81,6 +82,7 @@ if($chooseTrainingSets) {
   my $parallelGhc = "ParallelGhc ../pin-run/RESULTS/parallel.ghc.$PinTool";
 
   my $nofibGhc_M  = "NofibGhc_Llvm ../pin-run/RESULTS/nofib-llvm.$PinTool";
+  my $fibonGhc_M  = "FibonGhc_Llvm   ../pin-run/RESULTS/fibon-llvm.$PinTool";
   my $specLlvm    = "SpecLlvm      ../pin-run/RESULTS/spec.llvm.$PinTool";
   my $shootGhc_M  = "ShootoutGhc_Llvm ../pin-run/RESULTS/shootout.ghc-llvm.$PinTool";
   my $shootLlvm   = "ShootoutLlvm ../pin-run/RESULTS/shootout.llvm.$PinTool";
@@ -151,20 +153,26 @@ if($chooseTrainingSets) {
       elsif($set eq "IG"){
         push @classes, ($specIntGcc);
       }
-      elsif($set eq "FG"){
+      elsif($set eq "XG"){
         push @classes, ($specFpGcc);
       }
       elsif($set eq "II"){
         push @classes, ($specIntIcc);
       }
-      elsif($set eq "FI"){
+      elsif($set eq "XI"){
         push @classes, ($specFpIcc);
       }
       elsif($set eq "IL"){
         push @classes, ($specIntLlvm);
       }
-      elsif($set eq "FL"){
+      elsif($set eq "XL"){
         push @classes, ($specFpLlvm);
+      }
+      elsif($set eq "FH"){
+        push @classes, ($fibonGhc);
+      }
+      elsif($set eq "FM"){
+        push @classes, ($fibonGhc_M);
       }
 
       else {
