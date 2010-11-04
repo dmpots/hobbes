@@ -126,6 +126,7 @@
 (^|/)pin-run/RESULTS/spec.*$
 (^|/)pin-run/RESULTS/shootout.*$
 (^|/)pin-run/RESULTS/parallel.*$
+(^|/)pin-run/RESULTS/fibon.*$
 (^|/)pin-run/RESULTS/C.*$
 (^|/)pin-run/RESULTS/H.*$
 (^|/)pin-run/RESULTS/1/.*$
