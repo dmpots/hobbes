@@ -1,0 +1,91 @@
+exp3_8|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/exp3_8|./exp3_8 8 < /dev/null 
+gen_regexps|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/gen_regexps|./gen_regexps  < gen_regexps.stdin 
+paraffins|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/paraffins|./paraffins +RTS -H20m -RTS 17 < /dev/null 
+primes|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/primes|./primes 1500 < /dev/null 
+queens|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/queens|./queens 10 < /dev/null 
+rfib|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/rfib|./rfib 30 < /dev/null 
+tak|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/tak|./tak 24 16 8 < /dev/null 
+x2n1|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/x2n1|./x2n1 10000 < /dev/null 
+wheel-sieve1|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/wheel-sieve1|./wheel-sieve1 100000 < /dev/null 
+wheel-sieve2|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/wheel-sieve2|./wheel-sieve2 +RTS -M300m -RTS 20000 < /dev/null 
+integrate|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/integrate|./integrate +RTS -K20m -H100m -RTS 50000 < /dev/null 
+bernouilli|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/imaginary/bernouilli|./bernouilli 500 < /dev/null 
+ansi|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/ansi|./ansi 1 < /dev/null 
+atom|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/atom|./atom 1000 < /dev/null 
+awards|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/awards|./awards 1 < /dev/null 
+banner|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/banner|./banner  < banner.stdin 
+boyer|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/boyer|./boyer 20 < /dev/null 
+boyer2|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/boyer2|./boyer2  < /dev/null 
+calendar|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/calendar|./calendar 1993 1 < /dev/null 
+cichelli|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/cichelli|./cichelli  < /dev/null 
+circsim|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/circsim|./circsim +RTS -H30m -RTS 8 1000 < /dev/null 
+clausify|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/clausify|./clausify 7 < /dev/null 
+constraints|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/constraints|./constraints 10 < /dev/null 
+cryptarithm1|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/cryptarithm1|./cryptarithm1  < /dev/null 
+cryptarithm2|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/cryptarithm2|./cryptarithm2  < /dev/null 
+cse|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/cse|./cse  < /dev/null 
+eliza|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/eliza|./eliza  < eliza.stdin 
+expert|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/expert|./expert  < expert.stdin 
+fibheaps|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/fibheaps|./fibheaps 5000 < /dev/null 
+fish|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/fish|./fish  < /dev/null 
+fft2|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/fft2|./fft2 512 < /dev/null 
+gcd|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/gcd|./gcd 200 < /dev/null 
+comp_lab_zift|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/comp_lab_zift|./comp_lab_zift 10 < /dev/null 
+wave4main|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/wave4main|./wave4main 4000 < /dev/null 
+wang|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/wang|./wang 250 < /dev/null 
+typecheck|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/typecheck|./typecheck 600 < /dev/null 
+transform|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/transform|./transform 500 < /dev/null 
+solid|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/solid|./solid 13 < /dev/null 
+sched|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/sched|./sched 11 < /dev/null 
+nucleic2|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/nucleic2|./nucleic2  < /dev/null 
+parstof|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/parstof|./parstof  < /dev/null 
+listcopy|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/listcopy|./listcopy  < /dev/null 
+listcompr|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/listcompr|./listcompr  < /dev/null 
+ida|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/ida|./ida 4 < /dev/null 
+genfft|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/genfft|./genfft 7 < /dev/null 
+fft|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/fft|./fft 5 < /dev/null 
+event|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/hartel/event|./event 400000 < /dev/null 
+integer|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/integer|./integer -2100000000 4000001 2100000000 < /dev/null 
+lcss|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/lcss|./lcss 1 2 1000 500 501 1500 < /dev/null 
+life|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/life|./life  < /dev/null 
+knights|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/knights|./knights 8 3 < /dev/null 
+mandel|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/mandel|./mandel  < mandel.stdin 
+mandel2|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/mandel2|./mandel2  < /dev/null 
+minimax|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/minimax|./minimax  < /dev/null 
+multiplier|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/multiplier|./multiplier 16 < /dev/null 
+para|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/para|./para input-data < /dev/null 
+power|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/power|./power 50 < /dev/null 
+pretty|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/pretty|./pretty  < /dev/null 
+primetest|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/primetest|./primetest  < primetest.stdin 
+puzzle|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/puzzle|./puzzle  < /dev/null 
+rewrite|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/rewrite|./rewrite 2000 < /dev/null 
+scc|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/scc|./scc  < /dev/null 
+simple|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/simple|./simple +RTS -K3m -H20m -RTS < simple.stdin 
+sorting|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/sorting|./sorting  < Sort.hs 
+sphere|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/sphere|./sphere 100 < /dev/null 
+treejoin|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/spectral/treejoin|./treejoin +RTS -K3m -H24m -RTS 27000.1 27000.2 < /dev/null 
+anna|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/anna|./anna  < big.cor 
+bspt|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/bspt|./bspt  < bspt.stdin 
+cacheprof|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/cacheprof|./cacheprof  < cacheprof.stdin 
+compress|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/compress|./compress  < compress.stdin 
+compress2|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/compress2|./compress2  < compress2.stdin 
+fem|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/fem|./fem  < fem.stdin 
+fluid|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/fluid|./fluid  < fluid.stdin 
+fulsom|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/fulsom|./fulsom 7 < /dev/null 
+gamteb|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/gamteb|./gamteb  < gamteb.stdin 
+gg|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/gg|./gg  < gg.stdin 
+grep|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/grep|./grep grep.stdin < /dev/null 
+hidden|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/hidden|./hidden +RTS -K1m -RTS objects/four.plate < hidden.stdin 
+hpg|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/hpg|./hpg -nt 8 -dt 6 -nv 15 -dv 8 -de 8 < /dev/null 
+infer|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/infer|./infer  < infer.stdin 
+lift|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/lift|./lift  < /dev/null 
+maillist|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/maillist|./maillist  < maillist.stdin 
+mkhprog|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/mkhprog|./mkhprog -a Int -b Float -c Foo -d Bar -e Double -f String -g String -h Int -j Double -k Bool -n Basil -p Knob -q Wizzle -r Wissle -s Wibble -u Widdle -A Int -B Float -C Foo -D Bar -E Double -F String -G String -H Int -I Float -J Double -K Bool -L Bool -M Buzzle -N Basil -P Knob -Q Wizzle -R Wissle -S Wibble -T Widdle < /dev/null 
+parser|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/parser|./parser  < big_big_test.hs 
+pic|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/pic|./pic  < pic.stdin 
+prolog|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/prolog|./prolog  < prolog.stdin 
+reptile|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/reptile|./reptile  < reptile.stdin 
+rsa|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/rsa|./rsa  < rsa.stdin 
+scs|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/scs|./scs inverter 345 10n 4u 1 < /dev/null 
+symalg|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/symalg|./symalg +RTS -M140m -RTS < symalg.stdin 
+veritas|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/real/veritas|./veritas  < veritas.stdin 

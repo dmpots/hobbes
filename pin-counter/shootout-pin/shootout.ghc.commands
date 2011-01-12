@@ -1,0 +1,11 @@
+binarytrees.ghc|/home/dave/Research/darcs/shootout/srcs/binarytrees|./binarytrees.ghc_run  20 > binarytrees.ghc.STDOUT
+chameneosredux.ghc|/home/dave/Research/darcs/shootout/srcs/chamenosredux|./chameneosredux.ghc_run +RTS -K100M -RTS 6000000 > chameneosredux.ghc.STDOUT
+fannkuch.ghc|/home/dave/Research/darcs/shootout/srcs/fannkuch|./fannkuch.ghc-5_run +RTS -N5 -RTS 12 > fannkuch.ghc.STDOUT
+fasta.ghc|/home/dave/Research/darcs/shootout/srcs/fasta|./fasta.ghc-2_run  25000000 > fasta.ghc.STDOUT
+knucleotide.ghc|/home/dave/Research/darcs/shootout/srcs/knucleotide|./knucleotide.ghc-3_run  0 < knucleotide.input > knucleotide.ghc.STDOUT
+mandelbrot.ghc|/home/dave/Research/darcs/shootout/srcs/mandelbrot|./mandelbrot.ghc-2_run +RTS -N6 -RTS 16000 > mandelbrot.ghc.STDOUT
+nbody.ghc|/home/dave/Research/darcs/shootout/srcs/nbody|./nbody.ghc_run  50000000 > nbody.ghc.STDOUT
+pidigits.ghc|/home/dave/Research/darcs/shootout/srcs/pidigits|./pidigits.ghc-4_run  10000 > pidigits.ghc.STDOUT
+regexdna.ghc|/home/dave/Research/darcs/shootout/srcs/regexdna|./regexdna.ghc-4_run +RTS -N8 -qw -RTS < regexdna.input > regexdna.ghc.STDOUT
+revcomp.ghc|/home/dave/Research/darcs/shootout/srcs/reversecompliment|./revcomp.ghc-2_run  0 < revcomp.input  > revcomp.ghc.STDOUT
+spectralnorm.ghc|/home/dave/Research/darcs/shootout/srcs/spectralnorm|./spectralnorm.ghc-3_run +RTS -N5 -RTS 5500 > spectralnorm.ghc.STDOUT

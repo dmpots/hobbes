@@ -1,0 +1,11 @@
+binarytrees.gcc|/home/dave/Research/darcs/shootout/srcs/binarytrees|./binarytrees.gcc-7_run  20 > binarytrees.gcc.STDOUT
+chameneosredux.gcc|/home/dave/Research/darcs/shootout/srcs/chamenosredux|./chameneosredux.gcc-5_run  6000000 > chameneosredux.gcc.STDOUT
+fannkuch.gcc|/home/dave/Research/darcs/shootout/srcs/fannkuch|./fannkuch.gcc-2_run  12 > fannkuch.gcc.STDOUT
+fasta.gcc|/home/dave/Research/darcs/shootout/srcs/fasta|./fasta.gcc-4_run  25000000 > fasta.gcc.STDOUT
+knucleotide.gcc|/home/dave/Research/darcs/shootout/srcs/knucleotide|./knucleotide.gcc-2_run  0 < knucleotide.input > knucleotide.gcc.STDOUT
+mandelbrot.gcc|/home/dave/Research/darcs/shootout/srcs/mandelbrot|./mandelbrot.gcc-6_run  16000 > mandelbrot.gcc.STDOUT
+nbody.gcc|/home/dave/Research/darcs/shootout/srcs/nbody|./nbody.gcc_run  50000000 > nbody.gcc.STDOUT
+pidigits.gcc|/home/dave/Research/darcs/shootout/srcs/pidigits|./pidigits.gcc-4_run  10000 > pidigits.gcc.STDOUT
+regexdna.gcc|/home/dave/Research/darcs/shootout/srcs/regexdna|./regexdna.gpp-4_run  < regexdna.input > regexdna.gcc.STDOUT
+revcomp.gcc|/home/dave/Research/darcs/shootout/srcs/reversecompliment|./revcomp.gcc-4_run  0 < revcomp.input  > revcomp.gcc.STDOUT
+spectralnorm.gcc|/home/dave/Research/darcs/shootout/srcs/spectralnorm|./spectralnorm.gcc-4_run  5500 > spectralnorm.gcc.STDOUT

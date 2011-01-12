@@ -1,0 +1,1170 @@
+------------------------------------------------------------------------
+== Recursively making `all' in runstdtest nofib-analyse imaginary spectral real ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== make all ;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/runstdtest
+------------------------------------------------------------------------
+rm -f -f runstdtest
+echo '#!/usr/bin/perl'                               >> runstdtest
+echo '$RM             = "rm -f";'             >> runstdtest
+echo '$DEFAULT_TMPDIR = "/tmp";' >> runstdtest
+echo '$CONTEXT_DIFF   = "diff -U 1";'   >> runstdtest
+cat runstdtest.prl                                >> runstdtest
+chmod +x runstdtest
+Finished making all in runstdtest: 0
+------------------------------------------------------------------------
+== make all ;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/nofib-analyse
+------------------------------------------------------------------------
+make[1]: Nothing to be done for `all'.
+Finished making all in nofib-analyse: 0
+------------------------------------------------------------------------
+== make all ;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== Recursively making `all' in exp3_8 gen_regexps paraffins primes queens rfib tak x2n1 wheel-sieve1 wheel-sieve2 integrate bernouilli ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/exp3_8
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== exp3_8: size of exp3_8 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 712418	 158280	  38184	 908882	  dde52	exp3_8
+==nofib== exp3_8: time to run exp3_8 follows...
+Finished making all in exp3_8: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/gen_regexps
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== gen_regexps: size of gen_regexps follows...
+   text	   data	    bss	    dec	    hex	filename
+ 562736	 112480	  38184	 713400	  ae2b8	gen_regexps
+==nofib== gen_regexps: time to run gen_regexps follows...
+Finished making all in gen_regexps: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/paraffins
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing +RTS -H20m -RTS
+==nofib== paraffins: size of paraffins follows...
+   text	   data	    bss	    dec	    hex	filename
+ 739362	 165064	  38184	 942610	  e6212	paraffins
+==nofib== paraffins: time to run paraffins follows...
+Finished making all in paraffins: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/primes
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== primes: size of primes follows...
+   text	   data	    bss	    dec	    hex	filename
+ 706914	 155304	  38184	 900402	  dbd32	primes
+==nofib== primes: time to run primes follows...
+Finished making all in primes: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/queens
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== queens: size of queens follows...
+   text	   data	    bss	    dec	    hex	filename
+ 705282	 154184	  38184	 897650	  db272	queens
+==nofib== queens: time to run queens follows...
+Finished making all in queens: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/rfib
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== rfib: size of rfib follows...
+   text	   data	    bss	    dec	    hex	filename
+ 752265	 174352	  38184	 964801	  eb8c1	rfib
+==nofib== rfib: time to run rfib follows...
+Finished making all in rfib: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/tak
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== tak: size of tak follows...
+   text	   data	    bss	    dec	    hex	filename
+ 703538	 153704	  38184	 895426	  da9c2	tak
+==nofib== tak: time to run tak follows...
+Finished making all in tak: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/x2n1
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== x2n1: size of x2n1 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 759356	 177256	  38184	 974796	  edfcc	x2n1
+==nofib== x2n1: time to run x2n1 follows...
+Finished making all in x2n1: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/wheel-sieve1
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== wheel-sieve1: size of wheel-sieve1 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 721986	 159720	  38184	 919890	  e0952	wheel-sieve1
+==nofib== wheel-sieve1: time to run wheel-sieve1 follows...
+Finished making all in wheel-sieve1: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/wheel-sieve2
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing +RTS -M300m -RTS
+==nofib== wheel-sieve2: size of wheel-sieve2 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 720626	 159560	  38184	 918370	  e0362	wheel-sieve2
+==nofib== wheel-sieve2: time to run wheel-sieve2 follows...
+Finished making all in wheel-sieve2: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/integrate
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing +RTS -K20m -H100m -RTS
+==nofib== integrate: size of integrate follows...
+   text	   data	    bss	    dec	    hex	filename
+ 765609	 179472	  38184	 983265	  f00e1	integrate
+==nofib== integrate: time to run integrate follows...
+Finished making all in integrate: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary/bernouilli
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== bernouilli: size of bernouilli follows...
+   text	   data	    bss	    dec	    hex	filename
+ 709826	 156936	  38184	 904946	  dcef2	bernouilli
+==nofib== bernouilli: time to run bernouilli follows...
+Finished making all in bernouilli: 0
+------------------------------------------------------------------------
+== Finished making `all' in exp3_8 gen_regexps paraffins primes queens rfib tak x2n1 wheel-sieve1 wheel-sieve2 integrate bernouilli ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/imaginary
+------------------------------------------------------------------------
+Finished making all in imaginary: 0
+------------------------------------------------------------------------
+== make all ;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== Recursively making `all' in ansi atom awards banner boyer boyer2 calendar cichelli circsim clausify constraints cryptarithm1 cryptarithm2 cse eliza expert fibheaps fish fft2 gcd hartel integer lcss life knights mandel mandel2 minimax multiplier para power pretty primetest puzzle rewrite scc simple sorting sphere treejoin ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/ansi
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== ansi: size of ansi follows...
+   text	   data	    bss	    dec	    hex	filename
+ 737922	 166760	  38184	 942866	  e6312	ansi
+==nofib== ansi: time to run ansi follows...
+Finished making all in ansi: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/atom
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== atom: size of atom follows...
+   text	   data	    bss	    dec	    hex	filename
+ 755609	 174992	  38184	 968785	  ec851	atom
+==nofib== atom: time to run atom follows...
+Finished making all in atom: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/awards
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== awards: size of awards follows...
+   text	   data	    bss	    dec	    hex	filename
+ 723954	 165512	  38184	 927650	  e27a2	awards
+==nofib== awards: time to run awards follows...
+Finished making all in awards: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/banner
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== banner: size of banner follows...
+   text	   data	    bss	    dec	    hex	filename
+ 659890	 127848	  38184	 825922	  c9a42	banner
+==nofib== banner: time to run banner follows...
+Finished making all in banner: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/boyer
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== boyer: size of boyer follows...
+   text	   data	    bss	    dec	    hex	filename
+ 714802	 179272	  38184	 932258	  e39a2	boyer
+==nofib== boyer: time to run boyer follows...
+Finished making all in boyer: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/boyer2
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== boyer2: size of boyer2 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 614304	 139808	  38184	 792296	  c16e8	boyer2
+==nofib== boyer2: time to run boyer2 follows...
+Finished making all in boyer2: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/calendar
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp
+RUNTEST_OPTS = -ghc-timing
+==nofib== calendar: size of calendar follows...
+   text	   data	    bss	    dec	    hex	filename
+ 725458	 162056	  38184	 925698	  e2002	calendar
+==nofib== calendar: time to run calendar follows...
+Finished making all in calendar: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/cichelli
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== cichelli: size of cichelli follows...
+   text	   data	    bss	    dec	    hex	filename
+ 604624	 130240	  38184	 773048	  bcbb8	cichelli
+==nofib== cichelli: time to run cichelli follows...
+Finished making all in cichelli: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/circsim
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing +RTS -H30m -RTS
+==nofib== circsim: size of circsim follows...
+   text	   data	    bss	    dec	    hex	filename
+ 778034	 180744	  38184	 996962	  f3662	circsim
+==nofib== circsim: time to run circsim follows...
+Finished making all in circsim: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/clausify
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== clausify: size of clausify follows...
+   text	   data	    bss	    dec	    hex	filename
+ 725682	 162152	  38184	 926018	  e2142	clausify
+==nofib== clausify: time to run clausify follows...
+Finished making all in clausify: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/constraints
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== constraints: size of constraints follows...
+   text	   data	    bss	    dec	    hex	filename
+ 740370	 169320	  38184	 947874	  e76a2	constraints
+==nofib== constraints: time to run constraints follows...
+Finished making all in constraints: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/cryptarithm1
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== cryptarithm1: size of cryptarithm1 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 539088	 103424	  38184	 680696	  a62f8	cryptarithm1
+==nofib== cryptarithm1: time to run cryptarithm1 follows...
+Finished making all in cryptarithm1: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/cryptarithm2
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== cryptarithm2: size of cryptarithm2 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 578112	 120576	  38184	 736872	  b3e68	cryptarithm2
+==nofib== cryptarithm2: time to run cryptarithm2 follows...
+Finished making all in cryptarithm2: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/cse
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== cse: size of cse follows...
+   text	   data	    bss	    dec	    hex	filename
+ 575328	 120800	  38184	 734312	  b3468	cse
+==nofib== cse: time to run cse follows...
+Finished making all in cse: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/eliza
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== eliza: size of eliza follows...
+   text	   data	    bss	    dec	    hex	filename
+ 708514	 143304	  38184	 890002	  d9492	eliza
+==nofib== eliza: time to run eliza follows...
+Finished making all in eliza: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/expert
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== expert: size of expert follows...
+   text	   data	    bss	    dec	    hex	filename
+ 714642	 147048	  38184	 899874	  dbb22	expert
+==nofib== expert: time to run expert follows...
+Finished making all in expert: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/fibheaps
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== fibheaps: size of fibheaps follows...
+   text	   data	    bss	    dec	    hex	filename
+ 736530	 165224	  38184	 939938	  e57a2	fibheaps
+==nofib== fibheaps: time to run fibheaps follows...
+Finished making all in fibheaps: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/fish
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== fish: size of fish follows...
+   text	   data	    bss	    dec	    hex	filename
+ 560416	 121696	  38184	 720296	  afda8	fish
+==nofib== fish: time to run fish follows...
+Finished making all in fish: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/fft2
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== fft2: size of fft2 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 802444	 195016	  38184	1035644	  fcd7c	fft2
+==nofib== fft2: time to run fft2 follows...
+Finished making all in fft2: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/gcd
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== gcd: size of gcd follows...
+   text	   data	    bss	    dec	    hex	filename
+ 705730	 155016	  38184	 898930	  db772	gcd
+==nofib== gcd: time to run gcd follows...
+Finished making all in gcd: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== Recursively making `all' in comp_lab_zift wave4main wang typecheck transform solid sched nucleic2 parstof listcopy listcompr ida genfft fft event ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/comp_lab_zift
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== comp_lab_zift: size of comp_lab_zift follows...
+   text	   data	    bss	    dec	    hex	filename
+ 786290	 185416	  38184	1009890	  f68e2	comp_lab_zift
+==nofib== comp_lab_zift: time to run comp_lab_zift follows...
+Finished making all in comp_lab_zift: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/wave4main
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== wave4main: size of wave4main follows...
+   text	   data	    bss	    dec	    hex	filename
+ 736386	 167624	  38184	 942194	  e6072	wave4main
+==nofib== wave4main: time to run wave4main follows...
+Finished making all in wave4main: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/wang
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== wang: size of wang follows...
+   text	   data	    bss	    dec	    hex	filename
+ 764137	 178224	  38184	 980545	  ef641	wang
+==nofib== wang: time to run wang follows...
+Finished making all in wang: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/typecheck
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== typecheck: size of typecheck follows...
+   text	   data	    bss	    dec	    hex	filename
+ 745314	 176072	  38184	 959570	  ea452	typecheck
+==nofib== typecheck: time to run typecheck follows...
+Finished making all in typecheck: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/transform
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== transform: size of transform follows...
+   text	   data	    bss	    dec	    hex	filename
+ 890786	 223048	  38184	1152018	 119412	transform
+==nofib== transform: time to run transform follows...
+Finished making all in transform: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/solid
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== solid: size of solid follows...
+   text	   data	    bss	    dec	    hex	filename
+ 771270	 202176	  38184	1011630	  f6fae	solid
+==nofib== solid: time to run solid follows...
+Finished making all in solid: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/sched
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== sched: size of sched follows...
+   text	   data	    bss	    dec	    hex	filename
+ 723106	 164584	  38184	 925874	  e20b2	sched
+==nofib== sched: time to run sched follows...
+Finished making all in sched: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/nucleic2
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing -o1 nucleic2.stdout1 -o1 nucleic2.stdout2
+==nofib== nucleic2: size of nucleic2 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 647461	 256520	  38184	 942165	  e6055	nucleic2
+==nofib== nucleic2: time to run nucleic2 follows...
+Finished making all in nucleic2: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/parstof
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts -H80M
+RUNTEST_OPTS = -ghc-timing
+==nofib== parstof: size of parstof follows...
+   text	   data	    bss	    dec	    hex	filename
+ 783424	 221344	  38184	1042952	  fea08	parstof
+==nofib== parstof: time to run parstof follows...
+Finished making all in parstof: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/listcopy
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== listcopy: size of listcopy follows...
+   text	   data	    bss	    dec	    hex	filename
+ 550480	 112608	  38184	 701272	  ab358	listcopy
+==nofib== listcopy: time to run listcopy follows...
+Finished making all in listcopy: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/listcompr
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== listcompr: size of listcompr follows...
+   text	   data	    bss	    dec	    hex	filename
+ 549856	 112416	  38184	 700456	  ab028	listcompr
+==nofib== listcompr: time to run listcompr follows...
+Finished making all in listcompr: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/ida
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== ida: size of ida follows...
+   text	   data	    bss	    dec	    hex	filename
+ 745698	 170472	  38184	 954354	  e8ff2	ida
+==nofib== ida: time to run ida follows...
+Finished making all in ida: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/genfft
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== genfft: size of genfft follows...
+   text	   data	    bss	    dec	    hex	filename
+ 735314	 165096	  38184	 938594	  e5262	genfft
+==nofib== genfft: time to run genfft follows...
+Finished making all in genfft: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/fft
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== fft: size of fft follows...
+   text	   data	    bss	    dec	    hex	filename
+ 769547	 179144	  38184	 986875	  f0efb	fft
+==nofib== fft: time to run fft follows...
+Finished making all in fft: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel/event
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing
+==nofib== event: size of event follows...
+   text	   data	    bss	    dec	    hex	filename
+ 722946	 163144	  38184	 924274	  e1a72	event
+==nofib== event: time to run event follows...
+Finished making all in event: 0
+------------------------------------------------------------------------
+== Finished making `all' in comp_lab_zift wave4main wang typecheck transform solid sched nucleic2 parstof listcopy listcompr ida genfft fft event ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/hartel
+------------------------------------------------------------------------
+Finished making all in hartel: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/integer
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== integer: size of integer follows...
+   text	   data	    bss	    dec	    hex	filename
+ 704546	 154856	  38184	 897586	  db232	integer
+==nofib== integer: time to run integer follows...
+Finished making all in integer: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/lcss
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== lcss: size of lcss follows...
+   text	   data	    bss	    dec	    hex	filename
+ 716866	 158152	  38184	 913202	  def32	lcss
+==nofib== lcss: time to run lcss follows...
+Finished making all in lcss: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/life
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== life: size of life follows...
+   text	   data	    bss	    dec	    hex	filename
+ 556432	 111968	  38184	 706584	  ac818	life
+==nofib== life: time to run life follows...
+Finished making all in life: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/knights
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp
+RUNTEST_OPTS = -ghc-timing
+==nofib== knights: size of knights follows...
+   text	   data	    bss	    dec	    hex	filename
+ 642064	 144160	  38184	 824408	  c9458	knights
+==nofib== knights: time to run knights follows...
+Finished making all in knights: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/mandel
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing -stdout-binary
+==nofib== mandel: size of mandel follows...
+   text	   data	    bss	    dec	    hex	filename
+ 764361	 178224	  38184	 980769	  ef721	mandel
+==nofib== mandel: time to run mandel follows...
+Finished making all in mandel: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/mandel2
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== mandel2: size of mandel2 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 557776	 111680	  38184	 707640	  acc38	mandel2
+==nofib== mandel2: time to run mandel2 follows...
+Finished making all in mandel2: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/minimax
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== minimax: size of minimax follows...
+   text	   data	    bss	    dec	    hex	filename
+ 588896	 124896	  38184	 751976	  b7968	minimax
+==nofib== minimax: time to run minimax follows...
+Finished making all in minimax: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/multiplier
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== multiplier: size of multiplier follows...
+   text	   data	    bss	    dec	    hex	filename
+ 753602	 175592	  38184	 967378	  ec2d2	multiplier
+==nofib== multiplier: time to run multiplier follows...
+Finished making all in multiplier: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/para
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== para: size of para follows...
+   text	   data	    bss	    dec	    hex	filename
+ 759842	 169576	  38184	 967602	  ec3b2	para
+==nofib== para: time to run para follows...
+Finished making all in para: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/power
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== power: size of power follows...
+   text	   data	    bss	    dec	    hex	filename
+ 772850	 182472	  38184	 993506	  f28e2	power
+==nofib== power: time to run power follows...
+Finished making all in power: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/pretty
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== pretty: size of pretty follows...
+   text	   data	    bss	    dec	    hex	filename
+ 615639	 134344	  38184	 788167	  c06c7	pretty
+==nofib== pretty: time to run pretty follows...
+Finished making all in pretty: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/primetest
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== primetest: size of primetest follows...
+   text	   data	    bss	    dec	    hex	filename
+ 744514	 169128	  38184	 951826	  e8612	primetest
+==nofib== primetest: time to run primetest follows...
+Finished making all in primetest: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/puzzle
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== puzzle: size of puzzle follows...
+   text	   data	    bss	    dec	    hex	filename
+ 577440	 116928	  38184	 732552	  b2d88	puzzle
+==nofib== puzzle: time to run puzzle follows...
+Finished making all in puzzle: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/rewrite
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== rewrite: size of rewrite follows...
+   text	   data	    bss	    dec	    hex	filename
+ 767346	 179816	  38184	 985346	  f0902	rewrite
+==nofib== rewrite: time to run rewrite follows...
+Finished making all in rewrite: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/scc
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== scc: size of scc follows...
+   text	   data	    bss	    dec	    hex	filename
+ 533968	 101984	  38184	 674136	  a4958	scc
+==nofib== scc: time to run scc follows...
+Finished making all in scc: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/simple
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing +RTS -K3m -H20m -RTS
+==nofib== simple: size of simple follows...
+   text	   data	    bss	    dec	    hex	filename
+1083890	 295024	  38184	1417098	 159f8a	simple
+==nofib== simple: time to run simple follows...
+Finished making all in simple: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/sorting
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== sorting: size of sorting follows...
+   text	   data	    bss	    dec	    hex	filename
+ 581360	 118464	  38184	 738008	  b42d8	sorting
+==nofib== sorting: time to run sorting follows...
+Finished making all in sorting: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/sphere
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -o1 spheres.ppm -ghc-timing
+==nofib== sphere: size of sphere follows...
+   text	   data	    bss	    dec	    hex	filename
+ 818044	 201832	  38184	1058060	 10250c	sphere
+==nofib== sphere: time to run sphere follows...
+Finished making all in sphere: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral/treejoin
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing +RTS -K3m -H24m -RTS
+==nofib== treejoin: size of treejoin follows...
+   text	   data	    bss	    dec	    hex	filename
+ 648562	 121064	  38184	 807810	  c5382	treejoin
+==nofib== treejoin: time to run treejoin follows...
+Finished making all in treejoin: 0
+------------------------------------------------------------------------
+== Finished making `all' in ansi atom awards banner boyer boyer2 calendar cichelli circsim clausify constraints cryptarithm1 cryptarithm2 cse eliza expert fibheaps fish fft2 gcd hartel integer lcss life knights mandel mandel2 minimax multiplier para power pretty primetest puzzle rewrite scc simple sorting sphere treejoin ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/spectral
+------------------------------------------------------------------------
+Finished making all in spectral: 0
+------------------------------------------------------------------------
+== make all ;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== Recursively making `all' in anna bspt cacheprof compress compress2 fem fluid fulsom gamteb gg grep hidden hpg infer lift maillist mkhprog parser pic prolog reptile rsa scs symalg veritas ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real
+------------------------------------------------------------------------
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/anna
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== anna: size of anna follows...
+   text	   data	    bss	    dec	    hex	filename
+1772114	 572040	  38312	2382466	 245a82	anna
+==nofib== anna: time to run anna follows...
+Finished making all in anna: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/bspt
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== bspt: size of bspt follows...
+   text	   data	    bss	    dec	    hex	filename
+ 798320	 242400	  38248	1078968	 1076b8	bspt
+==nofib== bspt: time to run bspt follows...
+Finished making all in bspt: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/cacheprof
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== cacheprof: size of cacheprof follows...
+   text	   data	    bss	    dec	    hex	filename
+1146178	 350344	  38184	1534706	 176af2	cacheprof
+==nofib== cacheprof: time to run cacheprof follows...
+Finished making all in cacheprof: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/compress
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing -stdout-binary
+==nofib== compress: size of compress follows...
+   text	   data	    bss	    dec	    hex	filename
+ 643424	 160544	  38248	 842216	  cd9e8	compress
+==nofib== compress: time to run compress follows...
+Finished making all in compress: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/compress2
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -fglasgow-exts
+RUNTEST_OPTS = -ghc-timing -stdout-binary
+==nofib== compress2: size of compress2 follows...
+   text	   data	    bss	    dec	    hex	filename
+ 692512	 155584	  38184	 886280	  d8608	compress2
+==nofib== compress2: time to run compress2 follows...
+Finished making all in compress2: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/fem
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== fem: size of fem follows...
+   text	   data	    bss	    dec	    hex	filename
+ 887473	 219896	  38248	1145617	 117b11	fem
+==nofib== fem: time to run fem follows...
+Finished making all in fem: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/fluid
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== fluid: size of fluid follows...
+   text	   data	    bss	    dec	    hex	filename
+1162919	 328864	  38248	1530031	 1758af	fluid
+==nofib== fluid: time to run fluid follows...
+Finished making all in fluid: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/fulsom
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp
+RUNTEST_OPTS = -ghc-timing -stdout-binary
+==nofib== fulsom: size of fulsom follows...
+   text	   data	    bss	    dec	    hex	filename
+ 996796	 274728	  38248	1309772	 13fc4c	fulsom
+==nofib== fulsom: time to run fulsom follows...
+Finished making all in fulsom: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/gamteb
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== gamteb: size of gamteb follows...
+   text	   data	    bss	    dec	    hex	filename
+ 854040	 211112	  38248	1103400	 10d628	gamteb
+==nofib== gamteb: time to run gamteb follows...
+Finished making all in gamteb: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/gg
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== gg: size of gg follows...
+   text	   data	    bss	    dec	    hex	filename
+ 941481	 241520	  38248	1221249	 12a281	gg
+==nofib== gg: time to run gg follows...
+Finished making all in gg: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/grep
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== grep: size of grep follows...
+   text	   data	    bss	    dec	    hex	filename
+ 641568	 140352	  38184	 820104	  c8388	grep
+==nofib== grep: time to run grep follows...
+Finished making all in grep: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/hidden
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing +RTS -K1m -RTS
+==nofib== hidden: size of hidden follows...
+   text	   data	    bss	    dec	    hex	filename
+ 943377	 255384	  38248	1237009	 12e011	hidden
+==nofib== hidden: time to run hidden follows...
+Finished making all in hidden: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/hpg
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== hpg: size of hpg follows...
+   text	   data	    bss	    dec	    hex	filename
+ 949337	 256080	  38248	1243665	 12fa11	hpg
+==nofib== hpg: time to run hpg follows...
+Finished making all in hpg: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/infer
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi -cpp
+RUNTEST_OPTS = -ghc-timing
+==nofib== infer: size of infer follows...
+   text	   data	    bss	    dec	    hex	filename
+ 845362	 208264	  38248	1091874	 10a922	infer
+==nofib== infer: time to run infer follows...
+Finished making all in infer: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/lift
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== lift: size of lift follows...
+   text	   data	    bss	    dec	    hex	filename
+ 638224	 146496	  38184	 822904	  c8e78	lift
+==nofib== lift: time to run lift follows...
+Finished making all in lift: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/maillist
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== maillist: size of maillist follows...
+   text	   data	    bss	    dec	    hex	filename
+ 583376	 124832	  38184	 746392	  b6398	maillist
+==nofib== maillist: time to run maillist follows...
+Finished making all in maillist: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/mkhprog
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== mkhprog: size of mkhprog follows...
+   text	   data	    bss	    dec	    hex	filename
+ 598160	 129792	  38184	 766136	  bb0b8	mkhprog
+==nofib== mkhprog: time to run mkhprog follows...
+Finished making all in mkhprog: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/parser
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== parser: size of parser follows...
+   text	   data	    bss	    dec	    hex	filename
+ 880226	 212264	  38184	1130674	 1140b2	parser
+==nofib== parser: time to run parser follows...
+Finished making all in parser: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/pic
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== pic: size of pic follows...
+   text	   data	    bss	    dec	    hex	filename
+ 846512	 205016	  38248	1089776	 10a0f0	pic
+==nofib== pic: time to run pic follows...
+Finished making all in pic: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/prolog
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== prolog: size of prolog follows...
+   text	   data	    bss	    dec	    hex	filename
+ 711858	 146152	  38248	 896258	  dad02	prolog
+==nofib== prolog: time to run prolog follows...
+Finished making all in prolog: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/reptile
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== reptile: size of reptile follows...
+   text	   data	    bss	    dec	    hex	filename
+ 961842	 255496	  38248	1255586	 1328a2	reptile
+==nofib== reptile: time to run reptile follows...
+Finished making all in reptile: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/rsa
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== rsa: size of rsa follows...
+   text	   data	    bss	    dec	    hex	filename
+ 735490	 165704	  38184	 939378	  e5572	rsa
+==nofib== rsa: time to run rsa follows...
+Finished making all in rsa: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/scs
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== scs: size of scs follows...
+   text	   data	    bss	    dec	    hex	filename
+1041643	 281912	  38248	1361803	 14c78b	scs
+==nofib== scs: time to run scs follows...
+Finished making all in scs: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/symalg
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing +RTS -M140m -RTS
+==nofib== symalg: size of symalg follows...
+   text	   data	    bss	    dec	    hex	filename
+ 954832	 257048	  38248	1250128	 131350	symalg
+==nofib== symalg: time to run symalg follows...
+Finished making all in symalg: 0
+------------------------------------------------------------------------
+== make all - --no-print-directory;
+ in /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real/veritas
+------------------------------------------------------------------------
+HC = /home/dave/local/ghc-llvm/bin/ghc
+HC_OPTS = -O -H64m -threaded -O2 -fllvm -Rghc-timing -H32m -hisuf hi
+RUNTEST_OPTS = -ghc-timing
+==nofib== veritas: size of veritas follows...
+   text	   data	    bss	    dec	    hex	filename
+1670402	 534152	  38312	2242866	 223932	veritas
+==nofib== veritas: time to run veritas follows...
+Finished making all in veritas: 0
+------------------------------------------------------------------------
+== Finished making `all' in anna bspt cacheprof compress compress2 fem fluid fulsom gamteb gg grep hidden hpg infer lift maillist mkhprog parser pic prolog reptile rsa scs symalg veritas ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib/real
+------------------------------------------------------------------------
+Finished making all in real: 0
+------------------------------------------------------------------------
+== Finished making `all' in runstdtest nofib-analyse imaginary spectral real ...
+PWD = /home/dave/ghc-BUILD/ghc-LLVM-BUILD/nofib
+------------------------------------------------------------------------

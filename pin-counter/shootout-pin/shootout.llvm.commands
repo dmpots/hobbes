@@ -1,0 +1,11 @@
+binarytrees.llvm|/home/dave/Research/darcs/shootout/srcs/binarytrees|./binarytrees.llvm_run  20 > binarytrees.llvm_run.STDOUT
+chameneosredux.llvm|/home/dave/Research/darcs/shootout/srcs/chamenosredux|./chameneosredux.llvm_run  6000000 > chameneosredux.llvm_run.STDOUT
+fannkuch.llvm|/home/dave/Research/darcs/shootout/srcs/fannkuch|./fannkuch.llvm_run  12 > fannkuch.llvm_run.STDOUT
+fasta.llvm|/home/dave/Research/darcs/shootout/srcs/fasta|./fasta.llvm_run  25000000 > fasta.llvm_run.STDOUT
+knucleotide.llvm|/home/dave/Research/darcs/shootout/srcs/knucleotide|./knucleotide.llvm_run  0 < knucleotide.input > knucleotide.llvm_run.STDOUT
+mandelbrot.llvm|/home/dave/Research/darcs/shootout/srcs/mandelbrot|./mandelbrot.llvm_run  16000 > mandelbrot.llvm_run.STDOUT
+nbody.llvm|/home/dave/Research/darcs/shootout/srcs/nbody|./nbody.llvm_run  50000000 > nbody.llvm_run.STDOUT
+pidigits.llvm|/home/dave/Research/darcs/shootout/srcs/pidigits|./pidigits.llvm_run  10000 > pidigits.llvm_run.STDOUT
+regexdna.llvm|/home/dave/Research/darcs/shootout/srcs/regexdna|./regexdna.llvm_run  < regexdna.input > regexdna.llvm_run.STDOUT
+revcomp.llvm|/home/dave/Research/darcs/shootout/srcs/reversecompliment|./revcomp.llvm_run  0 < revcomp.input  > revcomp.llvm_run.STDOUT
+spectralnorm.llvm|/home/dave/Research/darcs/shootout/srcs/spectralnorm|./spectralnorm.llvm_run  5500 > spectralnorm.llvm_run.STDOUT
