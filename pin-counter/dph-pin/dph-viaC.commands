@@ -1,6 +1,0 @@
-sumsq|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/libraries/dph/examples-viaC/sumsq/par|./sumsq 10000000 +RTS -N8 -RTS
-sumsq_prim|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/libraries/dph/examples-viaC/sumsq/par|./prim 10000000 +RTS -N8 -RTS
-dotp|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/libraries/dph/examples-viaC/dotp/par|./dotp 100000000 +RTS -N8 -RTS
-dotp_prim|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/libraries/dph/examples-viaC/dotp/par|./prim 100000000 +RTS -N8 -RTS
-smvm|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/libraries/dph/examples-viaC/smvm/par|./smvm test.mat +RTS -N8 -RTS
-smvm_prim|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/libraries/dph/examples-viaC/smvm/par|./prim test.mat +RTS -N8 -RTS

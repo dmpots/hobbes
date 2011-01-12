@@ -1,8 +1,0 @@
-parfib|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/parallel/parfib|./parfib 43 11 +RTS -N8 -RTS < /dev/null 
-partree|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/parallel/partree|./partree 300 100 +RTS -N8 -RTS < /dev/null 
-sumeuler|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/parallel/sumeuler|./sumeuler 38 8000 100 +RTS -N8 -RTS < /dev/null 
-matmult|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/parallel/matmult|./matmult 600 1 10 +RTS -N8 -RTS < /dev/null 
-ray|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/parallel/ray|./ray 1000 +RTS -N8 -RTS < /dev/null 
-gray|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/parallel/gray|./gray  +RTS -N8 -RTS < /dev/null 
-prsa|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/parallel/prsa|./prsa 500000 +RTS -N8 -RTS < /dev/null 
-mandel|/home/dave/ghc-BUILD/ghc-STABLE.612-BUILD/nofib-viaC/parallel/mandel|./mandel -2.0 -2.0 2.0 2.0 1024 1024 256 +RTS -N8 -RTS < /dev/null 

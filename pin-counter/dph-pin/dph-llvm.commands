@@ -1,6 +1,0 @@
-sumsq|/home/dave/ghc-BUILD/ghc-LLVM-BUILD/libraries/dph/examples/sumsq/par|./sumsq 10000000 +RTS -N8 -RTS
-sumsq_prim|/home/dave/ghc-BUILD/ghc-LLVM-BUILD/libraries/dph/examples/sumsq/par|./prim 10000000 +RTS -N8 -RTS
-dotp|/home/dave/ghc-BUILD/ghc-LLVM-BUILD/libraries/dph/examples/dotp/par|./dotp 100000000 +RTS -N8 -RTS
-dotp_prim|/home/dave/ghc-BUILD/ghc-LLVM-BUILD/libraries/dph/examples/dotp/par|./prim 100000000 +RTS -N8 -RTS
-smvm|/home/dave/ghc-BUILD/ghc-LLVM-BUILD/libraries/dph/examples/smvm/par|./smvm test.mat +RTS -N8 -RTS
-smvm_prim|/home/dave/ghc-BUILD/ghc-LLVM-BUILD/libraries/dph/examples/smvm/par|./prim test.mat +RTS -N8 -RTS
