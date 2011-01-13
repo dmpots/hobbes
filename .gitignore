@@ -114,3 +114,7 @@ TAGS/
 #hobbes
 dist/
 nohup.out
+collect/pin/RESULTS/*.opcodemix/
+collect/pin/RESULTS/*.bblengthmix/
+collect/pin/RESULTS/*.papi/
+collect/pin/RESULTS/*.trace/

@@ -1,22 +1,9 @@
 #!/usr/bin/perl
 use File::Basename;
-$EnableMail = 1;
+$EnableMail = 0;
 $SharedLibs = ""; #or "--no-shared-libs"
-@tools    = qw(opcodemix bblengthmix papi);
-@commands = qw(
-              ../nofib-pin/nofib.commands 
-              ../nofib-pin/nofib-llvm.commands 
-              ../nofibpar-pin/nofibpar.commands 
-              ../nofibpar-pin/nofibpar-llvm.commands 
-              ../spec2006-pin/spec.gcc.commands 
-              ../spec2006-pin/spec.llvm.commands 
-              ../dph-pin/dph.commands 
-              ../dph-pin/dph-llvm.commands 
-              ../shootout-pin/shootout.ghc.commands 
-              ../shootout-pin/shootout.ghc-llvm.commands 
-              ../shootout-pin/shootout.gcc.commands 
-              ../shootout-pin/shootout.llvm.commands 
-           );
+@tools    = qw(opcodemix);
+@commands = qw(commands/fibon.commands);
 if( -e "tools.conf") {
   print "USING tools.conf\n";
   open TOOLS, "tools.conf" or die "error opening tools.conf file";
@@ -51,12 +38,12 @@ for my $cmdFile (@commands) {
     print "Missing command file $cmdFile\n";
     exit 1;
   }
-  #open RUN, "./t.pl|" or die "error running pintool\n";
-  open RUN, "./runPin.pl --$PinTool $SharedLibs $cmdFile|" or die "error running pintool\n";
+  open RUN, "perl runPin.pl --$PinTool $SharedLibs $cmdFile|" 
+    or die "error running runPin.pl\n";
   while (<RUN>) {
     print;
-    if (/killing myself/i){print "Error running pin tool\n"; exit 1}
   }
+  close RUN; if ($? != 0){die "Error running pin tool\n";}
   $destDir = basename($cmdFile);
   $destDir =~ s/\.commands//;
   $destDir.= ".$PinTool";

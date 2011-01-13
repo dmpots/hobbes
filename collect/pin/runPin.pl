@@ -5,11 +5,12 @@ use File::Copy;
 use File::Path qw(remove_tree);
 
 $PinDir="$ENV{HOME}/pin";
-$SimpleDir="$PinDir/source/tools/SimpleExamples/obj-intel64";
-$InstMixPinTool="$SimpleDir/opcodemix.so";
-$BBLenMixPinTool="$SimpleDir/bblengthmix.so";
-$JumpMixPinTool="$SimpleDir/jumpmix.so";
-$RegMixPinTool="$SimpleDir/regmix.so";
+$ToolsDir="$PinDir/source/tools/pin-tools";
+($Arch, $ArchDir)=GetArch();
+$InstMixPinTool="$ToolsDir/opcodemix/$ArchDir/opcodemix.so";
+$BBLenMixPinTool="$ToolsDir/bblengthmix/$ArchDir/bblengthmix.so";
+$JumpMixPinTool="$ToolsDir/jumpmix/$ArchDir/jumpmix.so";
+$RegMixPinTool="$ToolsDir/regmix/$ArchDir/regmix.so";
 $DieOnNofibFailure=1;
 $SanityCheckOnly=0;
 $SharedLibsFlag="";
@@ -38,7 +39,7 @@ if(grep(/--papi/i, @ARGV)) {
   
 
 $Pintool=basename($FullPathPinTool);
-$PinPrefix="setarch x86_64 -R $PinDir/pin -t $FullPathPinTool $SharedLibsFlag";
+$PinPrefix="setarch $Arch -R $PinDir/pin -t $FullPathPinTool $SharedLibsFlag";
 
 print "runPin in mode: $Mode\n";
 while(<>) {
@@ -78,20 +79,18 @@ sub runCommand {
     unless ($SanityCheckOnly) {
         system($cmd);
         if($? == -1) {
-            print STDERR "Failed to execute: $!\n. Killing myself";
-            exit 1;
+            die "Failed to execute: $!";
         }
         elsif($? & 127) {
-            printf STDERR "child died with signal %d\n. Killing myself", ($? & 127);
-            exit 1;
+            my $sig =  $? & 127;
+            die "child died with signal $sig";
         }
         else {
             my $exit_val  = $? >> 8;
-            printf STDERR "child '$cmd' exited with value %d\n.", $exit_val;
+            printf STDERR "child '$cmd' exited with value %d.\n", $exit_val;
 
             if ($exit_val != 0 && $DieOnNofibFailure) {
-                print STDERR "Nonzero exit status. Killing myself\n";
-                exit 1;
+                die "Nonzero exit status: $exit_val";
             }
         }
     }
@@ -104,11 +103,24 @@ sub SanityCheck {
     my ($cmd) = @_;
     my ($exe) = split(/\s+/, $cmd);
     if (not (-e $exe && -x $exe) ) {
-        print STDERR "File $exe not executable\n";
-        exit 1;
+        die "File $exe not executable\n";
     }
     else {
         print STDERR "Checking $exe...ok\n";
     }
 }
 
+sub GetArch {
+  my $arch = `uname -m`; chomp $arch;
+  my $dir = "OOPS";
+  if ($arch =~ /x86_64/) {
+    $dir = "obj-intel64";
+  }
+  elsif ($arch =~ /i[234567x]86/) {
+    $dir = "obj-ia32";
+  }
+  else {
+    die "Unknown architecture $arch\n";
+  }
+  return ($arch, $dir);
+}
