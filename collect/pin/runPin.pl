@@ -11,6 +11,8 @@ $InstMixPinTool="$ToolsDir/opcodemix/$ArchDir/opcodemix.so";
 $BBLenMixPinTool="$ToolsDir/bblengthmix/$ArchDir/bblengthmix.so";
 $JumpMixPinTool="$ToolsDir/jumpmix/$ArchDir/jumpmix.so";
 $RegMixPinTool="$ToolsDir/regmix/$ArchDir/regmix.so";
+$TracePinTool="$ToolsDir/trace/$ArchDir/trace.so";
+$Syms="ruby $ToolsDir/trace/syms.rb";
 $DieOnNofibFailure=1;
 $SanityCheckOnly=0;
 $SharedLibsFlag="";
@@ -29,6 +31,9 @@ elsif(grep(/--jumpmix/i, @ARGV)) {
 elsif(grep(/--regmix/i, @ARGV)) {
   $FullPathPinTool = $RegMixPinTool;
 }
+elsif(grep(/--trace/i, @ARGV)) {
+  $FullPathPinTool = $TracePinTool;
+}
 if(grep(/--no-shared-libs/i, @ARGV)) {
   $SharedLibsFlag="-no-shared-libs";
 }
@@ -38,7 +43,7 @@ if(grep(/--papi/i, @ARGV)) {
 @ARGV = grep(!/^--/, @ARGV); #remove switches
   
 
-$Pintool=basename($FullPathPinTool);
+$Pintool=basename($FullPathPinTool, (".so"));
 $PinPrefix="setarch $Arch -R $PinDir/pin -t $FullPathPinTool $SharedLibsFlag";
 
 print "runPin in mode: $Mode\n";
@@ -60,6 +65,12 @@ sub runPin {
     my $cwd = getcwd();
     my $pinCmd = "$PinPrefix -o $cwd/RESULTS/$name.$Pintool.$$.LOG -- $cmd\n";
     runCommand($pinCmd, $dir, $cmd);
+
+    if ($Pintool eq "trace") {
+      my ($exe) = split(/\s+/, $cmd);
+      my $symCmd = "$Syms $exe > $cwd/RESULTS/$name.$Pintool.$$.symtab.LOG";
+      runCommand($symCmd, $dir, $cmd);
+    }
 }
 
 sub runPapi {

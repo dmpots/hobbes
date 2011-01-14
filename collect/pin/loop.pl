@@ -2,7 +2,7 @@
 use File::Basename;
 $EnableMail = 0;
 $SharedLibs = ""; #or "--no-shared-libs"
-@tools    = qw(opcodemix);
+@tools    = qw(opcodemix trace);
 @commands = qw(commands/fibon.commands);
 if( -e "tools.conf") {
   print "USING tools.conf\n";
