@@ -98,10 +98,10 @@ sub runCommand {
         }
         else {
             my $exit_val  = $? >> 8;
-            printf STDERR "child '$cmd' exited with value %d.\n", $exit_val;
 
             if ($exit_val != 0 && $DieOnNofibFailure) {
-                die "Nonzero exit status: $exit_val";
+              printf STDERR "child '$cmd' exited with value %d.\n", $exit_val;
+              die "Nonzero exit status: $exit_val";
             }
         }
     }
