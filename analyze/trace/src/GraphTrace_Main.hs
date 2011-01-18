@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 -- Tool to produce a graph (as a dot file) from a trace
 --
 -- INPUT LINE FORMAT: <count> <module>
@@ -22,14 +23,16 @@ import System.IO
 import System.Environment
 import System.Exit
 
-
 --------------------------------------------------------------------------
 -- Types
 --------------------------------------------------------------------------
 type Node = Text
 type Edge = (Node, Node)
 type EdgeCount = Integer
-data TraceGraph = TraceGraph {edges :: Map Edge EdgeCount, nodes :: Set Node}
+data TraceGraph = TraceGraph {
+    edges :: !(Map Edge EdgeCount),
+    nodes :: !(Set Node)
+  }
   deriving(Show)
 
 singletonGraph :: Node -> TraceGraph
@@ -44,7 +47,7 @@ buildGraph input = addEdge (lastNode, endNode) 1 graph
   (lastNode, graph) = foldl' build (startNode, singletonGraph startNode) input
   startNode = T.pack "Start"
   endNode   = T.pack "End"
-  build (prevNode, g) line = 
+  build (!prevNode, !g) line =
     let (node, cnt) = parseLine line
         newGraph    = addEdge (prevNode, node) 1 $ addEdge (node, node) cnt g
     in (node, newGraph)
