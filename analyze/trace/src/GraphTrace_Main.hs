@@ -67,7 +67,7 @@ parseLine line =
 addEdge ::  Edge -> EdgeCount -> TraceGraph -> TraceGraph
 addEdge e@(source, sink) count g = 
   TraceGraph { 
-    edges = M.insertWith (+) e count (edges g),
+    edges = M.insertWith' (+) e count (edges g),
     nodes = S.insert source $ S.insert sink $ (nodes g) 
   }
 
