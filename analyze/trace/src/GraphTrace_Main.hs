@@ -95,9 +95,13 @@ convertToDot graph =
 main :: IO ()
 main = do
   _args <- parseArgs
-  graph <- buildGraph `liftM` T.lines `liftM` T.hGetContents stdin
-  let dotGraph = convertToDot graph
+  input <- filterComments `liftM` T.lines `liftM` T.hGetContents stdin
+  let graph    = buildGraph input
+      dotGraph = convertToDot graph
   putStrLn $ show (prettyPrintDot dotGraph)
+  where
+  filterComments = filter (not . isComment)
+  isComment line = (T.null line) || (not (T.null line)) && T.head line == '#'
 
 parseArgs :: IO [String]
 parseArgs = do
