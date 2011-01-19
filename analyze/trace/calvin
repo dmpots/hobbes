@@ -1,0 +1,37 @@
+#!/usr/bin/ruby
+
+require 'pp'
+
+trap('INT'){exit 1}
+
+if __FILE__ == $0 then
+CMD_DIR = File.dirname(File.expand_path(__FILE__)) + "/commands"
+@commands = []
+command_files = Dir[CMD_DIR + "/*.rb"]
+command_files = command_files.reject {|f| File.basename(f).start_with?("_")}
+command_files.each {|f| self.instance_eval(File.read(f), f) }
+
+command = ARGV.shift
+if command.nil? then
+  puts "usage: calvin <command>"
+  puts ""
+  puts "available commands"
+  puts @commands.map{|c| "  " + c.name}.join("\n")
+end
+
+cmd = @commands.find {|c| c.name == command}
+if cmd.nil? then
+  puts "unknown command: #{command}"
+  exit 1
+end
+
+begin
+  cmd.parse(ARGV)
+  cmd.run($stdout)
+rescue UsageError
+  puts cmd.usage
+  exit 1
+end
+
+end
+
