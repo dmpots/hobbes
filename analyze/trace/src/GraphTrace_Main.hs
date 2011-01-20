@@ -75,38 +75,41 @@ addEdge e@(source, sink) count g =
 -- Conversion to Dot
 --------------------------------------------------------------------------
 type DotGraph = Graph
-convertToDot :: TraceGraph -> DotGraph
-convertToDot graph = 
+type NodeFilter = Node -> Bool
+convertToDot :: NodeFilter -> TraceGraph -> DotGraph
+convertToDot nodeFilter graph =
   Graph UnstrictGraph DirectedGraph Nothing statements
   where
-  statements = nodeStatements ++ edgeStatements
-  nodeStatements = map (\n -> NodeStatement (mkId n) []) ns
+  statements = edgeStatements
   edgeStatements = map (\((n1,n2),cnt) -> mkEdgeStmt n1 n2 cnt) es
   mkEdgeStmt n1 n2 cnt = EdgeStatement ent attr
     where ent  = [ENodeId NoEdge (mkId n1), ENodeId DirectedEdge (mkId n2)]
           attr = [AttributeSetValue (StringId "label") (IntegerId cnt)]
-  ns = S.toList $ nodes graph
-  es = M.toList $ edges graph
+  es = filterEdges $ M.toList $ edges graph
   mkId n = NodeId (StringId (T.unpack n)) Nothing
+  filterEdges = filter (\(e,_) -> nodeFilter (fst e) && nodeFilter (snd e))
 
 --------------------------------------------------------------------------
 -- Main
 --------------------------------------------------------------------------
 main :: IO ()
 main = do
-  _args <- parseArgs
+  nodeFilter <- parseArgs
   input <- filterComments `liftM` T.lines `liftM` T.hGetContents stdin
   let graph    = buildGraph input
-      dotGraph = convertToDot graph
+      dotGraph = convertToDot nodeFilter graph
   putStrLn $ show (prettyPrintDot dotGraph)
   where
   filterComments = filter (not . isComment)
   isComment line = (T.null line) || (not (T.null line)) && T.head line == '#'
 
-parseArgs :: IO [String]
+parseArgs :: IO NodeFilter
 parseArgs = do
   args <- getArgs
   case args of
-    [] -> return args
-    _  -> putStrLn "usage: graph-trace" >> exitFailure
+    []                -> return dropExtern
+    ["--keep-extern"] -> return keepExtern
+    _  -> putStrLn "usage: graph-trace [--keep-extern]" >> exitFailure
+  where dropExtern n = n /= (T.pack "_")
+        keepExtern _ = True
 
