@@ -9,7 +9,9 @@ class GraphPrepCommand < Command
   end
 
   def parse(a)
-    @files = a.clone
+    @files = a.reject {|f| f =~ /^--/}
+    @flags = a.select {|f| f =~ /^--/}
+    @save  = @flags.member?("--save")
   end
 
   def run(outh)
@@ -21,11 +23,16 @@ class GraphPrepCommand < Command
         outh.puts "File '#{f}' does not exist" unless 
         exit 1
       end
-      exe = exe_name(f)
-      outh.puts "##{f}"
-      outh.flush
-      io = IO.popen("cat #{f} | awk '{print $3}' | awk -f #{AWK_DIR}/clean.awk | uniq -c")
-      io.lines.each {|l| outh.puts l}
+      outh.puts "##{f}"; outh.flush
+      cmd = "cat #{f} | awk '{print $3}' | awk -f #{AWK_DIR}/clean.awk | uniq -c"
+      if @save then
+        exe  = exe_name(f)
+        outh = File.open(exe+'.prep', "w")
+        outh.puts "##{f}"
+      end
+      io = IO.popen(cmd)
+      io.each {|l| outh.puts l}
+      if @save then outh.close end
     end
   end
 end
