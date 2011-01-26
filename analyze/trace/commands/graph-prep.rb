@@ -25,14 +25,15 @@ class GraphPrepCommand < Command
       end
       outh.puts "##{f}"; outh.flush
       cmd = "cat #{f} | awk '{print $3}' | awk -f #{AWK_DIR}/clean.awk | uniq -c"
+      cout = outh
       if @save then
         exe  = exe_name(f)
-        outh = File.open(exe+'.prep', "w")
-        outh.puts "##{f}"
+        cout = File.open(exe+'.prep', "w")
+        cout.puts "##{f}"
       end
       io = IO.popen(cmd)
-      io.each {|l| outh.puts l}
-      if @save then outh.close end
+      io.each {|l| cout.puts l}
+      if @save then cout.close end
     end
   end
 end

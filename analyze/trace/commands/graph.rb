@@ -23,7 +23,7 @@ class GraphCommand < Command
 
     @files.each do |f|
       if not File.exists?(f) then
-        outh.puts "File '#{f}' does not exist" unless 
+        outh.puts "File '#{f}' does not exist"
         exit 1
       end
       exe = exe_name(f)
@@ -32,7 +32,7 @@ class GraphCommand < Command
       outh.flush
 
       if f.end_with?(".prep") then
-        outh.puts `cat #{f} | #{gt_exe} #{out}`
+        outh.puts `#{gt_exe} #{out} < #{f}`
       else
         outh.puts `#{CALVIN_EXE} graph-prep #{f} | #{gt_exe} #{out}`
       end
