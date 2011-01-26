@@ -123,4 +123,6 @@ collect/pin/RESULTS/*.trace.static/
 collect/pin/tools.conf
 collect/pin/commands.conf
 collect/pin/commands/fibon.commands
+analyze/trace/dot/
+analyze/trace/prep/
 _T.*
