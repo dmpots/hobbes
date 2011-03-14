@@ -126,3 +126,4 @@ collect/pin/commands/fibon.commands
 analyze/trace/dot/
 analyze/trace/prep/
 _T.*
+.Rhistory
