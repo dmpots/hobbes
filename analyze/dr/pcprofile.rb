@@ -11,8 +11,12 @@ require 'pp'
 require 'ostruct'
 require 'optparse'
 
-$usage = "pcprofile [dir]"
 
+###################################################################
+#
+# Data Types
+#
+###################################################################
 class Location
   # keep all in array to enforce a standard output order
   @@all = [ 
@@ -47,7 +51,8 @@ end
 class Sample 
   @@merge_count = 0
   attr_accessor *Location.all
-  attr_reader   :file_path, :exe_name, :fcache
+  attr_accessor :exe_name
+  attr_reader   :file_path, :fcache
 
   def initialize(file, name=nil)
     @file_path  = file
@@ -152,6 +157,12 @@ class Sample
   end
 end
 
+
+###################################################################
+#
+# Processing Functions
+#
+###################################################################
 def find_sample_files(root)
   sample_files = []
   Find.find(root) do |path|
@@ -198,16 +209,127 @@ def build_sample(file)
   s
 end
 
+def merge_samples(samples, options)
+  if options.merge then
+  samples.group_by {|s| s.exe_name}.map do |exe,ss|
+    ss.reduce(Sample.new("<merged>", exe), :merge)
+  end.sort_by {|s| s.exe_name}
+  else
+    samples
+  end
+end
+
+def dump_samples(samples, options)
+  samples =
+  if options.spec then 
+    samples.map {|s| s.exe_name = rename_SPEC(s.exe_name); s}.sort_by {|s| sort_SPEC(s.exe_name)}
+  else
+    samples
+  end
+
+  first = true
+  samples.each do |s|
+    case options.output_type
+      when :summary then s.dump_summary(options.outh)
+      when :raw     then s.dump_raw_data(options.outh, :dump_header => first)
+      when :trace   then s.dump_trace_counts(options.outh)
+    end
+    first = false
+  end
+end
+
+def rename_SPEC(exe)
+  base = exe.chars.take_while {|c| c != "_"}.join
+  case base
+    when "perlbench"  then "400.perlbench"
+    when "bzip2"      then "401.bzip2"
+    when "gcc"        then "403.gcc"
+    when "mcf"        then "429.mcf"
+    when "gobmk"      then "445.gobmk"
+    when "hmmer"      then "456.hmmer"
+    when "sjeng"      then "458.sjeng"
+    when "libquantum" then "462.libquantum"
+    when "h264ref"    then "464.h264ref"
+    when "omnetpp"    then "471.omnetpp"
+    when "astar"      then "473.astar"
+    when "xalancbmk"  then "483.xalancbmk"
+    when "specrand"   then "999.specrand"
+    when "bwaves"     then "410.bwaves"
+    when "gamess"     then "416.gamess"
+    when "milc"       then "433.milc"
+    when "zeusmp"     then "434.zeusmp"
+    when "gromacs"    then "435.gromacs"
+    when "cactusADM"  then "436.cactusADM"
+    when "leslie3d"   then "437.leslie3d"
+    when "namd"       then "444.namd"
+    when "dealII"     then "447.dealII"
+    when "soplex"     then "450.soplex"
+    when "povray"     then "453.povray"
+    when "calculix"   then "454.calculix"
+    when "GemsFDTD"   then "459.GemsFDTD"
+    when "tonto"      then "465.tonto"
+    when "lbm"        then "470.lbm"
+    when "wrf"        then "481.wrf"
+    when "sphinx"     then "482.sphinx3"
+    when "sphinx3"    then "482.sphinx3"
+    when "specrand"   then "998.specrand"
+    else base
+  end
+end
+
+def sort_SPEC(name)
+  case name 
+    when "400.perlbench" then "_SPEC-Integer-400"
+    when "401.bzip2"     then "_SPEC-Integer-401"
+    when "403.gcc"       then "_SPEC-Integer-403"
+    when "429.mcf"       then "_SPEC-Integer-429"
+    when "445.gobmk"     then "_SPEC-Integer-445"
+    when "456.hmmer"     then "_SPEC-Integer-456"
+    when "458.sjeng"     then "_SPEC-Integer-458"
+    when "462.libquantum"then "_SPEC-Integer-462"
+    when "464.h264ref"   then "_SPEC-Integer-464"
+    when "471.omnetpp"   then "_SPEC-Integer-471"
+    when "473.astar"     then "_SPEC-Integer-473"
+    when "483.xalancbmk" then "_SPEC-Integer-483"
+    when "999.specrand"  then "_SPEC-float-999"
+    when "410.bwaves"    then "_SPEC-float-410"
+    when "416.gamess"    then "_SPEC-float-416"
+    when "433.milc"      then "_SPEC-float-433"
+    when "434.zeusmp"    then "_SPEC-float-434"
+    when "435.gromacs"   then "_SPEC-float-435"
+    when "436.cactusADM" then "_SPEC-float-436"
+    when "437.leslie3d"  then "_SPEC-float-437"
+    when "444.namd"      then "_SPEC-float-444"
+    when "447.dealII"    then "_SPEC-float-447"
+    when "450.soplex"    then "_SPEC-float-450"
+    when "453.povray"    then "_SPEC-float-453"
+    when "454.calculix"  then "_SPEC-float-454"
+    when "459.GemsFDTD"  then "_SPEC-float-459"
+    when "465.tonto"     then "_SPEC-float-465"
+    when "470.lbm"       then "_SPEC-float-470"
+    when "481.wrf"       then "_SPEC-float-481"
+    when "482.sphinx3"   then "_SPEC-float-482"
+    when "998.specrand"  then "_SPEC-float-998"
+    else name
+  end
+end
+
+###################################################################
+#
+# Command Line Options
+#
+###################################################################
 class CmdLineOptions
   def self.parse(args)
     options = OpenStruct.new
     options.output_type = :raw
     options.outh        = $stdout
     options.merge       = true
+    options.spec        = true
 
     opts = OptionParser.new do |opts|
       opts.banner = "Usage: pcprofile.rb [options] [file|dir]"
-      opts.on("--type TYPE", [:raw, :summary, :trace], 
+      opts.on("-t", "--type TYPE", [:raw, :summary, :trace], 
         "Output type (raw, summary, trace)") do |t|
         options.output_type = t
       end
@@ -216,6 +338,9 @@ class CmdLineOptions
       end
       opts.on("--no-merge", "Do not merge sample files") do |o|
         options.merge = false
+      end
+      opts.on("--no-spec", "Do not rename/sort SPEC exes") do |o|
+        options.spec = false
       end
     end
     begin
@@ -229,34 +354,12 @@ class CmdLineOptions
   end
 end
 
-def merge_samples(samples, options)
-  if options.merge then
-  samples.group_by {|s| s.exe_name}.map do |exe,ss|
-    ss.reduce(Sample.new("<merged>", exe), :merge)
-  end.sort_by {|s| s.exe_name}
-  else
-    samples
-  end
-end
-
-def dump_samples(samples, options)
-  first = true
-  samples.each do |s|
-    case options.output_type
-      when :summary then s.dump_summary(options.outh)
-      when :raw     then s.dump_raw_data(options.outh, :dump_header => first)
-      when :trace   then s.dump_trace_counts(options.outh)
-    end
-    first = false
-  end
-end
-
+###################################################################
+#
+# Main
+#
+###################################################################
 if __FILE__ == $0 then
-  if ARGV.length == 0 then
-    puts $usage
-    exit 1
-  end
-  
   # parse command line arguments
   options = CmdLineOptions.parse(ARGV)
   if options.outfile then
