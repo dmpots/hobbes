@@ -45,22 +45,40 @@ class Location
 end
 
 class Sample 
+  @@merge_count = 0
   attr_accessor *Location.all
   attr_reader   :file_path, :exe_name, :fcache
 
-  def initialize(file)
+  def initialize(file, name=nil)
     @file_path  = file
     parent_dir  = File.basename(File.dirname(file))
-    @exe_name = parent_dir.each_char.take_while{|c| c != '.'}.join
+    @exe_name = name || parent_dir.each_char.take_while{|c| c != '.'}.join
     Location.all.each{|k| self.send(k.to_s+"=", 0)}
     @fcache = FragmentCache.new
+  end
+
+  def merge(other)
+    s = Sample.new("<merged>", @exe_name)
+    s.merge!(self)
+    s.merge!(other)
+  end
+
+  def merge!(other)
+    Location.all.each{|k| self.send(k.to_s+"=", self.send(k) + other.send(k))}
+    other.fcache.values.each do |frag|
+      #avoid improper fragment merge
+      frag_id = frag.frag_id.to_s + "_" + @@merge_count.to_s
+      add_fragment(frag_id, frag.count, frag.frag_type)
+    end
+    @@merge_count += 1
+    self
   end
 
   def num_samples
     Location.all.map{|k| self.send(k)}.reduce(0, :+)
   end
 
-  def dump_raw_data(outh, options = {})
+  def dump_raw_data(outh=$stdout, options = {})
     sep = options[:sep] || "\t"
     dump_header = options[:dump_header]
     columns = [:exe_name]   + Location.all + [:num_samples]
@@ -69,7 +87,7 @@ class Sample
     outh.puts columns.map{|s| self.send(s)}.join(sep)
   end
 
-  def dump_summary(outh)
+  def dump_summary(outh=$stdout)
     non_zero = Location.all.reject{|l| self.send(l) == 0}
     total    = num_samples
     outh.puts "#{@exe_name} (#{total} total samples)"
@@ -90,14 +108,13 @@ class Sample
     end
   end
 
-  def dump_trace_counts(outh, options = {})
+  def dump_trace_counts(outh=$stdout, options = {})
     sep = options[:sep] || "\t"
     counts = @fcache.values.map {|frag| frag.count}.sort.reverse
     outh.puts "#{@exe_name}#{sep}#{counts.join(sep)}"
   end
 
   def add_fragment(frag_id, count, frag_type)
-    @wHERE_FCACHE += count
     @fcache.add_fragment(frag_id, count, frag_type)
   end
 
@@ -133,7 +150,6 @@ class Sample
       def incr(amnt) @count += amnt end
     end
   end
-
 end
 
 def find_sample_files(root)
@@ -157,6 +173,7 @@ def build_sample(file)
         cnt    = $1.to_i
         f_type = $2.to_sym
         f_id   = $3.hex
+        s.wHERE_FCACHE += cnt
         s.add_fragment(f_id, cnt, f_type)
         
       when /pc=0x[[:xdigit:]]+\s+#=(\d+)\s+in DynamoRIO (<?[\w_]+(?: \w+)?>?)/
@@ -186,6 +203,7 @@ class CmdLineOptions
     options = OpenStruct.new
     options.output_type = :raw
     options.outh        = $stdout
+    options.merge       = true
 
     opts = OptionParser.new do |opts|
       opts.banner = "Usage: pcprofile.rb [options] [file|dir]"
@@ -196,6 +214,9 @@ class CmdLineOptions
       opts.on("-o", "--output FILE", "Set output file") do |o|
         options.outfile = o
       end
+      opts.on("--no-merge", "Do not merge sample files") do |o|
+        options.merge = false
+      end
     end
     begin
       opts.parse!
@@ -205,6 +226,28 @@ class CmdLineOptions
     end
 
     options
+  end
+end
+
+def merge_samples(samples, options)
+  if options.merge then
+  samples.group_by {|s| s.exe_name}.map do |exe,ss|
+    ss.reduce(Sample.new("<merged>", exe), :merge)
+  end.sort_by {|s| s.exe_name}
+  else
+    samples
+  end
+end
+
+def dump_samples(samples, options)
+  first = true
+  samples.each do |s|
+    case options.output_type
+      when :summary then s.dump_summary(options.outh)
+      when :raw     then s.dump_raw_data(options.outh, :dump_header => first)
+      when :trace   then s.dump_trace_counts(options.outh)
+    end
+    first = false
   end
 end
 
@@ -227,16 +270,12 @@ if __FILE__ == $0 then
 
   # process sample files
   files = []
+  samples = []
   ARGV.each {|root| files += find_sample_files(root)}
-  first = true
   files.each do |f|
-    s = build_sample(f)
-    case options.output_type
-      when :summary then s.dump_summary(options.outh)
-      when :raw     then s.dump_raw_data(options.outh, :dump_header => first)
-      when :trace   then s.dump_trace_counts(options.outh)
-    end
-    first = false
+    samples << build_sample(f)
   end
+  samples = merge_samples(samples, options)
+  dump_samples(samples, options)
 end
 
