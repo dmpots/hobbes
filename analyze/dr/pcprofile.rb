@@ -83,16 +83,42 @@ class Sample
     Location.all.map{|k| self.send(k)}.reduce(0, :+)
   end
 
-  def dump_raw_data(outh=$stdout, options = {})
-    sep = options[:sep] || "\t"
-    dump_header = options[:dump_header]
-    columns = [:exe_name]   + Location.all + [:num_samples]
-    header  = (["Benchmark"] + Location.all.map {|l| Location.name(l)} + ["Total"])
+  def on_trace
+    @fcache.num_trace_fragments
+  end
+
+  def off_trace
+    @fcache.num_bb_fragments
+  end
+
+  def dump_raw_data(outh=$stdout, options=OpenStruct.new, display={})
+    sep = options.sep || "\t"
+    dump_header = display[:dump_header]
+    no_split_fcache = options.no_split_fcache
+
+    columns, header = 
+      if no_split_fcache then
+        locs = Location.all
+        names = locs.map {|l| Location.name(l)}
+
+        [[:exe_name] + locs + [:num_samples], ["Benchmark"] + names + ["Total"]]
+      else
+        locs = Location.all.clone
+        n = locs.index(:wHERE_FCACHE)
+        locs.delete_at(n)
+        locs.insert(n, :on_trace)
+        locs.insert(n, :off_trace)
+        names = locs.map {|l| 
+          Location.name(l) || l.to_s.gsub(/(_|\b)\w/){$&.upcase}
+        }
+        
+        [[:exe_name] + locs + [:num_samples], ["Benchmark"] + names + ["Total"]]
+      end
     outh.puts header.join(sep) if dump_header
     outh.puts columns.map{|s| self.send(s)}.join(sep)
   end
 
-  def dump_summary(outh=$stdout)
+  def dump_summary(outh=$stdout, options=nil)
     non_zero = Location.all.reject{|l| self.send(l) == 0}
     total    = num_samples
     outh.puts "#{@exe_name} (#{total} total samples)"
@@ -102,7 +128,7 @@ class Sample
       name    = Location.name(loc)
       outh.puts sprintf " %5.1f%% of time in %s (%d)", percent, name, samples
 
-      if loc == :wHERE_FCACHE then
+      if loc == :wHERE_FCACHE  && !options.no_split_fcache then
         on_trace    = @fcache.num_trace_fragments
         off_trace   = @fcache.num_bb_fragments
         p_on  = (on_trace.to_f   / samples.to_f) * 100
@@ -113,8 +139,8 @@ class Sample
     end
   end
 
-  def dump_trace_counts(outh=$stdout, options = {})
-    sep = options[:sep] || "\t"
+  def dump_trace_counts(outh=$stdout, options = OpenStruct.new)
+    sep = options.sep || "\t"
     counts = @fcache.values.map {|frag| frag.count}.sort.reverse
     outh.puts "#{@exe_name}#{sep}#{counts.join(sep)}"
   end
@@ -230,9 +256,9 @@ def dump_samples(samples, options)
   first = true
   samples.each do |s|
     case options.output_type
-      when :summary then s.dump_summary(options.outh)
-      when :raw     then s.dump_raw_data(options.outh, :dump_header => first)
-      when :trace   then s.dump_trace_counts(options.outh)
+      when :summary then s.dump_summary(options.outh, options)
+      when :raw     then s.dump_raw_data(options.outh,options,:dump_header => first)
+      when :trace   then s.dump_trace_counts(options.outh, options)
     end
     first = false
   end
@@ -336,11 +362,14 @@ class CmdLineOptions
       opts.on("-o", "--output FILE", "Set output file") do |o|
         options.outfile = o
       end
-      opts.on("--no-merge", "Do not merge sample files") do |o|
+      opts.on("--no-merge", "Do not merge sample files for same exe") do |o|
         options.merge = false
       end
       opts.on("--no-spec", "Do not rename/sort SPEC exes") do |o|
         options.spec = false
+      end
+      opts.on("--no-split-fcache", "Do not split fcache stats (on/off trace)") do |o|
+        options.no_split_fcache = true
       end
     end
     begin
