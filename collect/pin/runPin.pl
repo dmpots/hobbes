@@ -12,6 +12,7 @@ $BBLenMixPinTool="$ToolsDir/bblengthmix/$ArchDir/bblengthmix.so";
 $JumpMixPinTool="$ToolsDir/jumpmix/$ArchDir/jumpmix.so";
 $RegMixPinTool="$ToolsDir/regmix/$ArchDir/regmix.so";
 $TracePinTool="$ToolsDir/trace/$ArchDir/trace.so";
+$IbmixPinTool="$ToolsDir/ibmix/$ArchDir/ibmix.so";
 $Syms="ruby $ToolsDir/trace/syms.rb";
 $DieOnNofibFailure=1;
 $SanityCheckOnly=0;
@@ -33,6 +34,9 @@ elsif(grep(/--regmix/i, @ARGV)) {
 }
 elsif(grep(/--trace/i, @ARGV)) {
   $FullPathPinTool = $TracePinTool;
+}
+elsif(grep(/--ibmix/i, @ARGV)) {
+  $FullPathPinTool = $IbmixPinTool;
 }
 if(grep(/--no-shared-libs/i, @ARGV)) {
   $SharedLibsFlag="-no-shared-libs";
