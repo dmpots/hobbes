@@ -122,7 +122,7 @@ collect/pin/RESULTS/*.trace.dynamic/
 collect/pin/RESULTS/*.trace.static/
 collect/pin/tools.conf
 collect/pin/commands.conf
-collect/pin/commands/fibon.commands
+collect/pin/commands/*.commands
 analyze/pin-trace/dot/
 analyze/pin-trace/prep/
 _T.*
