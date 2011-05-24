@@ -118,6 +118,7 @@ collect/pin/RESULTS/*.opcodemix/
 collect/pin/RESULTS/*.bblengthmix/
 collect/pin/RESULTS/*.papi/
 collect/pin/RESULTS/*.trace/
+collect/pin/RESULTS/*.ibmix/
 collect/pin/RESULTS/*.trace.dynamic/
 collect/pin/RESULTS/*.trace.static/
 collect/pin/tools.conf
