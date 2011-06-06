@@ -1,9 +1,15 @@
 #!/usr/bin/perl
 use File::Basename;
+use Benchmark;
 $EnableMail = 0;
 $SharedLibs = ""; #or "--no-shared-libs"
 @tools    = qw(opcodemix trace);
 @commands = qw(commands/fibon.commands);
+
+$start = Benchmark->new;
+$start_string = localtime;
+print "Starting execution at ", $start_string, "\n";
+
 if( -e "tools.conf") {
   print "USING tools.conf\n";
   open TOOLS, "tools.conf" or die "error opening tools.conf file";
@@ -59,7 +65,11 @@ for my $cmdFile (@commands) {
 }
 }
 
-print "Pin loop all done\n";
+$end = Benchmark->new;
+$end_string = localtime;
+$td  = timediff($end, $start);
+print "Pin loop done at ", $end_string, "\n";
+print "Pin loop took: ", timestr($td, 'nop'), "\n";
 if($EnableMail) {
   $mailCmd = "mail -s \"[PIN-RUN] finished\" dmp\@rice.edu < /dev/null";
   system($mailCmd);
