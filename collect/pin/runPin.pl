@@ -13,6 +13,7 @@ $JumpMixPinTool="$ToolsDir/jumpmix/$ArchDir/jumpmix.so";
 $RegMixPinTool="$ToolsDir/regmix/$ArchDir/regmix.so";
 $TracePinTool="$ToolsDir/trace/$ArchDir/trace.so";
 $IbmixPinTool="$ToolsDir/ibmix/$ArchDir/ibmix.so";
+$IbdetailsPinTool="$ToolsDir/ibdetails/$ArchDir/ibdetails.so";
 $Syms="ruby $ToolsDir/trace/syms.rb";
 $DieOnNofibFailure=1;
 $SanityCheckOnly=0;
@@ -37,6 +38,12 @@ elsif(grep(/--trace/i, @ARGV)) {
 }
 elsif(grep(/--ibmix/i, @ARGV)) {
   $FullPathPinTool = $IbmixPinTool;
+}
+elsif(grep(/--ibdetails/i, @ARGV)) {
+  $FullPathPinTool = $IbdetailsPinTool;
+}
+else {
+  die "Unknown pintool";
 }
 if(grep(/--no-shared-libs/i, @ARGV)) {
   $SharedLibsFlag="-no-shared-libs";
