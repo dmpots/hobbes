@@ -1,0 +1,30 @@
+Name:                dynamorio
+Version:             0.1
+License:             MIT
+License-file:        LICENSE
+Author:              David Peixotto
+Maintainer:          dmp@rice.edu
+Category:            System
+Build-type:          Simple
+Cabal-version:       >=1.8
+
+Library
+  Hs-Source-Dirs:      lib
+  Exposed-modules:     Data.Elf.Symtab
+                       DynamoRIO.Trace
+                       DynamoRIO.TraceOriginParser
+                       DynamoRIO.TraceDumpParser
+  Other-modules:       DynamoRIO.ParserHelp
+  Build-depends:       base
+                     , bytestring
+                     , elf == 0.26
+                     , fingertree >= 0.0.1.0
+                     , parsec >= 3
+  
+Executable label
+  Hs-Source-Dirs:      exe
+  Main-Is:             Main.hs
+  Build-depends:       base
+                     , dynamorio
+                     , bytestring
+                     , parsec >= 3
