@@ -6,17 +6,19 @@ import Text.Parsec.Combinator
 import Text.Parsec.Char
 import Text.Parsec.String
 import DynamoRIO.Trace
-import DynamoRIO.ParserHelp(addr, traceId)
+import qualified DynamoRIO.ParserHelp as P
 
-parser :: Parser [Trace]
+data OriginTrace = OriginTrace TraceId [BasicBlock] deriving(Show)
+
+parser :: Parser [OriginTrace]
 parser = many1 trace
 
-trace :: Parser Trace
+trace :: Parser OriginTrace
 trace = do
   string "Trace "
-  traceNum <- traceId
+  traceNum <- P.traceId
   blocks   <- many1 block
-  return $ Trace traceNum blocks
+  return $ OriginTrace traceNum blocks
 
 block :: Parser BasicBlock
 block = do
@@ -27,7 +29,7 @@ block = do
   spaces
   char '='
   spaces
-  a <- addr
+  a <- P.addr
   spaces
   return a
 

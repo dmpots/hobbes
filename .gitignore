@@ -126,5 +126,8 @@ collect/pin/commands.conf
 collect/pin/commands/*.commands
 analyze/pin-trace/dot/
 analyze/pin-trace/prep/
+analyze/dr-traces/dynamorio/_Trace.txt
+analyze/dr-traces/dynamorio/_Profile.txt
+analyze/dr-traces/dynamorio/_SumFromTo2
 _T.*
 .Rhistory

@@ -26,5 +26,7 @@ Executable label
   Main-Is:             Main.hs
   Build-depends:       base
                      , dynamorio
+                     , containers
                      , bytestring
                      , parsec >= 3
+                     , language-dot >= 0.0.1 && < 0.1

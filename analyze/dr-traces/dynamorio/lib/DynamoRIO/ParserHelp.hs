@@ -4,7 +4,7 @@ module DynamoRIO.ParserHelp(
 )
 where
 
-import DynamoRIO.Trace
+import DynamoRIO.Trace(Addr, TraceId)
 import Text.Parsec.Combinator
 import Text.Parsec.Char
 import Text.Parsec.String
