@@ -11,9 +11,11 @@ Cabal-version:       >=1.8
 Library
   Hs-Source-Dirs:      lib
   Exposed-modules:     Data.Elf.Symtab
+                       DynamoRIO.PcSample
                        DynamoRIO.Trace
                        DynamoRIO.TraceOriginParser
                        DynamoRIO.TraceDumpParser
+                       DynamoRIO.PcSampleParser
   Other-modules:       DynamoRIO.ParserHelp
   Build-depends:       base
                      , bytestring
