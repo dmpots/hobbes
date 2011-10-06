@@ -115,9 +115,13 @@ buildSampleCount samples traceMap = buildMap traceSamples
 profTable :: SampleMap -> String
 profTable sampleMap = unlines rows
   where
-  rows     = map (uncurry tableRow) (samplesSortedByCount sampleMap)
-  tableRow tid cnt = printf "Trace %4d %10d %10.2f%%" tid cnt (100 * (d cnt / d total))
+  rows     = map tableRow datas
+  tableRow (tid ,cnt, cum) = printf "Trace %4d %10d %10.2f%% %10.2f%%" tid cnt (100 * (d cnt / d total)) (100*cum)
   total = totalMap sampleMap
+  samples = samplesSortedByCount sampleMap
+  datas = zipWith (\(x,y) z -> (x,y, d z / d total)) samples cum
+  cum   = scanl (\s c -> (snd c) + s) first rest
+    where (first, rest) = case samples of (x:xs) -> (snd x,xs); [] -> (0,[])
 
 samplesSortedByCount :: SampleMap -> [(TraceId, SampleCount)]
 samplesSortedByCount sampleMap = (sortBy (flip compare `on` snd) (M.toAscList sampleMap))
