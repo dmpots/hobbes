@@ -131,3 +131,4 @@ analyze/dr-traces/dynamorio/_Profile.txt
 analyze/dr-traces/dynamorio/_SumFromTo2
 _T.*
 .Rhistory
+pin.log
