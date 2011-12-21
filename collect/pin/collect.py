@@ -147,10 +147,13 @@ class PinTool:
     dylib_ext = ".so"
     pin_exe   = os.path.join(pin_dir, "pin")
     
-    def __init__(self, name):
-        self.name = name
-        self.tool_path = os.path.join(PinTool.tools_dir, name,
-                                      PinTool.arch_dir,  name + PinTool.dylib_ext)
+    def __init__(self, line):
+        toks = line.split()
+        self.name      = toks[0]
+        self.tool_args = toks[1:]
+        self.tool_path = os.path.join(PinTool.tools_dir, self.name,
+                                      PinTool.arch_dir,  self.name + PinTool.dylib_ext)
+
 
     def run(self, command):
         self.run_process(command)
@@ -160,12 +163,13 @@ class PinTool:
         pin_args = [PinTool.pin_exe,
                     "-logfile", os.path.abspath(PIN_LOG),
                     "-t", self.tool_path,
-                    "-o", outfile]
+                    "-o", outfile] + self.tool_args
         cmd_args = [command.exe] + command.args
         full_args = pin_args + ["--"] + cmd_args
 
         (inh, outh, errh) = self.open_handles(command)
 
+        Log.debug("Runing: " + " ".join(full_args))
         try:
             p = subprocess.Popen(full_args,
                                  stdin=inh, stdout=outh, stderr=errh,
@@ -222,6 +226,13 @@ class Task:
         
         try:
             self.tool.run(self.command)
+
+            # Make sure we generated some output files. No output also indicates
+            # a failure, even if the tool exited with 0 (for example this will
+            # happen if given bad command line parameters to the tool.
+            if len(self.outfiles()) == 0:
+                Log.error("No output files produced by tool: "+self.name)
+                return self.set_failure()
         except PinError as e:
             Log.error("PinError: " + e.message)
             return self.set_failure()
@@ -315,7 +326,7 @@ class Pool:
         while finished != total:
             statq.get()
             finished += 1
-            Log.info("%d of %d tasks completed (%6.2f%%) %s",
+            Log.info("%d of %d tasks finished (%6.2f%%) %s",
                      finished, total, 100 * (finished/total),
                      time.strftime("%H:%M:%S %A %m/%d/%Y"))
 
