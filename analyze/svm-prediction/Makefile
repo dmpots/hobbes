@@ -15,13 +15,18 @@ Opcodes.hs: Opcodes.txt mkOpCodes.pl
 OpcodeGroup.hs: $(MKGRPDIR)/x86reference.xml $(MKGRPDIR)/*.hs
 	make -C $(MKGRPDIR) OpcodeGroup > $@
 
-pinalyze: $(SOURCES) $(GENERATED_SOURCES)
-	$(GHC) -Wall -O --make -o $(EXE) $(SOURCES) 
+dist/setup-config:
+	cabal configure
+
+pinalyze: $(SOURCES) $(GENERATED_SOURCES) dist/setup-config
+	cabal build
+	cp dist/build/pinalyze/pinalyze .
 
 $(LIBSVMPROGS): $(LIBSVMSRCS)
 	make -C $(LIBSVMDIR)
 
 clean:
 	rm -f *.o *.hi $(EXE) *.gnuplot *.dat *.eps __PinAlyze__.*
+	rm -rf dist
 	make -C $(LIBSVMDIR) clean
 	make -C $(MKGRPDIR) clean

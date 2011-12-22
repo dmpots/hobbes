@@ -1,0 +1,31 @@
+Name:                pinalyze
+Version:             0.1
+-- Synopsis:            
+-- Description:         
+License:             MIT
+Author:              David M Peixotto
+Maintainer:          dmp@rice.edu
+Category:            Benchmarking
+Build-type:          Simple
+-- Constraint on the version of Cabal needed to build this package.
+Cabal-version:       >=1.2
+
+Executable pinalyze
+  -- .hs or .lhs file containing the Main module.
+  Main-is:            Main.hs
+  
+  -- Packages needed in order to build this package.
+  Build-depends:        base
+                      , process
+                      , containers
+                      , HSvm
+                      , random
+                      , filepath
+                      , regex-compat
+  
+  -- Modules not exported by this package.
+  -- Other-modules:       
+  
+  -- Extra tools (e.g. alex, hsc2hs, ...) needed to build the source.
+  -- Build-tools:         
+  
