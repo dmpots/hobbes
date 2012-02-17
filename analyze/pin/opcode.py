@@ -20,7 +20,7 @@ ia='ARITH' #integer arithmetic
 fa='ARITH' #floating point arithmetic
 logic='LOGIC'
 ctrl='CONTROL'
-move='MOVEMENT'
+move='DATA'
 other='OTHER'
 convert='OTHER'
 
