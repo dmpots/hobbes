@@ -6,7 +6,7 @@ import opcode
 import sys
 import bench
 
-tools  = ['ibdetails']#['bblengthmix', 'ibdetails', 'jumpmix', 'opcodemix']
+tools  = ['ibdetails','jumpmix','opcodemix']#['bblengthmix', 'ibdetails', 'jumpmix', 'opcodemix']
 suites = ['fibon', 'spec']
 
 def log(msg, *args):
@@ -30,6 +30,8 @@ def main(args):
 
         if len(tool_files):
             process(tool, tool_files)
+        else:
+            print("Found no tool files")
 
             
 def process(tool, files):
@@ -40,8 +42,10 @@ def process(tool, files):
         for (suite, result_file) in files:
             p(outf, suite, result_file)
 
-    outf = open('{}.dat'.format(tool), 'w')
-    outf = sys.stdout
+    outname = '{}.dat'.format(tool)
+    outf = open(outname, 'w')
+    print("writing {}".format(outname))
+    #outf = sys.stdout
 
     if tool == 'jumpmix':
         process_with(jumpmix, files, outf)
@@ -55,6 +59,7 @@ def process(tool, files):
 def jumpmix(outf, suite, result_file, header=False):
     benchmark = benchmark_name(suite, result_file)
     format_line = '{:10} {:10} {:20} {:20} {:>20}\n'
+    Suite = suite.capitalize()
 
     if header:
         outf.write(format_line.format("Suite", "Group", "Benchmark", "Type", "Count"))
@@ -62,11 +67,12 @@ def jumpmix(outf, suite, result_file, header=False):
         (n, jump, count, count_taken) = line.split()
         if (not jump.startswith('*')) and (not jump.startswith('syscall')):
             bmgroup = bench.group(benchmark)
-            outf.write(format_line.format(suite, bmgroup, benchmark, jump, count))
+            outf.write(format_line.format(Suite, bmgroup, benchmark, jump, count))
 
 def opcodemix(outf, suite, result_file, header=False):
     benchmark = benchmark_name(suite, result_file)
     format_line = '{:10} {:10} {:15} {:10} {:10} {:>20}\n'
+    Suite = suite.capitalize()
 
     if header:
         outf.write(format_line.format("Suite", "Group", "Benchmark",
@@ -76,12 +82,28 @@ def opcodemix(outf, suite, result_file, header=False):
         if not op.startswith('*'):
             opgroup = opcode.group(op)
             bmgroup = bench.group(benchmark)
-            outf.write(format_line.format(suite, bmgroup, benchmark,
+            outf.write(format_line.format(Suite, bmgroup, benchmark,
                                           op, opgroup, int(c1)+int(c2)))
 
 def ibdetails(outf, suite, result_file, header=False):
-    print('ibdetails')
-    format_line = 'Targets Sources Static Dynamic'
+    benchmark = benchmark_name(suite, result_file)
+    bmgroup   = bench.group(benchmark)
+    Suite = suite.capitalize()
+    format_line = "{:6} {:8} {:15} {:7} {:7} {:7} {:7} {:7} {:7}\n"
+    header_line = 'Suite Group Benchmark Type Targets Sources Static Dynamic Locality'
+    
+    if header:
+        outf.write(format_line.format(*header_line.split()))
+
+    for line in strip_comments(result_file):
+        if line.startswith("@"):
+            branch_type = line[1:-2].upper()
+            continue
+        metrics = [m.strip() for m in line.split("|")]
+        output = format_line.format(
+            Suite, bmgroup, benchmark, branch_type,
+            metrics[0], metrics[1], metrics[3], metrics[4], metrics[5])
+        outf.write(output)
 
 def benchmark_name(suite, result_file):
     components = os.path.basename(result_file).split('.')
