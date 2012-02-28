@@ -6,7 +6,8 @@ import opcode
 import sys
 import bench
 
-tools  = ['ibdetails','jumpmix','opcodemix']#['bblengthmix', 'ibdetails', 'jumpmix', 'opcodemix']
+#tools  = ['ibdetails','jumpmix','opcodemix']#['bblengthmix', 'ibdetails', 'jumpmix', 'opcodemix']
+tools  = ['bblengthmix']
 suites = ['fibon', 'spec']
 
 def log(msg, *args):
@@ -53,6 +54,8 @@ def process(tool, files):
         process_with(opcodemix, files, outf)
     elif tool == 'ibdetails':
         process_with(ibdetails, files, outf)
+    elif tool == 'bblengthmix':
+        process_with(bblength, files, outf)
     else:
         raise Exception('Unknown tool '+tool)
 
@@ -104,6 +107,24 @@ def ibdetails(outf, suite, result_file, header=False):
             Suite, bmgroup, benchmark, branch_type,
             metrics[0], metrics[1], metrics[3], metrics[4], metrics[5])
         outf.write(output)
+
+def bblength(outf, suite, result_file, header=False):
+    format_line = "{:15} {:6} {:8} {:>3} {:>15} {:>10.5f}\n"
+    header_line = "Benchmark Suite Group Length Count Percent"
+    Suite = suite.capitalize()
+    benchmark = benchmark_name(suite, result_file)
+    bmgroup = bench.group(benchmark)
+
+    if header:
+        outf.write(
+            "{:15} {:6} {:^8} {:3} {:^15} {:10}\n".format(*header_line.split()))
+
+    for line in strip_comments(result_file):
+        (length, count, percent) = line.split()
+        
+        outf.write(format_line.format(benchmark, Suite, bmgroup,
+                                      length, count, float(percent) / 100))
+
 
 def benchmark_name(suite, result_file):
     components = os.path.basename(result_file).split('.')
