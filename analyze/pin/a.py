@@ -7,7 +7,7 @@ import sys
 import bench
 
 #tools  = ['ibdetails','jumpmix','opcodemix']#['bblengthmix', 'ibdetails', 'jumpmix', 'opcodemix']
-tools  = ['bblengthmix']
+tools  = ['ibdetails']
 suites = ['fibon', 'spec']
 
 def log(msg, *args):
@@ -92,8 +92,8 @@ def ibdetails(outf, suite, result_file, header=False):
     benchmark = benchmark_name(suite, result_file)
     bmgroup   = bench.group(benchmark)
     Suite = suite.capitalize()
-    format_line = "{:6} {:8} {:15} {:7} {:7} {:7} {:7} {:7} {:7}\n"
-    header_line = 'Suite Group Benchmark Type Targets Sources Static Dynamic Locality'
+    format_line = "{:6} {:8} {:15} {:7} {:7} {:7} {:15} {:7}\n"
+    header_line = 'Suite Group Benchmark Type Targets Sources Count Locality'
     
     if header:
         outf.write(format_line.format(*header_line.split()))
@@ -105,7 +105,7 @@ def ibdetails(outf, suite, result_file, header=False):
         metrics = [m.strip() for m in line.split("|")]
         output = format_line.format(
             Suite, bmgroup, benchmark, branch_type,
-            metrics[0], metrics[1], metrics[3], metrics[4], metrics[5])
+            metrics[0], metrics[1], metrics[2], metrics[5])
         outf.write(output)
 
 def bblength(outf, suite, result_file, header=False):
